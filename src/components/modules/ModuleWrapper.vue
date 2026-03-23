@@ -29,6 +29,8 @@ import Mod05Compress from './Mod05Compress.vue'
 import Mod09AutoMod from './Mod09AutoMod.vue'
 import Mod10Chebyshev from './Mod10Chebyshev.vue'
 import Mod10Distortion from './Mod10Distortion.vue'
+import Mod03Transpose from './Mod03Transpose.vue'
+import Mod03Reverb from './Mod03Reverb.vue'
 
 const COMPONENT_MAP = {
   'Mod00Sources': Mod00Sources,
@@ -47,7 +49,9 @@ const COMPONENT_MAP = {
   'Mod05Compress': Mod05Compress,
   'Mod09AutoMod': Mod09AutoMod,
   'Mod10Chebyshev': Mod10Chebyshev,
-  'Mod10Distortion': Mod10Distortion
+  'Mod10Distortion': Mod10Distortion,
+  'Mod03Transpose': Mod03Transpose,
+  'Mod03Reverb': Mod03Reverb
 }
 
 export default {

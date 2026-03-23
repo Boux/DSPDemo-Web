@@ -143,6 +143,18 @@ export const MODULE_DEFINITIONS = {
     name: { fr: '10-Distorsion - Algorithmes de distorsion', en: '10-Distortion - Distortion Algorithms' },
     category: 'distortion',
     component: 'Mod10Distortion'
+  },
+  'mod-03-transpose': {
+    id: 'mod-03-transpose',
+    name: { fr: '03-Délai - Transposition', en: '03-Delay - Transposition' },
+    category: 'delay',
+    component: 'Mod03Transpose'
+  },
+  'mod-03-reverb': {
+    id: 'mod-03-reverb',
+    name: { fr: '03-Délai - Réverbération', en: '03-Delay - Reverberation' },
+    category: 'delay',
+    component: 'Mod03Reverb'
   }
 }
 
