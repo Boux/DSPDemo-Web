@@ -1,5 +1,11 @@
 <template>
   <header class="app-header">
+    <svg class="app-header__icon" width="22" height="22" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="6" fill="#1e1e22"/>
+      <path d="M4 16 Q8 4, 12 16 Q16 28, 20 16 Q24 4, 28 16" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M4 16 Q8 4, 12 16 Q16 28, 20 16 Q24 4, 28 16" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.3" transform="translate(0 -3)"/>
+      <path d="M4 16 Q8 4, 12 16 Q16 28, 20 16 Q24 4, 28 16" stroke="#5b8af5" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5" transform="translate(0 3)"/>
+    </svg>
     <span class="app-header__title">DSPDemo</span>
 
     <nav class="app-header__nav">
@@ -131,6 +137,10 @@ export default {
 <style lang="sass">
 .app-header
   position: relative
+
+  &__icon
+    margin-right: var(--sp-1)
+    flex-shrink: 0
 
   &__title
     font-weight: 700
