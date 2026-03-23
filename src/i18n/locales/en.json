@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "DSPDemo",
+    "language": "Language"
+  },
+  "menu": {
+    "file": "File",
+    "modules": "Modules",
+    "help": "Help",
+    "about": "About",
+    "quit": "Quit"
+  },
+  "controls": {
+    "audioControls": "Audio Controls",
+    "enable": "Enable",
+    "disable": "Disable",
+    "record": "Record",
+    "stopRecord": "Stop",
+    "audioOutput": "Audio Output",
+    "volume": "Volume (dB)"
+  },
+  "visualization": {
+    "spectrogram": "Spectrogram",
+    "oscilloscope": "Oscilloscope",
+    "freqLog": "Freq Log",
+    "magLog": "Mag Log",
+    "windowSize": "Window size (ms)",
+    "amplitude": "Amplitude"
+  },
+  "categories": {
+    "sources": "00 - Sources",
+    "sampling": "01 - Sampling",
+    "filtering": "02 - Filtering",
+    "delay": "03 - Delay",
+    "spatialization": "04 - Spatialization",
+    "dynamics": "05 - Dynamics",
+    "spectral": "06 - Spectral Domain",
+    "granulation": "07 - Granulation",
+    "synthesis": "08 - Synthesis",
+    "modulation": "09 - Modulation",
+    "distortion": "10 - Distortion"
+  }
+}

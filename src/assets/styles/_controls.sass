@@ -1,0 +1,38 @@
+.toggle-btn
+  padding: 4px 12px
+  border: 1px solid var(--border-color)
+  border-radius: 3px
+  background: var(--panel-background)
+  cursor: pointer
+  font-size: var(--font-size-sm)
+  font-family: var(--font-family)
+  transition: background 0.15s
+
+  &:hover
+    background: #D0D0D4
+
+  &.active
+    background: var(--head-title-background)
+    color: var(--head-title-text)
+
+.control-row
+  display: flex
+  align-items: center
+  gap: 8px
+
+.control-label
+  font-size: var(--font-size-sm)
+  color: #444
+  white-space: nowrap
+
+select
+  font-family: var(--font-family)
+  font-size: var(--font-size-sm)
+  padding: 2px 4px
+  border: 1px solid var(--border-color)
+  border-radius: 3px
+  background: var(--panel-background)
+
+input[type="range"]
+  width: 100%
+  cursor: pointer
