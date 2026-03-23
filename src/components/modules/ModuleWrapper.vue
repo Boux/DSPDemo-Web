@@ -13,9 +13,25 @@
 <script>
 import { useModuleRegistryStore } from '../../stores/moduleRegistry'
 import Mod00Sources from './Mod00Sources.vue'
+import Mod02Filters from './Mod02Filters.vue'
+import Mod03FixedDelay from './Mod03FixedDelay.vue'
+import Mod03VariableDelay from './Mod03VariableDelay.vue'
+import Mod03Phasing from './Mod03Phasing.vue'
+import Mod04Panning from './Mod04Panning.vue'
+import Mod05PeakRMS from './Mod05PeakRMS.vue'
+import Mod09AmpMod from './Mod09AmpMod.vue'
+import Mod09FreqMod from './Mod09FreqMod.vue'
 
 const COMPONENT_MAP = {
-  'Mod00Sources': Mod00Sources
+  'Mod00Sources': Mod00Sources,
+  'Mod02Filters': Mod02Filters,
+  'Mod03FixedDelay': Mod03FixedDelay,
+  'Mod03VariableDelay': Mod03VariableDelay,
+  'Mod03Phasing': Mod03Phasing,
+  'Mod04Panning': Mod04Panning,
+  'Mod05PeakRMS': Mod05PeakRMS,
+  'Mod09AmpMod': Mod09AmpMod,
+  'Mod09FreqMod': Mod09FreqMod
 }
 
 export default {

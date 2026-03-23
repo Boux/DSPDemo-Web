@@ -47,8 +47,55 @@ export const MODULE_DEFINITIONS = {
     name: { fr: '00-Sources', en: '00-Sources' },
     category: 'sources',
     component: 'Mod00Sources'
+  },
+  'mod-02-filters': {
+    id: 'mod-02-filters',
+    name: { fr: '02-Filtrage - Comparaison des filtres', en: '02-Filtering - Filter Comparison' },
+    category: 'filtering',
+    component: 'Mod02Filters'
+  },
+  'mod-03-fixed-delay': {
+    id: 'mod-03-fixed-delay',
+    name: { fr: '03-Délai - Délais fixes', en: '03-Delay - Fixed Delays' },
+    category: 'delay',
+    component: 'Mod03FixedDelay'
+  },
+  'mod-03-variable-delay': {
+    id: 'mod-03-variable-delay',
+    name: { fr: '03-Délai - Délais variables', en: '03-Delay - Variable Delays' },
+    category: 'delay',
+    component: 'Mod03VariableDelay'
+  },
+  'mod-03-phasing': {
+    id: 'mod-03-phasing',
+    name: { fr: '03-Délai - Phasing', en: '03-Delay - Phasing' },
+    category: 'delay',
+    component: 'Mod03Phasing'
+  },
+  'mod-04-panning': {
+    id: 'mod-04-panning',
+    name: { fr: '04-Spatialisation - Panoramisation', en: '04-Spatialization - Panning' },
+    category: 'spatialization',
+    component: 'Mod04Panning'
+  },
+  'mod-05-peak-rms': {
+    id: 'mod-05-peak-rms',
+    name: { fr: '05-Dynamique - Valeur crête vs RMS', en: '05-Dynamics - Peak vs RMS' },
+    category: 'dynamics',
+    component: 'Mod05PeakRMS'
+  },
+  'mod-09-amp-mod': {
+    id: 'mod-09-amp-mod',
+    name: { fr: "09-Modulation - Modulation de l'amplitude", en: '09-Modulation - Amplitude Modulation' },
+    category: 'modulation',
+    component: 'Mod09AmpMod'
+  },
+  'mod-09-freq-mod': {
+    id: 'mod-09-freq-mod',
+    name: { fr: '09-Modulation - Modulation de fréquence', en: '09-Modulation - Frequency Modulation' },
+    category: 'modulation',
+    component: 'Mod09FreqMod'
   }
-  // Additional modules will be registered as they are implemented
 }
 
 export const useModuleRegistryStore = defineStore('moduleRegistry', {
