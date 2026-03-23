@@ -37,8 +37,11 @@ export default {
     audio: { type: Object, default: null }
   },
   data() {
+    const sourceNames = ['lfo', 'bandlimited', 'file', 'noise']
+    const currentSource = this.audio ? this.audio.activeSource : 'lfo'
+    const initialTab = Math.max(0, sourceNames.indexOf(currentSource))
     return {
-      activeTab: 0,
+      activeTab: initialTab,
       tabs: [
         { label: { fr: 'Oscillateur multiforme', en: 'Multi-waveform Oscillator' }, short: { fr: 'Multiforme', en: 'Waveform' }, source: 'lfo' },
         { label: { fr: 'Oscillateur anti-alias', en: 'Anti-alias Oscillator' }, short: { fr: 'Anti-alias', en: 'Anti-alias' }, source: 'bandlimited' },
