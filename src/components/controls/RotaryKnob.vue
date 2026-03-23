@@ -32,10 +32,10 @@ export default {
   emits: ['update:modelValue'],
   data() {
     return {
-      startPos: null,
+      lastPos: null,
       baseValue: 0.5,
       tempValue: 0.5,
-      inc: 0.005
+      fine: false
     }
   },
   watch: {
@@ -53,24 +53,43 @@ export default {
   },
   methods: {
     onMouseDown(e) {
-      this.startPos = { x: e.clientX, y: e.clientY }
-      this.baseValue = this.tempValue
-      this.inc = e.shiftKey ? 0.0001 : 0.005
+      this.lastPos = { x: e.clientX, y: e.clientY }
+      this.fine = e.shiftKey
       document.addEventListener('mousemove', this.onMouseMove)
       document.addEventListener('mouseup', this.onMouseUp)
       e.preventDefault()
     },
     onMouseMove(e) {
-      if (!this.startPos) return
-      const dx = (e.clientX - this.startPos.x) * this.inc
-      const dy = (this.startPos.y - e.clientY) * this.inc
-      this.tempValue = clamp(this.baseValue + dx + dy, 0, 1)
+      if (!this.lastPos) return
+
+      // Per-frame delta (not cumulative from start)
+      const dx = e.clientX - this.lastPos.x
+      const dy = this.lastPos.y - e.clientY
+      this.lastPos = { x: e.clientX, y: e.clientY }
+
+      // Use vertical as primary axis, horizontal as secondary
+      const rawDelta = dy + dx * 0.3
+
+      // Mild acceleration: slow moves are precise, fast moves a bit faster
+      const absDelta = Math.abs(rawDelta)
+      let accel
+      if (absDelta < 5) {
+        accel = 1
+      } else {
+        accel = 1 + (absDelta - 5) * 0.08
+      }
+
+      const sensitivity = this.fine ? 0.0003 : 0.003
+      const delta = Math.sign(rawDelta) * absDelta * accel * sensitivity
+
+      this.tempValue = clamp(this.tempValue + delta, 0, 1)
+      this.baseValue = this.tempValue
       this.$emit('update:modelValue', this.tempValue)
       this.draw()
     },
     onMouseUp() {
       this.baseValue = this.tempValue
-      this.startPos = null
+      this.lastPos = null
       document.removeEventListener('mousemove', this.onMouseMove)
       document.removeEventListener('mouseup', this.onMouseUp)
     },

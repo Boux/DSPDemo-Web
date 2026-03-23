@@ -58,6 +58,17 @@ export default {
       return useModuleRegistryStore().activeModuleId
     }
   },
+  mounted() {
+    this._onClickOutside = (e) => {
+      if (this.menuOpen && this.$refs.menuRoot && !this.$refs.menuRoot.contains(e.target)) {
+        this.menuOpen = false
+      }
+    }
+    document.addEventListener('mousedown', this._onClickOutside)
+  },
+  beforeUnmount() {
+    document.removeEventListener('mousedown', this._onClickOutside)
+  },
   methods: {
     selectModule(moduleId) {
       this.menuOpen = false
