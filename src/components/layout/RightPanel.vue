@@ -20,9 +20,15 @@
           <select v-model.number="spectrum.fftSize">
             <option v-for="(s, i) in fftSizeChoices" :key="i" :value="i">{{ s }}</option>
           </select>
+          <LabelKnob
+            :label="$t('visualization.amplitude')"
+            v-model="spectrum.amplitude"
+            :mini="0"
+            :maxi="1"
+          />
         </div>
         <div class="viz-canvas-wrap">
-          <canvas ref="spectrumCanvas" class="viz-canvas"></canvas>
+          <SpectrumAnalyzer />
         </div>
       </div>
     </div>
@@ -31,18 +37,23 @@
       <div class="section-head">{{ $t('visualization.oscilloscope') }}</div>
       <div class="section-body viz-body">
         <div class="viz-controls">
-          <label class="control-label">{{ $t('visualization.windowSize') }}</label>
-          <input
-            type="range"
-            :min="10"
-            :max="1000"
-            :value="scope.windowLength"
-            @input="scope.windowLength = parseInt($event.target.value)"
+          <ControlSlider
+            :label="$t('visualization.windowSize')"
+            v-model="scope.windowLength"
+            :mini="10"
+            :maxi="1000"
+            :log="true"
+            :integer="true"
           />
-          <span class="control-label">{{ scope.windowLength }} ms</span>
+          <LabelKnob
+            :label="$t('visualization.amplitude')"
+            v-model="scope.amplitude"
+            :mini="0"
+            :maxi="1"
+          />
         </div>
         <div class="viz-canvas-wrap">
-          <canvas ref="scopeCanvas" class="viz-canvas"></canvas>
+          <Oscilloscope />
         </div>
       </div>
     </div>
@@ -51,15 +62,23 @@
 
 <script>
 import { useUiStateStore, WINDOW_CHOICES, FFT_SIZE_CHOICES } from '../../stores/uiState'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import SpectrumAnalyzer from '../visualization/SpectrumAnalyzer.vue'
+import Oscilloscope from '../visualization/Oscilloscope.vue'
+import LabelKnob from '../controls/LabelKnob.vue'
+import ControlSlider from '../controls/ControlSlider.vue'
 
 export default {
   name: 'RightPanel',
+  components: {
+    SpectrumAnalyzer,
+    Oscilloscope,
+    LabelKnob,
+    ControlSlider
+  },
   data() {
     return {
       windowChoices: WINDOW_CHOICES,
-      fftSizeChoices: FFT_SIZE_CHOICES,
-      animFrameId: null
+      fftSizeChoices: FFT_SIZE_CHOICES
     }
   },
   computed: {
@@ -68,117 +87,6 @@ export default {
     },
     scope() {
       return useUiStateStore().scope
-    }
-  },
-  mounted() {
-    this.resizeCanvases()
-    window.addEventListener('resize', this.resizeCanvases)
-    this.startRenderLoop()
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.resizeCanvases)
-    if (this.animFrameId) {
-      cancelAnimationFrame(this.animFrameId)
-    }
-  },
-  methods: {
-    resizeCanvases() {
-      for (const ref of ['spectrumCanvas', 'scopeCanvas']) {
-        const canvas = this.$refs[ref]
-        if (canvas) {
-          const rect = canvas.parentElement.getBoundingClientRect()
-          canvas.width = rect.width
-          canvas.height = rect.height
-        }
-      }
-    },
-    startRenderLoop() {
-      const render = () => {
-        this.drawSpectrum()
-        this.drawScope()
-        this.animFrameId = requestAnimationFrame(render)
-      }
-      render()
-    },
-    drawSpectrum() {
-      const canvas = this.$refs.spectrumCanvas
-      if (!canvas) return
-      const ctx = canvas.getContext('2d')
-      const w = canvas.width
-      const h = canvas.height
-
-      ctx.fillStyle = 'var(--viz-background)'
-      ctx.fillStyle = '#000'
-      ctx.fillRect(0, 0, w, h)
-
-      const engine = useAudioEngineStore()
-      if (!engine.analyserSpectrum || !engine.isRunning) return
-
-      const analyser = engine.analyserSpectrum
-      const bufLen = analyser.frequencyBinCount
-      const data = new Float32Array(bufLen)
-      analyser.getFloatFrequencyData(data)
-
-      ctx.strokeStyle = '#00FF00'
-      ctx.lineWidth = 1
-      ctx.beginPath()
-
-      const minDb = -100
-      const maxDb = 0
-
-      for (let i = 0; i < bufLen; i++) {
-        const x = (i / bufLen) * w
-        const db = Math.max(minDb, Math.min(maxDb, data[i]))
-        const y = h - ((db - minDb) / (maxDb - minDb)) * h
-        if (i === 0) {
-          ctx.moveTo(x, y)
-        } else {
-          ctx.lineTo(x, y)
-        }
-      }
-      ctx.stroke()
-    },
-    drawScope() {
-      const canvas = this.$refs.scopeCanvas
-      if (!canvas) return
-      const ctx = canvas.getContext('2d')
-      const w = canvas.width
-      const h = canvas.height
-
-      ctx.fillStyle = '#000'
-      ctx.fillRect(0, 0, w, h)
-
-      const engine = useAudioEngineStore()
-      if (!engine.analyserScope || !engine.isRunning) return
-
-      const analyser = engine.analyserScope
-      const bufLen = analyser.fftSize
-      const data = new Float32Array(bufLen)
-      analyser.getFloatTimeDomainData(data)
-
-      // Center line
-      ctx.strokeStyle = '#333'
-      ctx.lineWidth = 1
-      ctx.beginPath()
-      ctx.moveTo(0, h / 2)
-      ctx.lineTo(w, h / 2)
-      ctx.stroke()
-
-      // Waveform
-      ctx.strokeStyle = '#00FF00'
-      ctx.lineWidth = 1.5
-      ctx.beginPath()
-
-      for (let i = 0; i < bufLen; i++) {
-        const x = (i / bufLen) * w
-        const y = (1 - data[i]) * h / 2
-        if (i === 0) {
-          ctx.moveTo(x, y)
-        } else {
-          ctx.lineTo(x, y)
-        }
-      }
-      ctx.stroke()
     }
   }
 }
@@ -204,19 +112,8 @@ export default {
   padding: 4px 0
   flex-shrink: 0
 
-  input[type="range"]
-    width: 120px
-
 .viz-canvas-wrap
   flex: 1
   min-height: 80px
   position: relative
-
-.viz-canvas
-  position: absolute
-  top: 0
-  left: 0
-  width: 100%
-  height: 100%
-  border-radius: 2px
 </style>

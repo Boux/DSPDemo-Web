@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { SourcePanelAudio } from '../audio/nodes/SourcePanel'
 
 export const useAudioEngineStore = defineStore('audioEngine', {
   state() {
@@ -8,15 +9,17 @@ export const useAudioEngineStore = defineStore('audioEngine', {
       analyserSpectrum: null,
       analyserScope: null,
       analyserVu: null,
+      sourcePanel: null,
       isRunning: false,
       isRecording: false,
       sampleRate: 44100,
-      volumeDb: -6
+      volumeDb: -6,
+      sourceReady: false
     }
   },
 
   actions: {
-    init() {
+    async init() {
       if (this.context) return
 
       this.context = new AudioContext()
@@ -47,12 +50,18 @@ export const useAudioEngineStore = defineStore('audioEngine', {
       this.masterGain.connect(this.analyserScope)
       this.masterGain.connect(this.analyserVu)
 
+      // Init source panel audio
+      this.sourcePanel = new SourcePanelAudio(this.context)
+      await this.sourcePanel.init()
+      this.sourcePanel.output.connect(this.masterGain)
+      this.sourceReady = true
+
       // AudioContext starts suspended
-      this.context.suspend()
+      await this.context.suspend()
     },
 
     async start() {
-      if (!this.context) this.init()
+      if (!this.context) await this.init()
       await this.context.resume()
       this.isRunning = true
     },
