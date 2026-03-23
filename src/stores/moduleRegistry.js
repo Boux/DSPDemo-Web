@@ -95,6 +95,54 @@ export const MODULE_DEFINITIONS = {
     name: { fr: '09-Modulation - Modulation de fréquence', en: '09-Modulation - Frequency Modulation' },
     category: 'modulation',
     component: 'Mod09FreqMod'
+  },
+  'mod-01-resampling': {
+    id: 'mod-01-resampling',
+    name: { fr: "01-Échantillonnage - Fréquence d'échantillonnage", en: '01-Sampling - Sample Rate' },
+    category: 'sampling',
+    component: 'Mod01Resampling'
+  },
+  'mod-01-quantize': {
+    id: 'mod-01-quantize',
+    name: { fr: '01-Échantillonnage - Quantification', en: '01-Sampling - Quantization' },
+    category: 'sampling',
+    component: 'Mod01Quantize'
+  },
+  'mod-05-env-follower': {
+    id: 'mod-05-env-follower',
+    name: { fr: "05-Dynamique - Suivi d'amplitude", en: '05-Dynamics - Envelope Follower' },
+    category: 'dynamics',
+    component: 'Mod05EnvFollower'
+  },
+  'mod-05-gate': {
+    id: 'mod-05-gate',
+    name: { fr: '05-Dynamique - Porte de bruit', en: '05-Dynamics - Noise Gate' },
+    category: 'dynamics',
+    component: 'Mod05Gate'
+  },
+  'mod-05-compressor': {
+    id: 'mod-05-compressor',
+    name: { fr: '05-Dynamique - Compresseur', en: '05-Dynamics - Compressor' },
+    category: 'dynamics',
+    component: 'Mod05Compress'
+  },
+  'mod-09-auto-mod': {
+    id: 'mod-09-auto-mod',
+    name: { fr: '09-Modulation - Auto-modulation', en: '09-Modulation - Self-Modulation' },
+    category: 'modulation',
+    component: 'Mod09AutoMod'
+  },
+  'mod-10-chebyshev': {
+    id: 'mod-10-chebyshev',
+    name: { fr: '10-Distorsion - Fonctions de Chebychev', en: '10-Distortion - Chebyshev Functions' },
+    category: 'distortion',
+    component: 'Mod10Chebyshev'
+  },
+  'mod-10-distortion': {
+    id: 'mod-10-distortion',
+    name: { fr: '10-Distorsion - Algorithmes de distorsion', en: '10-Distortion - Distortion Algorithms' },
+    category: 'distortion',
+    component: 'Mod10Distortion'
   }
 }
 

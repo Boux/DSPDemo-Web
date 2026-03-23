@@ -21,6 +21,14 @@ import Mod04Panning from './Mod04Panning.vue'
 import Mod05PeakRMS from './Mod05PeakRMS.vue'
 import Mod09AmpMod from './Mod09AmpMod.vue'
 import Mod09FreqMod from './Mod09FreqMod.vue'
+import Mod01Resampling from './Mod01Resampling.vue'
+import Mod01Quantize from './Mod01Quantize.vue'
+import Mod05EnvFollower from './Mod05EnvFollower.vue'
+import Mod05Gate from './Mod05Gate.vue'
+import Mod05Compress from './Mod05Compress.vue'
+import Mod09AutoMod from './Mod09AutoMod.vue'
+import Mod10Chebyshev from './Mod10Chebyshev.vue'
+import Mod10Distortion from './Mod10Distortion.vue'
 
 const COMPONENT_MAP = {
   'Mod00Sources': Mod00Sources,
@@ -31,7 +39,15 @@ const COMPONENT_MAP = {
   'Mod04Panning': Mod04Panning,
   'Mod05PeakRMS': Mod05PeakRMS,
   'Mod09AmpMod': Mod09AmpMod,
-  'Mod09FreqMod': Mod09FreqMod
+  'Mod09FreqMod': Mod09FreqMod,
+  'Mod01Resampling': Mod01Resampling,
+  'Mod01Quantize': Mod01Quantize,
+  'Mod05EnvFollower': Mod05EnvFollower,
+  'Mod05Gate': Mod05Gate,
+  'Mod05Compress': Mod05Compress,
+  'Mod09AutoMod': Mod09AutoMod,
+  'Mod10Chebyshev': Mod10Chebyshev,
+  'Mod10Distortion': Mod10Distortion
 }
 
 export default {
