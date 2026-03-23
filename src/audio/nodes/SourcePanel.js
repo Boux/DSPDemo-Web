@@ -13,6 +13,10 @@ export class SourcePanelAudio {
     this.activeSource = null
     this.noiseWorkletReady = false
 
+    // Track the current source frequency for oscilloscope sync.
+    // 0 means no periodic frequency (noise, file playback).
+    this.currentFrequency = 172
+
     // LFO source
     this.lfo = null
     this.lfoGain = this.ctx.createGain()
@@ -92,6 +96,11 @@ export class SourcePanelAudio {
     }
 
     this.activeSource = name
+
+    // Update tracked frequency
+    if (name === 'lfo') this.currentFrequency = this.lfo.frequency.value
+    else if (name === 'bandlimited') this.currentFrequency = this.blOsc.frequency.value
+    else this.currentFrequency = 0
   }
 
   // LFO controls
@@ -104,11 +113,13 @@ export class SourcePanelAudio {
 
   setLFOFrequency(freq) {
     this.lfo.frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.05)
+    this.currentFrequency = freq
   }
 
   // Band-limited controls
   setBLFrequency(freq) {
     this.blOsc.frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.05)
+    this.currentFrequency = freq
   }
 
   setBLParams(shape, bright) {

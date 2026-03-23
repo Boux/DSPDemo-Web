@@ -15,7 +15,6 @@ export const useAudioEngineStore = defineStore('audioEngine', {
       sampleRate: 44100,
       volumeDb: -6,
       sourceReady: false,
-      // Recording
       mediaRecorder: null,
       recordedChunks: []
     }
@@ -59,7 +58,6 @@ export const useAudioEngineStore = defineStore('audioEngine', {
       this.sourcePanel.output.connect(this.masterGain)
       this.sourceReady = true
 
-      // AudioContext starts suspended
       await this.context.suspend()
     },
 
