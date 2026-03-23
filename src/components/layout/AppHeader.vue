@@ -54,6 +54,18 @@
             ? 'Application interactive pour l\'apprentissage du traitement numérique du signal audio. Visualisez la physique et les mathématiques derrière le son.'
             : 'Interactive application for learning digital audio signal processing. Visualize the physics and mathematics behind sound.' }}
         </p>
+        <p class="about-dialog__text about-dialog__text--small">
+          {{ $i18n.locale === 'fr'
+            ? 'Réécriture web utilisant Vue 3, Web Audio API et AudioWorklet.'
+            : 'Web rewrite using Vue 3, Web Audio API and AudioWorklet.' }}
+        </p>
+        <a
+          class="about-dialog__link"
+          href="https://github.com/boux/DSPDemo-Web"
+          target="_blank"
+          rel="noopener"
+          style="display:block;margin-bottom:var(--sp-3)"
+        >github.com/boux/DSPDemo-Web</a>
         <div class="about-dialog__credits">
           <p class="about-dialog__credit-label">
             {{ $i18n.locale === 'fr' ? 'Basé sur le projet original de' : 'Based on the original project by' }}
@@ -66,11 +78,6 @@
             rel="noopener"
           >github.com/belangeo/dspdemo</a>
         </div>
-        <p class="about-dialog__text about-dialog__text--small">
-          {{ $i18n.locale === 'fr'
-            ? 'Réécriture web utilisant Vue 3, Web Audio API et AudioWorklet.'
-            : 'Web rewrite using Vue 3, Web Audio API and AudioWorklet.' }}
-        </p>
       </div>
     </div>
   </header>
