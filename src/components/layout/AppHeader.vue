@@ -28,12 +28,12 @@
       <button
         class="lang-btn"
         :class="{ active: $i18n.locale === 'fr' }"
-        @click="$i18n.locale = 'fr'"
+        @click="setLocale('fr')"
       >FR</button>
       <button
         class="lang-btn"
         :class="{ active: $i18n.locale === 'en' }"
-        @click="$i18n.locale = 'en'"
+        @click="setLocale('en')"
       >EN</button>
     </div>
   </header>
@@ -41,6 +41,7 @@
 
 <script>
 import { useModuleRegistryStore } from '../../stores/moduleRegistry'
+import { saveSetting } from '../../utils/settings'
 
 export default {
   name: 'AppHeader',
@@ -62,6 +63,10 @@ export default {
       this.menuOpen = false
       useModuleRegistryStore().setActiveModule(moduleId)
       this.$router.push({ name: 'module', params: { moduleId } })
+    },
+    setLocale(locale) {
+      this.$i18n.locale = locale
+      saveSetting('locale', locale)
     }
   }
 }
