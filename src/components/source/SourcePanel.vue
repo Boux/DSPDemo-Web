@@ -10,8 +10,9 @@
           :key="i"
           class="toggle-btn"
           :class="{ active: activeTab === i }"
+          :title="tab.label[$i18n.locale]"
           @click="switchTab(i)"
-        >{{ tab.label[$i18n.locale] }}</button>
+        >{{ tab.short[$i18n.locale] }}</button>
       </div>
       <div class="source-panel__content">
         <LFOSource v-if="activeTab === 0" :audio="audio" />
@@ -39,10 +40,10 @@ export default {
     return {
       activeTab: 0,
       tabs: [
-        { label: { fr: 'Oscillateur multiforme', en: 'Multi-waveform Oscillator' }, source: 'lfo' },
-        { label: { fr: 'Oscillateur anti-alias', en: 'Anti-alias Oscillator' }, source: 'bandlimited' },
-        { label: { fr: 'Fichier sonore', en: 'Sound File' }, source: 'file' },
-        { label: { fr: 'Générateur de bruit', en: 'Noise Generator' }, source: 'noise' }
+        { label: { fr: 'Oscillateur multiforme', en: 'Multi-waveform Oscillator' }, short: { fr: 'Multiforme', en: 'Waveform' }, source: 'lfo' },
+        { label: { fr: 'Oscillateur anti-alias', en: 'Anti-alias Oscillator' }, short: { fr: 'Anti-alias', en: 'Anti-alias' }, source: 'bandlimited' },
+        { label: { fr: 'Fichier sonore', en: 'Sound File' }, short: { fr: 'Fichier', en: 'File' }, source: 'file' },
+        { label: { fr: 'Générateur de bruit', en: 'Noise Generator' }, short: { fr: 'Bruit', en: 'Noise' }, source: 'noise' }
       ]
     }
   },
