@@ -209,6 +209,30 @@ export const MODULE_DEFINITIONS = {
     name: { fr: '08-Oscillateurs - Oscillateur synchronisé', en: '08-Oscillators - Oscillator Sync' },
     category: 'synthesis',
     component: 'Mod08OscSync'
+  },
+  'mod-07-granular-playback': {
+    id: 'mod-07-granular-playback',
+    name: { fr: '07-Granulation - Vitesse et Hauteur Indépendantes', en: '07-Granulation - Independent Speed & Pitch' },
+    category: 'granulation',
+    component: 'Mod07GranularPlayback'
+  },
+  'mod-07-granular-reorg': {
+    id: 'mod-07-granular-reorg',
+    name: { fr: '07-Granulation - Réorganisation temporelle', en: '07-Granulation - Temporal Reorganization' },
+    category: 'granulation',
+    component: 'Mod07GranularReorg'
+  },
+  'mod-04-binaural': {
+    id: 'mod-04-binaural',
+    name: { fr: '04-Spatialisation - Spatialisation binaurale en 3D', en: '04-Spatialization - 3D Binaural' },
+    category: 'spatialization',
+    component: 'Mod04Binaural'
+  },
+  'mod-05-mb-compressor': {
+    id: 'mod-05-mb-compressor',
+    name: { fr: '05-Dynamique - Compresseur Multi-Bande', en: '05-Dynamics - Multiband Compressor' },
+    category: 'dynamics',
+    component: 'Mod05MBCompress'
   }
 }
 

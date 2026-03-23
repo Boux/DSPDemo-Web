@@ -40,6 +40,10 @@ import Mod08AddSynthFix from './Mod08AddSynthFix.vue'
 import Mod08AddSynthVar from './Mod08AddSynthVar.vue'
 import Mod08PWM from './Mod08PWM.vue'
 import Mod08OscSync from './Mod08OscSync.vue'
+import Mod07GranularPlayback from './Mod07GranularPlayback.vue'
+import Mod07GranularReorg from './Mod07GranularReorg.vue'
+import Mod04Binaural from './Mod04Binaural.vue'
+import Mod05MBCompress from './Mod05MBCompress.vue'
 
 const COMPONENT_MAP = {
   'Mod00Sources': Mod00Sources,
@@ -69,7 +73,11 @@ const COMPONENT_MAP = {
   'Mod08AddSynthFix': Mod08AddSynthFix,
   'Mod08AddSynthVar': Mod08AddSynthVar,
   'Mod08PWM': Mod08PWM,
-  'Mod08OscSync': Mod08OscSync
+  'Mod08OscSync': Mod08OscSync,
+  'Mod07GranularPlayback': Mod07GranularPlayback,
+  'Mod07GranularReorg': Mod07GranularReorg,
+  'Mod04Binaural': Mod04Binaural,
+  'Mod05MBCompress': Mod05MBCompress
 }
 
 export default {
