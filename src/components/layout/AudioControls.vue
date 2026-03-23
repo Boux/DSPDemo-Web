@@ -13,10 +13,14 @@
         <button
           class="toggle-btn"
           :class="{ active: isRecording }"
+          :disabled="!isRunning"
           @click="toggleRecord"
         >
           {{ isRecording ? $t('controls.stopRecord') : $t('controls.record') }}
         </button>
+      </div>
+      <div v-if="isRecording" class="recording-indicator">
+        {{ $i18n.locale === 'fr' ? 'Enregistrement en cours...' : 'Recording...' }}
       </div>
     </div>
   </div>
@@ -46,7 +50,11 @@ export default {
     },
     toggleRecord() {
       const engine = useAudioEngineStore()
-      engine.isRecording = !engine.isRecording
+      if (engine.isRecording) {
+        engine.stopRecording()
+      } else {
+        engine.startRecording()
+      }
     }
   }
 }
@@ -59,4 +67,18 @@ export default {
 
   .toggle-btn
     flex: 1
+
+.recording-indicator
+  color: #CC0000
+  font-size: var(--font-size-sm)
+  font-weight: 600
+  text-align: center
+  padding: 4px 0
+  animation: rec-blink 1s infinite
+
+@keyframes rec-blink
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0.4
 </style>

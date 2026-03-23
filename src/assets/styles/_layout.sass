@@ -64,3 +64,32 @@ body
   background: var(--panel-background)
   padding: 6px
   border-radius: 0 0 var(--section-border-radius) var(--section-border-radius)
+
+// Responsive: tablet portrait and smaller
+@media (max-width: 900px)
+  .app-body
+    flex-direction: column
+    overflow-y: auto
+
+  .left-panel
+    width: 100%
+    flex-shrink: 0
+    overflow-y: visible
+    max-height: none
+
+  .right-panel
+    flex: none
+    min-height: 400px
+
+// Responsive: phone
+@media (max-width: 500px)
+  .app-header
+    padding: 0 6px
+    font-size: var(--font-size-sm)
+
+  .left-panel
+    padding: 2px
+
+  .right-panel
+    padding: 2px
+    min-height: 300px

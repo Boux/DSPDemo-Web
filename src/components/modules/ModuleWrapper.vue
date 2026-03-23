@@ -6,12 +6,14 @@
       <div v-else class="module-placeholder">
         {{ $t('menu.modules') }}: {{ $route.params.moduleId }}
       </div>
+      <ModuleDoc :moduleId="moduleId" />
     </div>
   </div>
 </template>
 
 <script>
 import { useModuleRegistryStore } from '../../stores/moduleRegistry'
+import ModuleDoc from '../docs/ModuleDoc.vue'
 import Mod00Sources from './Mod00Sources.vue'
 import Mod02Filters from './Mod02Filters.vue'
 import Mod03FixedDelay from './Mod03FixedDelay.vue'
@@ -82,6 +84,7 @@ const COMPONENT_MAP = {
 
 export default {
   name: 'ModuleWrapper',
+  components: { ModuleDoc },
   computed: {
     moduleId() {
       return this.$route.params.moduleId

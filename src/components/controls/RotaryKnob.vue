@@ -4,7 +4,14 @@
     :width="size"
     :height="size"
     class="rotary-knob"
+    tabindex="0"
+    role="slider"
+    :aria-valuenow="tempValue"
+    aria-valuemin="0"
+    aria-valuemax="1"
     @mousedown="onMouseDown"
+    @keydown="onKeyDown"
+    @wheel.prevent="onWheel"
   ></canvas>
 </template>
 
@@ -67,6 +74,42 @@ export default {
       document.removeEventListener('mousemove', this.onMouseMove)
       document.removeEventListener('mouseup', this.onMouseUp)
     },
+    onKeyDown(e) {
+      const step = e.shiftKey ? 0.001 : 0.02
+      if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+        e.preventDefault()
+        this.tempValue = clamp(this.tempValue + step, 0, 1)
+        this.baseValue = this.tempValue
+        this.$emit('update:modelValue', this.tempValue)
+        this.draw()
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+        e.preventDefault()
+        this.tempValue = clamp(this.tempValue - step, 0, 1)
+        this.baseValue = this.tempValue
+        this.$emit('update:modelValue', this.tempValue)
+        this.draw()
+      } else if (e.key === 'Home') {
+        e.preventDefault()
+        this.tempValue = 0
+        this.baseValue = 0
+        this.$emit('update:modelValue', 0)
+        this.draw()
+      } else if (e.key === 'End') {
+        e.preventDefault()
+        this.tempValue = 1
+        this.baseValue = 1
+        this.$emit('update:modelValue', 1)
+        this.draw()
+      }
+    },
+    onWheel(e) {
+      const step = e.shiftKey ? 0.001 : 0.01
+      const delta = e.deltaY < 0 ? step : -step
+      this.tempValue = clamp(this.tempValue + delta, 0, 1)
+      this.baseValue = this.tempValue
+      this.$emit('update:modelValue', this.tempValue)
+      this.draw()
+    },
     draw() {
       const canvas = this.$refs.canvas
       if (!canvas) return
@@ -95,6 +138,15 @@ export default {
       ctx.strokeStyle = '#000000'
       ctx.lineWidth = 2
       ctx.stroke()
+
+      // Focus ring
+      if (canvas === document.activeElement) {
+        ctx.beginPath()
+        ctx.arc(cx, cy, r + 2, 0, TWO_PI)
+        ctx.strokeStyle = '#4488FF'
+        ctx.lineWidth = 1
+        ctx.stroke()
+      }
     }
   }
 }
@@ -105,4 +157,8 @@ export default {
   cursor: pointer
   display: block
   flex-shrink: 0
+  outline: none
+
+  &:focus-visible
+    outline: none
 </style>

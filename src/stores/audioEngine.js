@@ -14,7 +14,10 @@ export const useAudioEngineStore = defineStore('audioEngine', {
       isRecording: false,
       sampleRate: 44100,
       volumeDb: -6,
-      sourceReady: false
+      sourceReady: false,
+      // Recording
+      mediaRecorder: null,
+      recordedChunks: []
     }
   },
 
@@ -71,6 +74,9 @@ export const useAudioEngineStore = defineStore('audioEngine', {
         await this.context.suspend()
       }
       this.isRunning = false
+      if (this.isRecording) {
+        this.stopRecording()
+      }
     },
 
     setVolume(db) {
@@ -82,6 +88,45 @@ export const useAudioEngineStore = defineStore('audioEngine', {
           0.02
         )
       }
+    },
+
+    startRecording() {
+      if (!this.context || !this.masterGain) return
+
+      const dest = this.context.createMediaStreamDestination()
+      this.masterGain.connect(dest)
+
+      this.recordedChunks = []
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : 'audio/webm'
+
+      this.mediaRecorder = new MediaRecorder(dest.stream, { mimeType })
+      this.mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) this.recordedChunks.push(e.data)
+      }
+      this.mediaRecorder.onstop = () => {
+        const blob = new Blob(this.recordedChunks, { type: mimeType })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'dspdemo-recording.' + (mimeType.includes('webm') ? 'webm' : 'ogg')
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        this.recordedChunks = []
+      }
+      this.mediaRecorder.start()
+      this.isRecording = true
+    },
+
+    stopRecording() {
+      if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+        this.mediaRecorder.stop()
+      }
+      this.mediaRecorder = null
+      this.isRecording = false
     },
 
     connectSource(sourceNode) {
