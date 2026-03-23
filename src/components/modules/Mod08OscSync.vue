@@ -5,7 +5,7 @@
       <div class="control-group">
         <label class="control-label">{{ t('waveform') }}</label>
         <select v-model.number="waveIdx" @change="onWaveChange">
-          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w }}</option>
+          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w[$i18n.locale] }}</option>
         </select>
       </div>
       <ControlSlider :label="t('masterFreq')" v-model="masterFreq" :mini="40" :maxi="2000" :log="true" @update:modelValue="onMasterChange" />
@@ -18,12 +18,7 @@
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
 import { useAudioEngineStore } from '../../stores/audioEngine'
-
-const WAVE_LABELS = [
-  'Sinus', 'Scie 5', 'Scie 15', 'Scie 30', 'Scie 60',
-  'Carrée 5', 'Carrée 15', 'Carrée 30', 'Carrée 60',
-  'Triangle 3', 'Triangle 6', 'Triangle 12', 'Triangle 24'
-]
+import { WAVEFORM_LABELS_ALT } from '../../utils/waveformLabels'
 
 function buildTableData(index) {
   const size = 8192
@@ -60,7 +55,7 @@ export default {
   data() {
     return {
       waveIdx: 0, masterFreq: 172, slaveFreq: 200, xfade: 0,
-      waveforms: WAVE_LABELS,
+      waveforms: WAVEFORM_LABELS_ALT,
       workletNode: null, outputGain: null
     }
   },

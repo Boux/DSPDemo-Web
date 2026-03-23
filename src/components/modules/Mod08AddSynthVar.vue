@@ -21,7 +21,7 @@
       <div class="control-group">
         <label class="control-label">{{ t('waveform') }}</label>
         <select v-model.number="waveIdx" @change="rebuildOnPlay">
-          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w }}</option>
+          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w[$i18n.locale] }}</option>
         </select>
       </div>
       <button class="toggle-btn" :class="{ active: isPlaying }" @click="togglePlay" style="width:100%">
@@ -35,12 +35,7 @@
 import ControlSlider from '../controls/ControlSlider.vue'
 import LabelKnob from '../controls/LabelKnob.vue'
 import { useAudioEngineStore } from '../../stores/audioEngine'
-
-const WAVE_LABELS = [
-  'Sinus', 'Scie 5', 'Scie 15', 'Scie 30', 'Scie 60',
-  'Carrée 5', 'Carrée 15', 'Carrée 30', 'Carrée 60',
-  'Triangle 3', 'Triangle 6', 'Triangle 12', 'Triangle 24'
-]
+import { WAVEFORM_LABELS_ALT } from '../../utils/waveformLabels'
 
 function buildWaveTable(ctx, index) {
   if (index === 0) return null
@@ -65,7 +60,7 @@ export default {
     return {
       partials: 30, attack: 10, decay: 100, sustain: 0.7, release: 500,
       ampDamp: 0.9, timeDamp: 0.9, freq: 172, spread: 1,
-      waveIdx: 0, waveforms: WAVE_LABELS, isPlaying: false,
+      waveIdx: 0, waveforms: WAVEFORM_LABELS_ALT, isPlaying: false,
       oscillators: [], gains: [], outputGain: null
     }
   },

@@ -8,13 +8,13 @@
       <div class="control-group">
         <label class="control-label">{{ t('carrierWave') }}</label>
         <select v-model.number="carrierWaveIdx" @change="onCarrierWaveChange">
-          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w }}</option>
+          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w[$i18n.locale] }}</option>
         </select>
       </div>
       <div class="control-group">
         <label class="control-label">{{ t('modWave') }}</label>
         <select v-model.number="modWaveIdx" @change="onModWaveChange">
-          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w }}</option>
+          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w[$i18n.locale] }}</option>
         </select>
       </div>
     </div>
@@ -24,12 +24,7 @@
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
 import { useAudioEngineStore } from '../../stores/audioEngine'
-
-const WAVEFORM_LABELS = [
-  'Sinus', 'Scie 2', 'Scie 5', 'Scie 10', 'Scie 20',
-  'Carrée 2', 'Carrée 5', 'Carrée 10', 'Carrée 20',
-  'Triangle 2', 'Triangle 5', 'Triangle 10', 'Triangle 20'
-]
+import { WAVEFORM_LABELS } from '../../utils/waveformLabels'
 
 function buildPeriodicWave(ctx, index) {
   if (index === 0) return null

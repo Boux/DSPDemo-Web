@@ -14,13 +14,13 @@
       <div class="control-group">
         <label class="control-label">{{ t('carrierWave') }}</label>
         <select v-model.number="carrierWaveIdx" @change="onCarrierWaveChange">
-          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w.label }}</option>
+          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w[$i18n.locale] }}</option>
         </select>
       </div>
       <div class="control-group">
         <label class="control-label">{{ t('modWave') }}</label>
         <select v-model.number="modWaveIdx" @change="onModWaveChange">
-          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w.label }}</option>
+          <option v-for="(w, i) in waveforms" :key="i" :value="i">{{ w[$i18n.locale] }}</option>
         </select>
       </div>
     </div>
@@ -30,22 +30,7 @@
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
 import { useAudioEngineStore } from '../../stores/audioEngine'
-
-const WAVEFORMS = [
-  { label: 'Sinus', type: 'sine' },
-  { label: 'Scie 2', type: 'sawtooth' },
-  { label: 'Scie 5', type: 'sawtooth' },
-  { label: 'Scie 10', type: 'sawtooth' },
-  { label: 'Scie 20', type: 'sawtooth' },
-  { label: 'Carrée 2', type: 'square' },
-  { label: 'Carrée 5', type: 'square' },
-  { label: 'Carrée 10', type: 'square' },
-  { label: 'Carrée 20', type: 'square' },
-  { label: 'Triangle 2', type: 'triangle' },
-  { label: 'Triangle 5', type: 'triangle' },
-  { label: 'Triangle 10', type: 'triangle' },
-  { label: 'Triangle 20', type: 'triangle' }
-]
+import { WAVEFORM_LABELS } from '../../utils/waveformLabels'
 
 function buildPeriodicWave(ctx, index) {
   // For sine, use the built-in type
@@ -96,7 +81,7 @@ export default {
       modFreq: 172,
       carrierWaveIdx: 0,
       modWaveIdx: 0,
-      waveforms: WAVEFORMS,
+      waveforms: WAVEFORM_LABELS,
       carrier: null,
       modulator: null,
       modGain: null,
