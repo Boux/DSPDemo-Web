@@ -73,7 +73,7 @@ export default {
   &__row
     display: flex
     align-items: center
-    gap: var(--sp-2)
+    gap: var(--sp-1)
 
   &__input
     flex: 1
@@ -82,6 +82,5 @@ export default {
     font-size: var(--font-size-xs)
     color: var(--color-text-dim)
     font-family: var(--font-mono)
-    min-width: 44px
     text-align: right
 </style>
