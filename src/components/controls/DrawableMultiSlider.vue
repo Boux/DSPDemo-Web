@@ -106,7 +106,7 @@ export default {
       const barW = w / len
       const range = this.maxVal - this.minVal
 
-      ctx.fillStyle = '#111'
+      ctx.fillStyle = '#0a0a0e'
       ctx.fillRect(0, 0, w, h)
 
       ctx.fillStyle = this.color

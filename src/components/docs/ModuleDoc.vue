@@ -36,17 +36,18 @@ export default {
 
 <style lang="sass">
 .module-doc
-  margin-top: 6px
+  margin-top: var(--sp-2)
 
   &__toggle
     width: 100%
     font-size: var(--font-size-sm)
 
   &__content
-    margin-top: 4px
-    background: #EEEEF0
-    border-radius: var(--section-border-radius)
-    padding: 8px
+    margin-top: var(--sp-1)
+    background: var(--color-bg)
+    border: 1px solid var(--color-border)
+    border-radius: var(--control-radius)
+    padding: var(--sp-2)
     max-height: 300px
     overflow-y: auto
 
@@ -56,5 +57,5 @@ export default {
     white-space: pre-wrap
     word-wrap: break-word
     line-height: 1.5
-    color: #333
+    color: var(--color-text-muted)
 </style>

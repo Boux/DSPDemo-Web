@@ -61,15 +61,15 @@ export default {
   flex-direction: column
   align-items: center
   gap: 2px
-  min-width: 50px
+  min-width: 46px
 
   &__label
-    font-size: var(--font-size-sm)
-    color: #444
+    font-size: var(--font-size-xs)
+    color: var(--color-text-muted)
     white-space: nowrap
 
   &__value
-    font-size: 10px
-    color: #555
-    font-family: monospace
+    font-size: var(--font-size-xs)
+    color: var(--color-text-dim)
+    font-family: var(--font-mono)
 </style>

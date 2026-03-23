@@ -91,15 +91,15 @@ export default {
 <style lang="sass">
 .peak-rms
   &__line
-    padding: 4px 0
+    padding: var(--sp-1) 0
     font-size: var(--font-size-base)
 
   &__signal
-    color: #CC4444
+    color: var(--viz-line-ch2)
 
   &__peak
-    color: #44AA44
+    color: var(--viz-line-ch1)
 
   &__rms
-    color: #4488CC
+    color: var(--viz-line-ch3)
 </style>

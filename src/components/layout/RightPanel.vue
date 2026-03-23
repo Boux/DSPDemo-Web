@@ -108,12 +108,15 @@ export default {
 .viz-controls
   display: flex
   align-items: center
-  gap: 6px
-  padding: 4px 0
+  gap: var(--sp-2)
+  padding: var(--sp-1) 0
   flex-shrink: 0
+  flex-wrap: wrap
 
 .viz-canvas-wrap
   flex: 1
   min-height: 80px
   position: relative
+  border-radius: var(--control-radius)
+  overflow: hidden
 </style>

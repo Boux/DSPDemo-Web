@@ -147,5 +147,5 @@ export default {
   flex-wrap: wrap
   gap: 2px
   justify-content: center
-  margin: 6px 0
+  margin: var(--sp-2) 0
 </style>

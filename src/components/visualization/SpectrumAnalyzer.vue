@@ -46,11 +46,11 @@ export default {
       const w = canvas.width
       const h = canvas.height
 
-      ctx.fillStyle = '#000'
+      ctx.fillStyle = '#0a0a0e'
       ctx.fillRect(0, 0, w, h)
 
       // Grid lines
-      ctx.strokeStyle = '#222'
+      ctx.strokeStyle = '#1a1a24'
       ctx.lineWidth = 0.5
       for (let i = 1; i < 10; i++) {
         const y = (i / 10) * h
@@ -86,7 +86,7 @@ export default {
       const minLin = 0
       const maxLin = 1
 
-      ctx.strokeStyle = '#00FF00'
+      ctx.strokeStyle = '#4ade80'
       ctx.lineWidth = 1.5
       ctx.beginPath()
 

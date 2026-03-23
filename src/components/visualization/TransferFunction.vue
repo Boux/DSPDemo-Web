@@ -22,11 +22,11 @@ export default {
       const w = canvas.width
       const h = canvas.height
 
-      ctx.fillStyle = '#000'
+      ctx.fillStyle = '#0a0a0e'
       ctx.fillRect(0, 0, w, h)
 
       // Grid
-      ctx.strokeStyle = '#333'
+      ctx.strokeStyle = '#1a1a24'
       ctx.lineWidth = 0.5
       ctx.beginPath()
       ctx.moveTo(w / 2, 0); ctx.lineTo(w / 2, h)
@@ -35,7 +35,7 @@ export default {
 
       if (!this.curve || this.curve.length === 0) return
 
-      ctx.strokeStyle = '#00FF00'
+      ctx.strokeStyle = '#4ade80'
       ctx.lineWidth = 1.5
       ctx.beginPath()
 

@@ -81,11 +81,11 @@ export default {
 .file-source
   display: flex
   flex-direction: column
-  gap: 8px
+  gap: var(--sp-2)
 
   &__buttons
     display: flex
-    gap: 4px
+    gap: var(--sp-1)
 
     > *
       flex: 1
@@ -95,8 +95,8 @@ export default {
     cursor: pointer
 
   &__name
-    font-size: 10px
-    color: #666
+    font-size: var(--font-size-xs)
+    color: var(--color-text-dim)
     overflow: hidden
     text-overflow: ellipsis
     white-space: nowrap

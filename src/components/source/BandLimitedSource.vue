@@ -64,11 +64,11 @@ export default {
 .bl-source
   display: flex
   flex-direction: column
-  gap: 8px
+  gap: var(--sp-2)
 
   &__row
     display: flex
-    gap: 8px
+    gap: var(--sp-2)
 
     > *
       flex: 1

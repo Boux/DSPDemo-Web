@@ -12,8 +12,9 @@ html, body
 body
   font-family: var(--font-family)
   font-size: var(--font-size-base)
-  background: var(--app-background)
-  color: #222
+  background: var(--color-bg)
+  color: var(--color-text)
+  -webkit-font-smoothing: antialiased
 
 #app
   height: 100%
@@ -22,50 +23,54 @@ body
 
 .app-header
   height: var(--header-height)
-  background: var(--head-title-background)
-  color: var(--head-title-text)
+  background: var(--color-surface)
+  border-bottom: 1px solid var(--color-border)
+  color: var(--color-text)
   display: flex
   align-items: center
-  padding: 0 12px
+  padding: 0 var(--sp-3)
   flex-shrink: 0
 
 .app-body
   display: flex
   flex: 1
   min-height: 0
-  padding: 2px
 
 .left-panel
   width: var(--left-panel-width)
   flex-shrink: 0
   display: flex
   flex-direction: column
-  gap: 4px
-  padding: 4px
+  gap: var(--sp-1)
+  padding: var(--sp-2)
   overflow-y: auto
+  border-right: 1px solid var(--color-border)
 
 .right-panel
   flex: 1
   display: flex
   flex-direction: column
-  gap: 4px
-  padding: 4px
+  gap: var(--sp-2)
+  padding: var(--sp-2)
   min-width: 0
 
 .section-head
-  background: var(--head-title-background)
-  color: var(--head-title-text)
-  padding: 4px 8px
+  background: var(--color-head-bg)
+  color: var(--color-head-text)
+  padding: var(--sp-1) var(--sp-2)
   font-size: var(--font-size-sm)
   font-weight: 600
-  border-radius: var(--section-border-radius) var(--section-border-radius) 0 0
+  letter-spacing: 0.02em
+  border-radius: var(--control-radius) var(--control-radius) 0 0
 
 .section-body
-  background: var(--panel-background)
-  padding: 6px
-  border-radius: 0 0 var(--section-border-radius) var(--section-border-radius)
+  background: var(--color-surface)
+  padding: var(--sp-2)
+  border-radius: 0 0 var(--control-radius) var(--control-radius)
+  border: 1px solid var(--color-border)
+  border-top: none
 
-// Responsive: tablet portrait and smaller
+// Responsive: tablet
 @media (max-width: 900px)
   .app-body
     flex-direction: column
@@ -75,7 +80,8 @@ body
     width: 100%
     flex-shrink: 0
     overflow-y: visible
-    max-height: none
+    border-right: none
+    border-bottom: 1px solid var(--color-border)
 
   .right-panel
     flex: none
@@ -84,12 +90,10 @@ body
 // Responsive: phone
 @media (max-width: 500px)
   .app-header
-    padding: 0 6px
-    font-size: var(--font-size-sm)
+    padding: 0 var(--sp-2)
 
-  .left-panel
-    padding: 2px
+  .left-panel, .right-panel
+    padding: var(--sp-1)
 
   .right-panel
-    padding: 2px
     min-height: 300px

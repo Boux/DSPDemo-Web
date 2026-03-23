@@ -41,9 +41,9 @@ export default {
 .noise-source
   &__buttons
     display: flex
-    gap: 4px
+    gap: var(--sp-1)
 
     .toggle-btn
       flex: 1
-      font-size: 10px
+      font-size: var(--font-size-xs)
 </style>

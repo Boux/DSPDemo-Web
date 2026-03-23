@@ -67,21 +67,21 @@ export default {
   &__label
     display: block
     font-size: var(--font-size-sm)
-    color: #444
+    color: var(--color-text-muted)
     margin-bottom: 2px
 
   &__row
     display: flex
     align-items: center
-    gap: 6px
+    gap: var(--sp-2)
 
   &__input
     flex: 1
 
   &__value
-    font-size: 10px
-    color: #555
-    font-family: monospace
+    font-size: var(--font-size-xs)
+    color: var(--color-text-dim)
+    font-family: var(--font-mono)
     min-width: 44px
     text-align: right
 </style>

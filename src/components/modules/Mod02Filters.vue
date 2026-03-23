@@ -142,13 +142,13 @@ export default {
 
 <style lang="sass">
 .module-controls
-  padding: 4px
+  padding: var(--sp-1)
   display: flex
   flex-direction: column
-  gap: 4px
+  gap: var(--sp-1)
 
 .control-group
-  margin-bottom: 4px
+  margin-bottom: var(--sp-1)
 
   select
     width: 100%

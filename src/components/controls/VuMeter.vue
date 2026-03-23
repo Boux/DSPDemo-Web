@@ -108,13 +108,14 @@ export default {
   flex-direction: column
   gap: 2px
   width: 100%
+  margin-top: var(--sp-1)
 
   &__channel
-    height: 5px
+    height: 4px
 
   &__track
     height: 100%
-    background: #222
+    background: var(--color-bg)
     border-radius: 2px
     overflow: hidden
 

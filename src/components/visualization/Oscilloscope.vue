@@ -46,11 +46,11 @@ export default {
       const w = canvas.width
       const h = canvas.height
 
-      ctx.fillStyle = '#000'
+      ctx.fillStyle = '#0a0a0e'
       ctx.fillRect(0, 0, w, h)
 
       // Center line
-      ctx.strokeStyle = '#222'
+      ctx.strokeStyle = '#1a1a24'
       ctx.lineWidth = 0.5
       ctx.beginPath()
       ctx.moveTo(0, h / 2)
@@ -90,7 +90,7 @@ export default {
       // How many samples to display based on window length
       const samplesToShow = Math.min(bufLen, samplesNeeded)
 
-      ctx.strokeStyle = '#00FF00'
+      ctx.strokeStyle = '#4ade80'
       ctx.lineWidth = 1.5
       ctx.beginPath()
 

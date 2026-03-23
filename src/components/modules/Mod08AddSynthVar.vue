@@ -175,12 +175,12 @@ export default {
   display: flex
   align-items: center
   gap: 2px
-  margin: 4px 0
+  margin: var(--sp-1) 0
 
 .synth-row-2
   display: flex
-  gap: 8px
-  margin: 4px 0
+  gap: var(--sp-2)
+  margin: var(--sp-1) 0
 
   > *
     flex: 1

@@ -44,12 +44,12 @@ export default {
   &__row
     display: flex
     align-items: center
-    gap: 6px
+    gap: var(--sp-2)
 
   &__value
-    font-size: var(--font-size-sm)
-    color: #555
-    min-width: 55px
+    font-size: var(--font-size-xs)
+    color: var(--color-text-muted)
+    min-width: 50px
     text-align: right
-    font-family: monospace
+    font-family: var(--font-mono)
 </style>

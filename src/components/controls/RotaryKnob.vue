@@ -125,8 +125,9 @@ export default {
       // Background arc (track)
       ctx.beginPath()
       ctx.arc(cx, cy, r, ANCHOR1, ANCHOR2 + TWO_PI, false)
-      ctx.strokeStyle = '#AAAAAA'
-      ctx.lineWidth = 2
+      ctx.strokeStyle = '#555'
+      ctx.lineWidth = 2.5
+      ctx.lineCap = 'round'
       ctx.stroke()
 
       // Value arc (filled portion)
@@ -135,8 +136,9 @@ export default {
 
       ctx.beginPath()
       ctx.arc(cx, cy, r, ANCHOR1, endAngle, false)
-      ctx.strokeStyle = '#000000'
-      ctx.lineWidth = 2
+      ctx.strokeStyle = '#5b8af5'
+      ctx.lineWidth = 2.5
+      ctx.lineCap = 'round'
       ctx.stroke()
 
       // Focus ring

@@ -78,8 +78,9 @@ export default {
 
   &__title
     font-weight: 700
-    font-size: 16px
-    margin-right: 16px
+    font-size: var(--font-size-lg)
+    margin-right: var(--sp-4)
+    letter-spacing: 0.03em
 
   &__nav
     display: flex
@@ -90,75 +91,89 @@ export default {
 
   &__lang
     display: flex
-    gap: 4px
+    gap: var(--sp-1)
 
 .lang-btn
-  padding: 2px 8px
-  border: 1px solid rgba(255, 255, 255, 0.3)
-  border-radius: 3px
+  padding: var(--sp-1) var(--sp-2)
+  border: 1px solid var(--color-border)
+  border-radius: var(--control-radius)
   background: transparent
-  color: var(--head-title-text)
+  color: var(--color-text-muted)
   cursor: pointer
-  font-size: var(--font-size-sm)
+  font-size: var(--font-size-xs)
   font-family: var(--font-family)
+  transition: background 0.12s
+
+  &:hover
+    background: var(--color-surface-raised)
 
   &.active
-    background: rgba(255, 255, 255, 0.2)
+    background: var(--color-accent)
+    border-color: var(--color-accent)
+    color: #fff
 
 .module-menu
   position: relative
 
   &__trigger
-    padding: 4px 12px
-    border: 1px solid rgba(255, 255, 255, 0.3)
-    border-radius: 3px
+    padding: var(--sp-1) var(--sp-3)
+    border: 1px solid var(--color-border)
+    border-radius: var(--control-radius)
     background: transparent
-    color: var(--head-title-text)
+    color: var(--color-text)
     cursor: pointer
-    font-size: var(--font-size-base)
+    font-size: var(--font-size-sm)
     font-family: var(--font-family)
+    transition: background 0.12s
+
+    &:hover
+      background: var(--color-surface-raised)
 
   &__dropdown
     position: absolute
-    top: 100%
+    top: calc(100% + 4px)
     left: 0
     z-index: 100
-    background: var(--panel-background)
-    border: 1px solid var(--border-color)
-    border-radius: 0 0 4px 4px
-    min-width: 280px
+    background: var(--color-surface)
+    border: 1px solid var(--color-border)
+    border-radius: var(--control-radius)
+    min-width: 300px
     max-height: 70vh
     overflow-y: auto
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2)
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5)
 
   &__category
-    border-bottom: 1px solid var(--border-color)
+    border-bottom: 1px solid var(--color-border)
 
     &:last-child
       border-bottom: none
 
   &__category-label
-    padding: 6px 10px 2px
-    font-size: var(--font-size-sm)
+    padding: var(--sp-2) var(--sp-3) var(--sp-1)
+    font-size: var(--font-size-xs)
     font-weight: 600
-    color: #666
+    color: var(--color-text-dim)
+    text-transform: uppercase
+    letter-spacing: 0.05em
 
   &__item
     display: block
     width: 100%
-    padding: 4px 10px 4px 20px
+    padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-5)
     border: none
     background: transparent
     text-align: left
     cursor: pointer
     font-size: var(--font-size-sm)
     font-family: var(--font-family)
-    color: #222
+    color: var(--color-text)
+    transition: background 0.1s
 
     &:hover
-      background: var(--head-title-background)
-      color: var(--head-title-text)
+      background: var(--color-accent)
+      color: #fff
 
     &--active
+      color: var(--color-accent)
       font-weight: 600
 </style>

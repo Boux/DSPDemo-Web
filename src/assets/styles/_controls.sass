@@ -1,38 +1,59 @@
 .toggle-btn
-  padding: 4px 12px
-  border: 1px solid var(--border-color)
-  border-radius: 3px
-  background: var(--panel-background)
+  padding: var(--sp-1) var(--sp-3)
+  border: 1px solid var(--color-border)
+  border-radius: var(--control-radius)
+  background: var(--color-surface-raised)
+  color: var(--color-text)
   cursor: pointer
   font-size: var(--font-size-sm)
   font-family: var(--font-family)
-  transition: background 0.15s
+  transition: background 0.12s, border-color 0.12s
 
   &:hover
-    background: #D0D0D4
+    background: var(--color-border)
 
   &.active
-    background: var(--head-title-background)
-    color: var(--head-title-text)
+    background: var(--color-accent)
+    border-color: var(--color-accent)
+    color: #fff
+
+  &:disabled
+    opacity: 0.4
+    cursor: not-allowed
 
 .control-row
   display: flex
   align-items: center
-  gap: 8px
+  gap: var(--sp-2)
 
 .control-label
   font-size: var(--font-size-sm)
-  color: #444
+  color: var(--color-text-muted)
   white-space: nowrap
+
+.control-group
+  margin-bottom: var(--sp-1)
+
+  select
+    width: 100%
 
 select
   font-family: var(--font-family)
   font-size: var(--font-size-sm)
-  padding: 2px 4px
-  border: 1px solid var(--border-color)
-  border-radius: 3px
-  background: var(--panel-background)
+  padding: var(--sp-1)
+  border: 1px solid var(--color-border)
+  border-radius: var(--control-radius)
+  background: var(--color-surface-raised)
+  color: var(--color-text)
+  outline: none
+
+  &:focus
+    border-color: var(--color-accent)
 
 input[type="range"]
   width: 100%
   cursor: pointer
+  accent-color: var(--color-accent)
+
+input[type="checkbox"]
+  accent-color: var(--color-accent)

@@ -148,5 +148,5 @@ export default {
   display: flex
   justify-content: center
   gap: 2px
-  margin: 6px 0
+  margin: var(--sp-2) 0
 </style>

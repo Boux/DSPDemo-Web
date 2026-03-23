@@ -63,7 +63,7 @@ export default {
 <style lang="sass">
 .control-row
   display: flex
-  gap: 6px
+  gap: var(--sp-2)
 
   .toggle-btn
     flex: 1

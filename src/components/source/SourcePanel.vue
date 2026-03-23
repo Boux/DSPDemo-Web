@@ -62,14 +62,14 @@ export default {
   &__tabs
     display: flex
     flex-wrap: wrap
-    gap: 4px
-    margin-bottom: 8px
+    gap: var(--sp-1)
+    margin-bottom: var(--sp-2)
 
     .toggle-btn
       flex: 1
       min-width: 0
-      font-size: 10px
-      padding: 3px 4px
+      font-size: var(--font-size-xs)
+      padding: var(--sp-1)
       white-space: nowrap
       overflow: hidden
       text-overflow: ellipsis
