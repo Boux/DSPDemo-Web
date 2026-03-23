@@ -31,6 +31,11 @@ import Mod10Chebyshev from './Mod10Chebyshev.vue'
 import Mod10Distortion from './Mod10Distortion.vue'
 import Mod03Transpose from './Mod03Transpose.vue'
 import Mod03Reverb from './Mod03Reverb.vue'
+import Mod06Vocoder from './Mod06Vocoder.vue'
+import Mod06SpectralFilter from './Mod06SpectralFilter.vue'
+import Mod06CrossSynth from './Mod06CrossSynth.vue'
+import Mod06SpectralPlayback from './Mod06SpectralPlayback.vue'
+import Mod06SpectralDelay from './Mod06SpectralDelay.vue'
 
 const COMPONENT_MAP = {
   'Mod00Sources': Mod00Sources,
@@ -51,7 +56,12 @@ const COMPONENT_MAP = {
   'Mod10Chebyshev': Mod10Chebyshev,
   'Mod10Distortion': Mod10Distortion,
   'Mod03Transpose': Mod03Transpose,
-  'Mod03Reverb': Mod03Reverb
+  'Mod03Reverb': Mod03Reverb,
+  'Mod06Vocoder': Mod06Vocoder,
+  'Mod06SpectralFilter': Mod06SpectralFilter,
+  'Mod06CrossSynth': Mod06CrossSynth,
+  'Mod06SpectralPlayback': Mod06SpectralPlayback,
+  'Mod06SpectralDelay': Mod06SpectralDelay
 }
 
 export default {

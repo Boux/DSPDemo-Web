@@ -155,6 +155,36 @@ export const MODULE_DEFINITIONS = {
     name: { fr: '03-Délai - Réverbération', en: '03-Delay - Reverberation' },
     category: 'delay',
     component: 'Mod03Reverb'
+  },
+  'mod-06-vocoder': {
+    id: 'mod-06-vocoder',
+    name: { fr: '06-Domaine Spectral - Vocodeur', en: '06-Spectral Domain - Vocoder' },
+    category: 'spectral',
+    component: 'Mod06Vocoder'
+  },
+  'mod-06-spectral-filter': {
+    id: 'mod-06-spectral-filter',
+    name: { fr: '06-Domaine Spectral - Filtrage', en: '06-Spectral Domain - Filtering' },
+    category: 'spectral',
+    component: 'Mod06SpectralFilter'
+  },
+  'mod-06-cross-synth': {
+    id: 'mod-06-cross-synth',
+    name: { fr: '06-Domaine Spectral - Synthèse croisée', en: '06-Spectral Domain - Cross Synthesis' },
+    category: 'spectral',
+    component: 'Mod06CrossSynth'
+  },
+  'mod-06-spectral-playback': {
+    id: 'mod-06-spectral-playback',
+    name: { fr: '06-Domaine Spectral - Vitesse et Hauteur Indépendantes', en: '06-Spectral Domain - Independent Speed & Pitch' },
+    category: 'spectral',
+    component: 'Mod06SpectralPlayback'
+  },
+  'mod-06-spectral-delay': {
+    id: 'mod-06-spectral-delay',
+    name: { fr: '06-Domaine Spectral - Délai Spectral', en: '06-Spectral Domain - Spectral Delay' },
+    category: 'spectral',
+    component: 'Mod06SpectralDelay'
   }
 }
 
