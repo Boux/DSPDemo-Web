@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { loadSettings, saveSetting } from '../utils/settings'
 
 export const WINDOW_CHOICES = [
   'Rectangular', 'Hamming', 'Hanning', 'Bartlett',
@@ -8,22 +9,28 @@ export const WINDOW_CHOICES = [
 
 export const FFT_SIZE_CHOICES = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
 
+const SPECTRUM_DEFAULTS = {
+  freqLog: false,
+  magLog: true,
+  windowType: 2,
+  fftSize: 4,
+  amplitude: 0.5,
+  zoomMin: 0,
+  zoomMax: 0.5
+}
+
+const SCOPE_DEFAULTS = {
+  windowLength: 50,
+  amplitude: 0.5
+}
+
+const settings = loadSettings()
+
 export const useUiStateStore = defineStore('uiState', {
   state() {
     return {
-      spectrum: {
-        freqLog: false,
-        magLog: true,
-        windowType: 2,
-        fftSize: 4,
-        amplitude: 0.5,
-        zoomMin: 0,
-        zoomMax: 0.5
-      },
-      scope: {
-        windowLength: 50,
-        amplitude: 0.5
-      }
+      spectrum: { ...SPECTRUM_DEFAULTS, ...(settings.spectrum || {}) },
+      scope: { ...SCOPE_DEFAULTS, ...(settings.scope || {}) }
     }
   },
 
@@ -34,6 +41,13 @@ export const useUiStateStore = defineStore('uiState', {
 
     spectrumWindowName(state) {
       return WINDOW_CHOICES[state.spectrum.windowType]
+    }
+  },
+
+  actions: {
+    saveState() {
+      saveSetting('spectrum', { ...this.spectrum })
+      saveSetting('scope', { ...this.scope })
     }
   }
 })

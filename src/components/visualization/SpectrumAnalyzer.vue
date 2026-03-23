@@ -81,10 +81,12 @@ export default {
       const freqLog = ui.spectrum.freqLog
       const magLog = ui.spectrum.magLog
 
+      // Amplitude knob acts as a display gain (like the original's setGain).
+      // Knob 0 = 0.0625x (-24 dB), 0.5 = 1x (0 dB), 1 = 16x (+24 dB)
+      const gainDb = (ui.spectrum.amplitude - 0.5) * 48
+
       const minDb = -100
-      const maxDb = -10
-      const minLin = 0
-      const maxLin = 1
+      const maxDb = 0
 
       ctx.strokeStyle = '#4ade80'
       ctx.lineWidth = 1.5
@@ -111,13 +113,13 @@ export default {
           x = (freq - minF) / (maxF - minF) * w
         }
 
-        // Y position
+        // Y position — apply display gain
         let y
         if (magLog) {
-          const db = Math.max(minDb, Math.min(maxDb, data[i]))
+          const db = Math.max(minDb, Math.min(maxDb, data[i] + gainDb))
           y = h - ((db - minDb) / (maxDb - minDb)) * h
         } else {
-          const lin = Math.pow(10, data[i] / 20)
+          const lin = Math.pow(10, (data[i] + gainDb) / 20)
           y = h - Math.min(1, lin) * h
         }
 

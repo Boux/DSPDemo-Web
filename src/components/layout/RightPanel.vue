@@ -37,14 +37,17 @@
       <div class="section-head">{{ $t('visualization.oscilloscope') }}</div>
       <div class="section-body viz-body">
         <div class="viz-controls">
-          <ControlSlider
-            :label="$t('visualization.windowSize')"
-            v-model="scope.windowLength"
-            :mini="10"
-            :maxi="1000"
-            :log="true"
-            :integer="true"
+          <label class="control-label">{{ $t('visualization.windowSize') }}</label>
+          <input
+            type="range"
+            class="viz-controls__slider"
+            :min="0"
+            :max="1"
+            :step="0.001"
+            :value="scopeSliderValue"
+            @input="onScopeWindowChange"
           />
+          <span class="viz-controls__value">{{ scope.windowLength }} ms</span>
           <LabelKnob
             :label="$t('visualization.amplitude')"
             v-model="scope.amplitude"
@@ -78,7 +81,18 @@ export default {
   data() {
     return {
       windowChoices: WINDOW_CHOICES,
-      fftSizeChoices: FFT_SIZE_CHOICES
+      fftSizeChoices: FFT_SIZE_CHOICES,
+      _saveTimer: null
+    }
+  },
+  watch: {
+    spectrum: {
+      deep: true,
+      handler() { this.debouncedSave() }
+    },
+    scope: {
+      deep: true,
+      handler() { this.debouncedSave() }
     }
   },
   computed: {
@@ -87,6 +101,21 @@ export default {
     },
     scope() {
       return useUiStateStore().scope
+    },
+    scopeSliderValue() {
+      // Log mapping: 10..1000 -> 0..1
+      return Math.log10(this.scope.windowLength / 10) / Math.log10(100)
+    }
+  },
+  methods: {
+    debouncedSave() {
+      clearTimeout(this._saveTimer)
+      this._saveTimer = setTimeout(() => useUiStateStore().saveState(), 500)
+    },
+    onScopeWindowChange(e) {
+      // Log mapping: 0..1 -> 10..1000
+      const t = parseFloat(e.target.value)
+      this.scope.windowLength = Math.round(10 * Math.pow(100, t))
     }
   }
 }
@@ -111,7 +140,16 @@ export default {
   gap: var(--sp-2)
   padding: var(--sp-1) 0
   flex-shrink: 0
-  flex-wrap: wrap
+
+  &__slider
+    width: 140px
+    flex-shrink: 0
+
+  &__value
+    font-size: var(--font-size-xs)
+    font-family: var(--font-mono)
+    color: var(--color-text-dim)
+    min-width: 42px
 
 .viz-canvas-wrap
   flex: 1

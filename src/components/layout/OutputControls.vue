@@ -46,6 +46,9 @@ export default {
     align-items: center
     gap: var(--sp-2)
 
+    input[type="range"]
+      flex: 1
+
   &__value
     font-size: var(--font-size-xs)
     color: var(--color-text-muted)

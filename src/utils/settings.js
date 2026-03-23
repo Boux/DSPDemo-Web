@@ -2,7 +2,9 @@ const STORAGE_KEY = 'dspdemo-settings'
 
 const DEFAULTS = {
   locale: 'fr',
-  volumeDb: -6
+  volumeDb: -6,
+  spectrum: null,
+  scope: null
 }
 
 export function loadSettings() {
