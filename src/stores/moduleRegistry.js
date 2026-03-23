@@ -185,6 +185,30 @@ export const MODULE_DEFINITIONS = {
     name: { fr: '06-Domaine Spectral - Délai Spectral', en: '06-Spectral Domain - Spectral Delay' },
     category: 'spectral',
     component: 'Mod06SpectralDelay'
+  },
+  'mod-08-additive-fixed': {
+    id: 'mod-08-additive-fixed',
+    name: { fr: '08-Synthèse Additive - Sommation de sinusoïdes', en: '08-Additive Synthesis - Sine Summation' },
+    category: 'synthesis',
+    component: 'Mod08AddSynthFix'
+  },
+  'mod-08-additive-var': {
+    id: 'mod-08-additive-var',
+    name: { fr: '08-Synthèse Additive - Synthèse Additive', en: '08-Additive Synthesis - Variable Additive' },
+    category: 'synthesis',
+    component: 'Mod08AddSynthVar'
+  },
+  'mod-08-pwm': {
+    id: 'mod-08-pwm',
+    name: { fr: "08-Oscillateurs - Modulation de largeur d'impulsion", en: '08-Oscillators - Pulse Width Modulation' },
+    category: 'synthesis',
+    component: 'Mod08PWM'
+  },
+  'mod-08-osc-sync': {
+    id: 'mod-08-osc-sync',
+    name: { fr: '08-Oscillateurs - Oscillateur synchronisé', en: '08-Oscillators - Oscillator Sync' },
+    category: 'synthesis',
+    component: 'Mod08OscSync'
   }
 }
 

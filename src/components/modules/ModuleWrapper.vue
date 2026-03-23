@@ -36,6 +36,10 @@ import Mod06SpectralFilter from './Mod06SpectralFilter.vue'
 import Mod06CrossSynth from './Mod06CrossSynth.vue'
 import Mod06SpectralPlayback from './Mod06SpectralPlayback.vue'
 import Mod06SpectralDelay from './Mod06SpectralDelay.vue'
+import Mod08AddSynthFix from './Mod08AddSynthFix.vue'
+import Mod08AddSynthVar from './Mod08AddSynthVar.vue'
+import Mod08PWM from './Mod08PWM.vue'
+import Mod08OscSync from './Mod08OscSync.vue'
 
 const COMPONENT_MAP = {
   'Mod00Sources': Mod00Sources,
@@ -61,7 +65,11 @@ const COMPONENT_MAP = {
   'Mod06SpectralFilter': Mod06SpectralFilter,
   'Mod06CrossSynth': Mod06CrossSynth,
   'Mod06SpectralPlayback': Mod06SpectralPlayback,
-  'Mod06SpectralDelay': Mod06SpectralDelay
+  'Mod06SpectralDelay': Mod06SpectralDelay,
+  'Mod08AddSynthFix': Mod08AddSynthFix,
+  'Mod08AddSynthVar': Mod08AddSynthVar,
+  'Mod08PWM': Mod08PWM,
+  'Mod08OscSync': Mod08OscSync
 }
 
 export default {
