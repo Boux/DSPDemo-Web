@@ -3,8 +3,8 @@
     <span class="app-header__title">DSPDemo</span>
 
     <nav class="app-header__nav">
-      <div class="module-menu" @mouseenter="menuOpen = true" @mouseleave="menuOpen = false">
-        <button class="module-menu__trigger">{{ $t('menu.modules') }}</button>
+      <div class="module-menu" ref="menuRoot">
+        <button class="module-menu__trigger" @click="menuOpen = !menuOpen">{{ $t('menu.modules') }}</button>
         <div v-if="menuOpen" class="module-menu__dropdown">
           <div v-for="cat in categorizedModules" :key="cat.id" class="module-menu__category">
             <div class="module-menu__category-label">{{ $t('categories.' + cat.id) }}</div>

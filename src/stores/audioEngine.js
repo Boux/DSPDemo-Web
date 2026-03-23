@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 import { SourcePanelAudio } from '../audio/nodes/SourcePanel'
+import { loadSettings, saveSetting } from '../utils/settings'
+
+const settings = loadSettings()
 
 export const useAudioEngineStore = defineStore('audioEngine', {
   state() {
@@ -13,7 +16,7 @@ export const useAudioEngineStore = defineStore('audioEngine', {
       isRunning: false,
       isRecording: false,
       sampleRate: 44100,
-      volumeDb: -6,
+      volumeDb: settings.volumeDb,
       sourceReady: false,
       mediaRecorder: null,
       recordedChunks: []
@@ -79,6 +82,7 @@ export const useAudioEngineStore = defineStore('audioEngine', {
 
     setVolume(db) {
       this.volumeDb = db
+      saveSetting('volumeDb', db)
       if (this.masterGain) {
         this.masterGain.gain.setTargetAtTime(
           Math.pow(10, db * 0.05),
