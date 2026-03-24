@@ -1,43 +1,30 @@
 <template>
   <main class="right-panel">
-    <SpectrumView />
-    <ScopeView />
+    <DockLayout />
   </main>
 </template>
 
 <script>
 import { useUiStateStore } from '../../stores/uiState'
-import SpectrumView from '../visualization/SpectrumView.vue'
-import ScopeView from '../visualization/ScopeView.vue'
+import DockLayout from '../dock/DockLayout.vue'
 
 export default {
   name: 'RightPanel',
-  components: {
-    SpectrumView,
-    ScopeView
-  },
+  components: { DockLayout },
   data() {
-    return {
-      _saveTimer: null
-    }
+    return { _saveTimer: null }
   },
   watch: {
-    spectrum: {
-      deep: true,
-      handler() { this.debouncedSave() }
-    },
-    scope: {
-      deep: true,
-      handler() { this.debouncedSave() }
-    }
+    spectrum: { deep: true, handler() { this.debouncedSave() } },
+    waterfall: { deep: true, handler() { this.debouncedSave() } },
+    scope: { deep: true, handler() { this.debouncedSave() } },
+    xy: { deep: true, handler() { this.debouncedSave() } }
   },
   computed: {
-    spectrum() {
-      return useUiStateStore().spectrum
-    },
-    scope() {
-      return useUiStateStore().scope
-    }
+    spectrum() { return useUiStateStore().spectrum },
+    waterfall() { return useUiStateStore().waterfall },
+    scope() { return useUiStateStore().scope },
+    xy() { return useUiStateStore().xy }
   },
   methods: {
     debouncedSave() {
@@ -49,19 +36,8 @@ export default {
 </script>
 
 <style lang="sass">
-.viz-body
-  flex: 1
-  display: flex
-  flex-direction: column
-  min-height: 0
-
+// Shared viz control styles used by dock panels
 .viz-controls
-  display: flex
-  align-items: center
-  gap: var(--sp-2)
-  padding: var(--sp-1) 0
-  flex-shrink: 0
-
   &__slider
     width: 140px
     flex-shrink: 0
@@ -84,11 +60,4 @@ export default {
     cursor: pointer
     white-space: nowrap
     user-select: none
-
-.viz-canvas-wrap
-  flex: 1
-  min-height: 80px
-  position: relative
-  border-radius: var(--control-radius)
-  overflow: hidden
 </style>

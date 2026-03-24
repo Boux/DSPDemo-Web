@@ -10,6 +10,9 @@ import { scopeCanvasMixin } from '../../mixins/scopeCanvas'
 export default {
   name: 'Oscilloscope',
   mixins: [scopeCanvasMixin],
+  props: {
+    storeKey: { type: String, default: 'scope' }
+  },
   data() {
     return {
       refSnippet: null
@@ -64,7 +67,7 @@ export default {
 
       // Correlation-based sync trigger
       let triggerOffset = 0
-      if (ui.scope.forceSync) {
+      if (ui[this.storeKey].forceSync) {
         const sourceFreq = engine.sourcePanel ? engine.sourcePanel.currentFrequency : 0
         let refLength
         if (sourceFreq > 0) {

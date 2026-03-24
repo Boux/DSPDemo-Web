@@ -10,6 +10,9 @@ import { scopeCanvasMixin } from '../../mixins/scopeCanvas'
 export default {
   name: 'XYScope',
   mixins: [scopeCanvasMixin],
+  props: {
+    storeKey: { type: String, default: 'xy' }
+  },
   methods: {
     draw(c, w, h) {
       // Crosshair grid

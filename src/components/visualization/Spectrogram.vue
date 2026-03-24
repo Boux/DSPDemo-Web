@@ -47,6 +47,9 @@ function dbToColor(db, minDb, maxDb) {
 
 export default {
   name: 'Spectrogram',
+  props: {
+    storeKey: { type: String, default: 'waterfall' }
+  },
   data() {
     return {
       animFrameId: null,
@@ -56,18 +59,32 @@ export default {
   },
   mounted() {
     this.initScrollBuffer()
+    this.initAnalyser()
     this.resizeCanvas()
-    window.addEventListener('resize', this.resizeCanvas)
+    this._resizeObserver = new ResizeObserver(() => this.resizeCanvas())
+    if (this.$refs.canvas) this._resizeObserver.observe(this.$refs.canvas.parentElement)
     this.startRenderLoop()
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.resizeCanvas)
+    if (this._resizeObserver) this._resizeObserver.disconnect()
     if (this.animFrameId) cancelAnimationFrame(this.animFrameId)
+    if (this._analyser) {
+      try { this._analyser.disconnect() } catch (e) { /* */ }
+      this._analyser = null
+    }
   },
   methods: {
     initScrollBuffer() {
       this.scrollCanvas = document.createElement('canvas')
       this.scrollCtx = this.scrollCanvas.getContext('2d')
+    },
+    initAnalyser() {
+      const engine = useAudioEngineStore()
+      if (!engine.context || !engine.masterGain) return
+      this._analyser = engine.context.createAnalyser()
+      this._analyser.fftSize = 2048
+      this._analyser.smoothingTimeConstant = 0.8
+      engine.masterGain.connect(this._analyser)
     },
     resizeCanvas() {
       const canvas = this.$refs.canvas
@@ -112,14 +129,14 @@ export default {
       if (w === 0 || h === 0) return
 
       const engine = useAudioEngineStore()
-      if (!engine.analyserSpectrum || !engine.isRunning) {
+      if (!this._analyser || !engine.isRunning) {
         ctx.drawImage(this.scrollCanvas, 0, 0)
         return
       }
 
       const ui = useUiStateStore()
-      const analyser = engine.analyserSpectrum
-      const fftSize = FFT_SIZE_CHOICES[ui.spectrum.fftSize]
+      const analyser = this._analyser
+      const fftSize = FFT_SIZE_CHOICES[ui[this.storeKey].fftSize]
 
       if (analyser.fftSize !== fftSize) {
         analyser.fftSize = fftSize
@@ -131,12 +148,12 @@ export default {
 
       const sr = engine.sampleRate
       const nyquist = sr / 2
-      const freqLog = ui.spectrum.freqLog
-      const gainDb = (ui.spectrum.amplitude - 0.5) * 48
+      const freqLog = ui[this.storeKey].freqLog
+      const gainDb = (ui[this.storeKey].amplitude - 0.5) * 48
       const minDb = -60
       const maxDb = 0
 
-      const speed = Math.max(1, Math.round(ui.spectrum.scrollSpeed || 1))
+      const speed = Math.max(1, Math.round(ui[this.storeKey].scrollSpeed || 1))
 
       // Scroll the off-screen canvas left by speed pixels
       const sc = this.scrollCtx
@@ -153,12 +170,12 @@ export default {
         const normY = 1 - y / h
         let freq
         if (freqLog) {
-          const minF = Math.max(20, ui.spectrum.zoomMin * 2 * nyquist)
-          const maxF = ui.spectrum.zoomMax * 2 * nyquist
+          const minF = Math.max(20, ui[this.storeKey].zoomMin * 2 * nyquist)
+          const maxF = ui[this.storeKey].zoomMax * 2 * nyquist
           freq = minF * Math.pow(maxF / minF, normY)
         } else {
-          const minF = ui.spectrum.zoomMin * 2 * nyquist
-          const maxF = ui.spectrum.zoomMax * 2 * nyquist
+          const minF = ui[this.storeKey].zoomMin * 2 * nyquist
+          const maxF = ui[this.storeKey].zoomMax * 2 * nyquist
           freq = minF + normY * (maxF - minF)
         }
 

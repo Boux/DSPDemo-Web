@@ -10,6 +10,9 @@ import { useUiStateStore, FFT_SIZE_CHOICES } from '../../stores/uiState'
 
 export default {
   name: 'SpectrumAnalyzer',
+  props: {
+    storeKey: { type: String, default: 'spectrum' }
+  },
   data() {
     return {
       animFrameId: null
@@ -17,11 +20,12 @@ export default {
   },
   mounted() {
     this.resizeCanvas()
-    window.addEventListener('resize', this.resizeCanvas)
+    this._resizeObserver = new ResizeObserver(() => this.resizeCanvas())
+    if (this.$refs.canvas) this._resizeObserver.observe(this.$refs.canvas.parentElement)
     this.startRenderLoop()
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.resizeCanvas)
+    if (this._resizeObserver) this._resizeObserver.disconnect()
     if (this.animFrameId) cancelAnimationFrame(this.animFrameId)
   },
   methods: {
@@ -65,7 +69,7 @@ export default {
 
       const ui = useUiStateStore()
       const analyser = engine.analyserSpectrum
-      const fftSize = FFT_SIZE_CHOICES[ui.spectrum.fftSize]
+      const fftSize = FFT_SIZE_CHOICES[ui[this.storeKey].fftSize]
 
       // Update analyser FFT size if changed
       if (analyser.fftSize !== fftSize) {
@@ -78,12 +82,12 @@ export default {
 
       const sr = engine.sampleRate
       const nyquist = sr / 2
-      const freqLog = ui.spectrum.freqLog
-      const magLog = ui.spectrum.magLog
+      const freqLog = ui[this.storeKey].freqLog
+      const magLog = ui[this.storeKey].magLog
 
       // Amplitude knob acts as a display gain (like the original's setGain).
       // Knob 0 = 0.0625x (-24 dB), 0.5 = 1x (0 dB), 1 = 16x (+24 dB)
-      const gainDb = (ui.spectrum.amplitude - 0.5) * 48
+      const gainDb = (ui[this.storeKey].amplitude - 0.5) * 48
 
       const minDb = -100
       const maxDb = 0
@@ -98,18 +102,18 @@ export default {
 
         // Apply zoom
         const normFreq = freq / nyquist
-        if (normFreq < ui.spectrum.zoomMin * 2 || normFreq > ui.spectrum.zoomMax * 2) continue
+        if (normFreq < ui[this.storeKey].zoomMin * 2 || normFreq > ui[this.storeKey].zoomMax * 2) continue
 
         // X position
         let x
         if (freqLog) {
-          const minF = Math.max(20, ui.spectrum.zoomMin * 2 * nyquist)
-          const maxF = ui.spectrum.zoomMax * 2 * nyquist
+          const minF = Math.max(20, ui[this.storeKey].zoomMin * 2 * nyquist)
+          const maxF = ui[this.storeKey].zoomMax * 2 * nyquist
           if (freq < minF) continue
           x = (Math.log10(freq) - Math.log10(minF)) / (Math.log10(maxF) - Math.log10(minF)) * w
         } else {
-          const minF = ui.spectrum.zoomMin * 2 * nyquist
-          const maxF = ui.spectrum.zoomMax * 2 * nyquist
+          const minF = ui[this.storeKey].zoomMin * 2 * nyquist
+          const maxF = ui[this.storeKey].zoomMax * 2 * nyquist
           x = (freq - minF) / (maxF - minF) * w
         }
 

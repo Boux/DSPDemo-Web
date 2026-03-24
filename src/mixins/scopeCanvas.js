@@ -19,11 +19,13 @@ export const scopeCanvasMixin = {
   },
   mounted() {
     this.resizeCanvas()
-    window.addEventListener('resize', this.resizeCanvas)
+    // ResizeObserver catches GL panel resizes, not just window resizes
+    this._resizeObserver = new ResizeObserver(() => this.resizeCanvas())
+    if (this.$refs.canvas) this._resizeObserver.observe(this.$refs.canvas.parentElement)
     this.startRenderLoop()
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.resizeCanvas)
+    if (this._resizeObserver) this._resizeObserver.disconnect()
     if (this.animFrameId) cancelAnimationFrame(this.animFrameId)
   },
   methods: {
@@ -59,7 +61,7 @@ export const scopeCanvasMixin = {
       const ui = useUiStateStore()
       const analyser = engine.analyserScope
 
-      const samplesNeeded = Math.floor(engine.sampleRate * ui.scope.windowLength / 1000)
+      const samplesNeeded = Math.floor(engine.sampleRate * ui[this.storeKey].windowLength / 1000)
       const samplesWithMargin = samplesNeeded * 2
       let fftSize = 2
       while (fftSize < samplesWithMargin && fftSize < 32768) fftSize *= 2
@@ -74,9 +76,9 @@ export const scopeCanvasMixin = {
 
       const samplesToShow = Math.min(bufLen - 1, samplesNeeded)
 
-      const userGain = rescale(ui.scope.amplitude, 0.04, 10, true)
+      const userGain = rescale(ui[this.storeKey].amplitude, 0.04, 10, true)
       let displayGain = userGain
-      if (ui.scope.autoNormalize) {
+      if (ui[this.storeKey].autoNormalize) {
         let peak = 0
         for (let i = 0; i < bufLen; i++) {
           const abs = Math.abs(data[i])
