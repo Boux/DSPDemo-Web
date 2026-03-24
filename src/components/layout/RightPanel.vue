@@ -1,59 +1,23 @@
 <template>
   <main class="right-panel">
-    <div class="viz-section">
-      <div class="section-head">{{ $t('visualization.spectrogram') }}</div>
-      <div class="section-body viz-body">
-        <div class="viz-controls">
-          <button
-            class="toggle-btn"
-            :class="{ active: spectrum.freqLog }"
-            @click="spectrum.freqLog = !spectrum.freqLog"
-          >{{ $t('visualization.freqLog') }}</button>
-          <button
-            class="toggle-btn"
-            :class="{ active: spectrum.magLog }"
-            @click="spectrum.magLog = !spectrum.magLog"
-          >{{ $t('visualization.magLog') }}</button>
-          <select v-model.number="spectrum.windowType">
-            <option v-for="(w, i) in windowChoices" :key="i" :value="i">{{ w }}</option>
-          </select>
-          <select v-model.number="spectrum.fftSize">
-            <option v-for="(s, i) in fftSizeChoices" :key="i" :value="i">{{ s }}</option>
-          </select>
-          <LabelKnob
-            :label="$t('visualization.amplitude')"
-            v-model="spectrum.amplitude"
-            :mini="0"
-            :maxi="1"
-          />
-        </div>
-        <div class="viz-canvas-wrap">
-          <SpectrumAnalyzer />
-        </div>
-      </div>
-    </div>
-
+    <SpectrumView />
     <ScopeView />
   </main>
 </template>
 
 <script>
-import { useUiStateStore, WINDOW_CHOICES, FFT_SIZE_CHOICES } from '../../stores/uiState'
-import SpectrumAnalyzer from '../visualization/SpectrumAnalyzer.vue'
+import { useUiStateStore } from '../../stores/uiState'
+import SpectrumView from '../visualization/SpectrumView.vue'
 import ScopeView from '../visualization/ScopeView.vue'
-import LabelKnob from '../controls/LabelKnob.vue'
 
 export default {
   name: 'RightPanel',
   components: {
-    SpectrumAnalyzer,
-    ScopeView,
-    LabelKnob
+    SpectrumView,
+    ScopeView
   },
   data() {
     return {
-      windowChoices: WINDOW_CHOICES,
-      fftSizeChoices: FFT_SIZE_CHOICES,
       _saveTimer: null
     }
   },
@@ -79,18 +43,12 @@ export default {
     debouncedSave() {
       clearTimeout(this._saveTimer)
       this._saveTimer = setTimeout(() => useUiStateStore().saveState(), 500)
-    },
+    }
   }
 }
 </script>
 
 <style lang="sass">
-.viz-section
-  flex: 1
-  display: flex
-  flex-direction: column
-  min-height: 0
-
 .viz-body
   flex: 1
   display: flex
@@ -107,6 +65,9 @@ export default {
   &__slider
     width: 140px
     flex-shrink: 0
+
+    &--short
+      width: 80px
 
   &__value
     font-size: var(--font-size-xs)

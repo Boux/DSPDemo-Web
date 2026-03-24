@@ -10,11 +10,13 @@ export const WINDOW_CHOICES = [
 export const FFT_SIZE_CHOICES = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
 
 const SPECTRUM_DEFAULTS = {
+  mode: 'spectrum',
   freqLog: false,
   magLog: true,
   windowType: 2,
   fftSize: 4,
   amplitude: 0.5,
+  scrollSpeed: 1,
   zoomMin: 0,
   zoomMax: 0.5
 }
