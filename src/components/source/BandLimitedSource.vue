@@ -43,7 +43,19 @@ export default {
       bright: 0.5
     }
   },
+  watch: {
+    audio(val) {
+      if (val) this.syncAudio()
+    }
+  },
+  mounted() {
+    if (this.audio) this.syncAudio()
+  },
   methods: {
+    syncAudio() {
+      this.audio.setBLFrequency(this.frequency)
+      this.audio.setBLParams(this.shape, this.bright)
+    },
     onFreqChange(val) {
       this.frequency = val
       if (this.audio) this.audio.setBLFrequency(val)

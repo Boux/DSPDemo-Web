@@ -2,7 +2,7 @@
   <div class="module-wrapper">
     <div class="section-head">{{ moduleName }}</div>
     <div class="section-body module-body">
-      <component :is="moduleComponent" v-if="moduleComponent" :key="moduleId + '-' + sourceReady" />
+      <component :is="moduleComponent" v-if="moduleComponent" :key="moduleId" />
       <div v-else class="module-placeholder">
         {{ $t('menu.modules') }}: {{ $route.params.moduleId }}
       </div>
@@ -13,7 +13,6 @@
 
 <script>
 import { useModuleRegistryStore } from '../../stores/moduleRegistry'
-import { useAudioEngineStore } from '../../stores/audioEngine'
 import ModuleDoc from '../docs/ModuleDoc.vue'
 import Mod00Sources from './Mod00Sources.vue'
 import Mod02Filters from './Mod02Filters.vue'
@@ -101,9 +100,6 @@ export default {
     moduleComponent() {
       if (!this.moduleDef) return null
       return COMPONENT_MAP[this.moduleDef.component] || null
-    },
-    sourceReady() {
-      return useAudioEngineStore().sourceReady
     }
   },
   watch: {

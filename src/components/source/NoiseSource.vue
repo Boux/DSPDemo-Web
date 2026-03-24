@@ -28,6 +28,14 @@ export default {
       ]
     }
   },
+  watch: {
+    audio(val) {
+      if (val) val.setNoiseType(this.noiseType)
+    }
+  },
+  mounted() {
+    if (this.audio) this.audio.setNoiseType(this.noiseType)
+  },
   methods: {
     setNoiseType(type) {
       this.noiseType = type

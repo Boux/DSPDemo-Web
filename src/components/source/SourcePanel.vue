@@ -50,6 +50,14 @@ export default {
       ]
     }
   },
+  watch: {
+    audio(val) {
+      if (val) val.switchSource(this.tabs[this.activeTab].source)
+    }
+  },
+  mounted() {
+    if (this.audio) this.audio.switchSource(this.tabs[this.activeTab].source)
+  },
   methods: {
     switchTab(index) {
       this.activeTab = index

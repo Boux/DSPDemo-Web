@@ -38,7 +38,19 @@ export default {
       ]
     }
   },
+  watch: {
+    audio(val) {
+      if (val) this.syncAudio()
+    }
+  },
+  mounted() {
+    if (this.audio) this.syncAudio()
+  },
   methods: {
+    syncAudio() {
+      this.audio.setLFOType(this.waveType)
+      this.audio.setLFOFrequency(this.frequency)
+    },
     onWaveTypeChange() {
       if (this.audio) this.audio.setLFOType(this.waveType)
     },
