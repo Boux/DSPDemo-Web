@@ -20,6 +20,7 @@ const SPECTRUM_DEFAULTS = {
 }
 
 const SCOPE_DEFAULTS = {
+  mode: 'scope',
   windowLength: 50,
   amplitude: 0.5,
   autoNormalize: true,

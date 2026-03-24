@@ -1,52 +1,21 @@
 <template>
-  <div class="oscilloscope">
-    <canvas ref="canvas" class="oscilloscope__canvas"></canvas>
+  <div class="scope-canvas">
+    <canvas ref="canvas" class="scope-canvas__el"></canvas>
   </div>
 </template>
 
 <script>
-import { useAudioEngineStore } from '../../stores/audioEngine'
-import { useUiStateStore } from '../../stores/uiState'
-import { rescale } from '../../utils/dspMath'
+import { scopeCanvasMixin } from '../../mixins/scopeCanvas'
 
 export default {
   name: 'Oscilloscope',
+  mixins: [scopeCanvasMixin],
   data() {
     return {
-      animFrameId: null,
-      // Reference snippet from previous frame for correlation trigger
       refSnippet: null
     }
   },
-  mounted() {
-    this.resizeCanvas()
-    window.addEventListener('resize', this.resizeCanvas)
-    this.startRenderLoop()
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.resizeCanvas)
-    if (this.animFrameId) cancelAnimationFrame(this.animFrameId)
-  },
   methods: {
-    resizeCanvas() {
-      const canvas = this.$refs.canvas
-      if (!canvas) return
-      const rect = canvas.parentElement.getBoundingClientRect()
-      canvas.width = Math.floor(rect.width)
-      canvas.height = Math.floor(rect.height)
-    },
-    startRenderLoop() {
-      const render = () => {
-        this.draw()
-        this.animFrameId = requestAnimationFrame(render)
-      }
-      render()
-    },
-
-    // Correlation-based trigger: slide a reference snippet from the
-    // previous frame across the new buffer and find the best match.
-    // This locks the display to whatever shape was shown last frame,
-    // producing perfectly stable visuals for any waveform.
     findTriggerByCorrelation(data, samplesToShow) {
       const ref = this.refSnippet
       if (!ref || ref.length === 0) return 0
@@ -58,8 +27,6 @@ export default {
       let bestOffset = 0
       let bestCorr = -Infinity
 
-      // Slide reference across buffer, compute dot product (correlation)
-      // Step by 1 for accuracy — refLen is small (one period worth)
       for (let offset = 0; offset < searchEnd; offset++) {
         let sum = 0
         for (let j = 0; j < refLen; j++) {
@@ -74,65 +41,26 @@ export default {
       return bestOffset
     },
 
-    draw() {
-      const canvas = this.$refs.canvas
-      if (!canvas) return
-      const ctx = canvas.getContext('2d')
-      const w = canvas.width
-      const h = canvas.height
-
-      ctx.fillStyle = '#0a0a0e'
-      ctx.fillRect(0, 0, w, h)
-
-      // Grid
-      ctx.strokeStyle = '#1a1a24'
-      ctx.lineWidth = 0.5
+    draw(c, w, h) {
+      // Horizontal grid
+      c.strokeStyle = '#1a1a24'
+      c.lineWidth = 0.5
       for (let i = 1; i < 4; i++) {
         const y = (i / 4) * h
-        ctx.beginPath()
-        ctx.moveTo(0, y)
-        ctx.lineTo(w, y)
-        ctx.stroke()
+        c.beginPath()
+        c.moveTo(0, y)
+        c.lineTo(w, y)
+        c.stroke()
       }
-      ctx.strokeStyle = '#252530'
-      ctx.beginPath()
-      ctx.moveTo(0, h / 2)
-      ctx.lineTo(w, h / 2)
-      ctx.stroke()
+      c.strokeStyle = '#252530'
+      c.beginPath()
+      c.moveTo(0, h / 2)
+      c.lineTo(w, h / 2)
+      c.stroke()
 
-      const engine = useAudioEngineStore()
-      if (!engine.analyserScope || !engine.isRunning) return
-
-      const ui = useUiStateStore()
-      const analyser = engine.analyserScope
-
-      const samplesNeeded = Math.floor(engine.sampleRate * ui.scope.windowLength / 1000)
-      const samplesWithMargin = samplesNeeded * 2
-      let fftSize = 2
-      while (fftSize < samplesWithMargin && fftSize < 32768) fftSize *= 2
-      fftSize = Math.max(512, Math.min(32768, fftSize))
-      if (analyser.fftSize !== fftSize) {
-        analyser.fftSize = fftSize
-      }
-
-      const bufLen = analyser.fftSize
-      const data = new Float32Array(bufLen)
-      analyser.getFloatTimeDomainData(data)
-
-      const samplesToShow = Math.min(bufLen - 1, samplesNeeded)
-
-      // Gain calculation
-      const userGain = rescale(ui.scope.amplitude, 0.04, 10, true)
-      let displayGain = userGain
-      if (ui.scope.autoNormalize) {
-        let peak = 0
-        for (let i = 0; i < bufLen; i++) {
-          const abs = Math.abs(data[i])
-          if (abs > peak) peak = abs
-        }
-        const autoGain = peak > 0.001 ? 0.8 / peak : 1
-        displayGain = autoGain * userGain
-      }
+      const sd = this.getScopeData()
+      if (!sd) return
+      const { engine, ui, data, bufLen, samplesToShow, displayGain } = sd
 
       // Correlation-based sync trigger
       let triggerOffset = 0
@@ -155,9 +83,9 @@ export default {
       }
 
       // Draw waveform
-      ctx.strokeStyle = '#4ade80'
-      ctx.lineWidth = 1.5
-      ctx.beginPath()
+      c.strokeStyle = '#4ade80'
+      c.lineWidth = 1.5
+      c.beginPath()
 
       const end = Math.min(samplesToShow, bufLen - triggerOffset)
       for (let i = 0; i < end; i++) {
@@ -165,25 +93,25 @@ export default {
         const sample = data[triggerOffset + i] * displayGain
         const y = (1 - sample) * h / 2
         if (i === 0) {
-          ctx.moveTo(x, y)
+          c.moveTo(x, y)
         } else {
-          ctx.lineTo(x, y)
+          c.lineTo(x, y)
         }
       }
-      ctx.stroke()
+      c.stroke()
     }
   }
 }
 </script>
 
 <style lang="sass">
-.oscilloscope
+.scope-canvas
   position: relative
   width: 100%
   height: 100%
   min-height: 80px
 
-  &__canvas
+  &__el
     position: absolute
     top: 0
     left: 0
