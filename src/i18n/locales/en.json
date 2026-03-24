@@ -25,7 +25,9 @@
     "freqLog": "Freq Log",
     "magLog": "Mag Log",
     "windowSize": "Window size (ms)",
-    "amplitude": "Amplitude"
+    "amplitude": "Amplitude",
+    "autoNormalize": "Auto-normalize",
+    "forceSync": "Sync"
   },
   "categories": {
     "sources": "00 - Sources",

@@ -21,7 +21,9 @@ const SPECTRUM_DEFAULTS = {
 
 const SCOPE_DEFAULTS = {
   windowLength: 50,
-  amplitude: 0.5
+  amplitude: 0.5,
+  autoNormalize: true,
+  forceSync: true
 }
 
 const settings = loadSettings()

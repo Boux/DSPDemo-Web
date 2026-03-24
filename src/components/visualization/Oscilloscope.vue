@@ -121,36 +121,38 @@ export default {
 
       const samplesToShow = Math.min(bufLen - 1, samplesNeeded)
 
-      // Auto-normalization
-      let peak = 0
-      for (let i = 0; i < bufLen; i++) {
-        const abs = Math.abs(data[i])
-        if (abs > peak) peak = abs
-      }
+      // Gain calculation
       const userGain = rescale(ui.scope.amplitude, 0.04, 10, true)
-      const autoGain = peak > 0.001 ? 0.8 / peak : 1
-      const displayGain = autoGain * userGain
-
-      // Determine reference snippet length from source frequency
-      const sourceFreq = engine.sourcePanel ? engine.sourcePanel.currentFrequency : 0
-      let refLength
-      if (sourceFreq > 0) {
-        // Use one period of the source frequency
-        refLength = Math.round(engine.sampleRate / sourceFreq)
-      } else {
-        // No known frequency — use a chunk of the display window
-        refLength = Math.min(256, Math.floor(samplesToShow / 4))
+      let displayGain = userGain
+      if (ui.scope.autoNormalize) {
+        let peak = 0
+        for (let i = 0; i < bufLen; i++) {
+          const abs = Math.abs(data[i])
+          if (abs > peak) peak = abs
+        }
+        const autoGain = peak > 0.001 ? 0.8 / peak : 1
+        displayGain = autoGain * userGain
       }
-      refLength = Math.max(16, Math.min(refLength, Math.floor(bufLen / 4)))
 
-      // Find trigger offset by correlating with previous frame's snippet
+      // Correlation-based sync trigger
       let triggerOffset = 0
-      if (this.refSnippet && this.refSnippet.length === refLength) {
-        triggerOffset = this.findTriggerByCorrelation(data, samplesToShow)
-      }
+      if (ui.scope.forceSync) {
+        const sourceFreq = engine.sourcePanel ? engine.sourcePanel.currentFrequency : 0
+        let refLength
+        if (sourceFreq > 0) {
+          refLength = Math.round(engine.sampleRate / sourceFreq)
+        } else {
+          refLength = Math.min(256, Math.floor(samplesToShow / 4))
+        }
+        refLength = Math.max(16, Math.min(refLength, Math.floor(bufLen / 4)))
 
-      // Save a new reference snippet from the current trigger point
-      this.refSnippet = data.slice(triggerOffset, triggerOffset + refLength)
+        if (this.refSnippet && this.refSnippet.length === refLength) {
+          triggerOffset = this.findTriggerByCorrelation(data, samplesToShow)
+        }
+        this.refSnippet = data.slice(triggerOffset, triggerOffset + refLength)
+      } else {
+        this.refSnippet = null
+      }
 
       // Draw waveform
       ctx.strokeStyle = '#4ade80'

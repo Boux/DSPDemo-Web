@@ -54,6 +54,14 @@
             :mini="0"
             :maxi="1"
           />
+          <label class="viz-controls__checkbox">
+            <input type="checkbox" v-model="scope.autoNormalize" />
+            {{ $t('visualization.autoNormalize') }}
+          </label>
+          <label class="viz-controls__checkbox">
+            <input type="checkbox" v-model="scope.forceSync" />
+            {{ $t('visualization.forceSync') }}
+          </label>
         </div>
         <div class="viz-canvas-wrap">
           <Oscilloscope />
@@ -150,6 +158,16 @@ export default {
     font-family: var(--font-mono)
     color: var(--color-text-dim)
     min-width: 42px
+
+  &__checkbox
+    display: flex
+    align-items: center
+    gap: 4px
+    font-size: var(--font-size-xs)
+    color: var(--color-text-dim)
+    cursor: pointer
+    white-space: nowrap
+    user-select: none
 
 .viz-canvas-wrap
   flex: 1
