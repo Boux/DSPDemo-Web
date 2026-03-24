@@ -17,8 +17,8 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
 import { WAVEFORM_LABELS_ALT } from '../../utils/waveformLabels'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 function buildTableData(index) {
   const size = 8192
@@ -52,6 +52,7 @@ function buildTableData(index) {
 export default {
   name: 'Mod08OscSync',
   components: { ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       waveIdx: 0, masterFreq: 172, slaveFreq: 200, xfade: 0,
@@ -59,11 +60,6 @@ export default {
       workletNode: null, outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -77,7 +73,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx) return
       if (this.engine.sourcePanel) {
         try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
       }

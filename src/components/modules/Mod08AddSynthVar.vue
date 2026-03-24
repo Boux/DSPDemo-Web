@@ -34,8 +34,8 @@
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
 import LabelKnob from '../controls/LabelKnob.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
 import { WAVEFORM_LABELS_ALT } from '../../utils/waveformLabels'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 function buildWaveTable(ctx, index) {
   if (index === 0) return null
@@ -56,6 +56,7 @@ function buildWaveTable(ctx, index) {
 export default {
   name: 'Mod08AddSynthVar',
   components: { ControlSlider, LabelKnob },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       partials: 30, attack: 10, decay: 100, sustain: 0.7, release: 500,
@@ -64,11 +65,6 @@ export default {
       oscillators: [], gains: [], outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -84,7 +80,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx) return
       if (this.engine.sourcePanel) {
         try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
       }
@@ -156,9 +151,11 @@ export default {
       this.isPlaying = true
     },
     rebuildOnPlay() {
+      if (!this.audioReady) return
       if (this.isPlaying) this.playSound()
     },
     onPartialsChange() {
+      if (!this.audioReady) return
       if (this.isPlaying) this.playSound()
     }
   }

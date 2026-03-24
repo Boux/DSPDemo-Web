@@ -25,7 +25,7 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 const FILTER_TYPES = [
   { fr: 'Passe-bas', en: 'Lowpass', biquad: 'lowpass' },
@@ -40,6 +40,7 @@ const FILTER_TYPES = [
 export default {
   name: 'Mod02Filters',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       filterTypeIdx: 0,
@@ -53,11 +54,8 @@ export default {
     }
   },
   computed: {
-    engine() { return useAudioEngineStore() },
     isEqFilter() { return this.filterTypeIdx >= 4 }
   },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -72,8 +70,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       this.outputGain = ctx.createGain()
       this.outputGain.gain.value = 1
 
@@ -122,18 +118,23 @@ export default {
       this.filters = []
     },
     onFilterTypeChange() {
+      if (!this.audioReady) return
       this.buildFilterChain()
     },
     onFreqChange(val) {
+      if (!this.audioReady) return
       this.filters.forEach(f => f.frequency.setTargetAtTime(val, this.engine.context.currentTime, 0.05))
     },
     onQChange(val) {
+      if (!this.audioReady) return
       this.filters.forEach(f => f.Q.setTargetAtTime(val, this.engine.context.currentTime, 0.05))
     },
     onBoostChange(val) {
+      if (!this.audioReady) return
       this.filters.forEach(f => f.gain.setTargetAtTime(val, this.engine.context.currentTime, 0.05))
     },
     onOrderChange() {
+      if (!this.audioReady) return
       if (!this.isEqFilter) this.buildFilterChain()
     }
   }

@@ -33,11 +33,12 @@
 <script>
 import LabelKnob from '../controls/LabelKnob.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod06Vocoder',
   components: { LabelKnob, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       freq: 100, expansion: 1.2, qFactor: 20, slope: 0.5, stages: 24,
@@ -48,11 +49,6 @@ export default {
       outputGain: null, mixGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -66,10 +62,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx) return
-      if (this.engine.sourcePanel) {
-        try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
-      }
       this.outputGain = ctx.createGain()
       this.outputGain.gain.value = Math.pow(10, this.volumeDb * 0.05) * 0.25
       this.outputGain.connect(this.engine.masterGain)
@@ -188,6 +180,7 @@ export default {
       update()
     },
     updateVocoder() {
+      if (!this.audioReady) return
       // Update band frequencies and Q in place
       for (let i = 0; i < this.analysisBands.length; i++) {
         const f = this.freq * Math.pow(this.expansion, i)

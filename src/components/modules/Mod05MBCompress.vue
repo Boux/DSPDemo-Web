@@ -18,7 +18,7 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import LabelKnob from '../controls/LabelKnob.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 // Crossover frequencies: 0-150, 150-600, 600-3200, 3200+
 const CROSSOVER_FREQS = [150, 600, 3200]
@@ -26,6 +26,7 @@ const CROSSOVER_FREQS = [150, 600, 3200]
 export default {
   name: 'Mod05MBCompress',
   components: { SourcePanel, LabelKnob },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       threshold: -20, ratio: 1, attack: 0.01, release: 0.1, gain: 0,
@@ -34,11 +35,7 @@ export default {
       outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
+  computed: {},
   methods: {
     t(key) {
       const texts = {
@@ -53,8 +50,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -124,6 +119,7 @@ export default {
       }
     },
     updateCompressors() {
+      if (!this.audioReady) return
       const t = this.engine.context.currentTime
       this.compressors.forEach(c => {
         c.threshold.setTargetAtTime(this.threshold, t, 0.05)

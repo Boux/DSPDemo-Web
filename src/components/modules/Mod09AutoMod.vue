@@ -10,11 +10,12 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod09AutoMod',
   components: { ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       freq: 172,
@@ -25,11 +26,6 @@ export default {
       delayNode: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -41,7 +37,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx) return
 
       if (this.engine.sourcePanel) {
         try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
@@ -83,10 +78,12 @@ export default {
       }
     },
     onFreqChange(val) {
+      if (!this.audioReady) return
       this.osc.frequency.setTargetAtTime(val, this.engine.context.currentTime, 0.05)
       this.feedbackGain.gain.setTargetAtTime(this.index * val * 0.17, this.engine.context.currentTime, 0.05)
     },
     onIndexChange(val) {
+      if (!this.audioReady) return
       this.feedbackGain.gain.setTargetAtTime(val * this.freq * 0.17, this.engine.context.currentTime, 0.05)
     }
   }

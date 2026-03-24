@@ -14,11 +14,12 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod03VariableDelay',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       lfoFreq: 0.1,
@@ -33,11 +34,6 @@ export default {
       constantSource: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -51,8 +47,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -99,18 +93,22 @@ export default {
       }
     },
     onLfoFreqChange(val) {
+      if (!this.audioReady) return
       this.lfo.frequency.setTargetAtTime(val, this.engine.context.currentTime, 0.05)
     },
     onMeanDelayChange(val) {
+      if (!this.audioReady) return
       const sec = val * 0.001
       this.delayNode.delayTime.setTargetAtTime(sec, this.engine.context.currentTime, 0.05)
       this.lfoGain.gain.setTargetAtTime(sec * this.depth * 0.01, this.engine.context.currentTime, 0.05)
     },
     onDepthChange(val) {
+      if (!this.audioReady) return
       const sec = this.meanDelay * 0.001
       this.lfoGain.gain.setTargetAtTime(sec * val * 0.01, this.engine.context.currentTime, 0.05)
     },
     onFeedChange(val) {
+      if (!this.audioReady) return
       this.feedbackGain.gain.setTargetAtTime(val * 0.01, this.engine.context.currentTime, 0.05)
     }
   }

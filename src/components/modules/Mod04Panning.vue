@@ -17,11 +17,12 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod04Panning',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       panType: 0,
@@ -37,11 +38,7 @@ export default {
       gainR: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
+  computed: {},
   methods: {
     t(key) {
       const texts = {
@@ -53,8 +50,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -103,8 +98,8 @@ export default {
       this.gainL.gain.setTargetAtTime(l, t, 0.02)
       this.gainR.gain.setTargetAtTime(r, t, 0.02)
     },
-    onPanTypeChange() { this.applyPan() },
-    onPanChange() { this.applyPan() }
+    onPanTypeChange() { if (!this.audioReady) return; this.applyPan() },
+    onPanChange() { if (!this.audioReady) return; this.applyPan() }
   }
 }
 </script>

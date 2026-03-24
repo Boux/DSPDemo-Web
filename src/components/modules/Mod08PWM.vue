@@ -11,22 +11,18 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod08PWM',
   components: { ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       freq: 172, duty: 50, damp: 0,
       workletNode: null, outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -39,7 +35,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx) return
       if (this.engine.sourcePanel) {
         try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
       }

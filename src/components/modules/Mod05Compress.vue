@@ -15,11 +15,12 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod05Compress',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       threshold: -50,
@@ -31,11 +32,7 @@ export default {
       gainNode: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
+  computed: {},
   methods: {
     t(key) {
       const texts = {
@@ -50,8 +47,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 

@@ -19,11 +19,12 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod03Reverb',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       reverbType: 0,
@@ -46,11 +47,6 @@ export default {
       irBuffer: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -64,8 +60,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -278,7 +272,7 @@ export default {
       }
     },
     onTypeChange() {
-      if (!this.engine.sourcePanel) return
+      if (!this.audioReady) return
       const source = this.engine.sourcePanel.output
       // Need to reconnect source to new reverb chain
       try { source.disconnect() } catch (e) { /* */ }
@@ -286,14 +280,17 @@ export default {
       this.buildReverb(source)
     },
     onRoomChange() {
+      if (!this.audioReady) return
       if (this.reverbType === 4) return
       this.onTypeChange() // Rebuild
     },
     onDampChange() {
+      if (!this.audioReady) return
       if (this.reverbType === 4) return
       this.onTypeChange() // Rebuild
     },
     onBalanceChange(val) {
+      if (!this.audioReady) return
       const t = this.engine.context.currentTime
       this.dryGain.gain.setTargetAtTime(1 - val, t, 0.02)
       this.wetGain.gain.setTargetAtTime(val, t, 0.02)

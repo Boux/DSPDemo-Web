@@ -39,7 +39,7 @@
 
 <script>
 import DrawableMultiSlider from '../controls/DrawableMultiSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 const FFT_SIZES = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
 const OVERLAPS = [2, 4, 8, 16, 32]
@@ -47,6 +47,7 @@ const OVERLAPS = [2, 4, 8, 16, 32]
 export default {
   name: 'Mod06SpectralDelay',
   components: { DrawableMultiSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       fftSizeIdx: 4, overlapIdx: 1,
@@ -58,11 +59,6 @@ export default {
       workletNode: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -79,10 +75,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx) return
-      if (this.engine.sourcePanel) {
-        try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
-      }
 
       await ctx.audioWorklet.addModule(
         new URL('../../audio/worklets/phase-vocoder.js', import.meta.url)
@@ -134,6 +126,7 @@ export default {
       this.isPlaying = false
     },
     async onFftChange() {
+      if (!this.audioReady) return
       // Rebuild worklet
       const wasPlaying = this.isPlaying
       this.stopPlay()

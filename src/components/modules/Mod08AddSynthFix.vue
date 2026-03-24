@@ -18,22 +18,18 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod08AddSynthFix',
   components: { ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       waveType: 0, frequency: 172, harmonics: 10,
       osc: null, outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -49,7 +45,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx) return
       if (this.engine.sourcePanel) {
         try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
       }

@@ -13,13 +13,14 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 const NUM_ALLPASS = 12
 
 export default {
   name: 'Mod03Phasing',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       baseFreq: 100,
@@ -30,11 +31,6 @@ export default {
       outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -47,8 +43,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -91,18 +85,21 @@ export default {
       }
     },
     onFreqChange(val) {
+      if (!this.audioReady) return
       const t = this.engine.context.currentTime
       this.allpassFilters.forEach((f, i) => {
         f.frequency.setTargetAtTime(val * Math.pow(this.spread, i), t, 0.05)
       })
     },
     onSpreadChange(val) {
+      if (!this.audioReady) return
       const t = this.engine.context.currentTime
       this.allpassFilters.forEach((f, i) => {
         f.frequency.setTargetAtTime(this.baseFreq * Math.pow(val, i), t, 0.05)
       })
     },
     onFeedChange(val) {
+      if (!this.audioReady) return
       this.feedbackGain.gain.setTargetAtTime(val * 0.01, this.engine.context.currentTime, 0.05)
     }
   }

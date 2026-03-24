@@ -24,9 +24,17 @@ export const useAudioEngineStore = defineStore('audioEngine', {
   },
 
   actions: {
-    async init() {
-      if (this.context) return
+    // Eagerly called on app startup. Creates the full audio graph in a
+    // suspended AudioContext so modules can wire into it immediately.
+    // The promise is stored so start() can await it if the user clicks
+    // Enable before init finishes.
+    init() {
+      if (this._initPromise) return this._initPromise
+      this._initPromise = this._doInit()
+      return this._initPromise
+    },
 
+    async _doInit() {
       this.context = new AudioContext()
       this.sampleRate = this.context.sampleRate
 
@@ -61,11 +69,14 @@ export const useAudioEngineStore = defineStore('audioEngine', {
       this.sourcePanel.output.connect(this.masterGain)
       this.sourceReady = true
 
-      await this.context.suspend()
+      // Keep suspended until user clicks Enable
+      if (this.context.state === 'running') {
+        await this.context.suspend()
+      }
     },
 
     async start() {
-      if (!this.context) await this.init()
+      await this.init()
       await this.context.resume()
       this.isRunning = true
     },

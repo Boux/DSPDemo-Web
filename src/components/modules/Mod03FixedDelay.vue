@@ -13,11 +13,12 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod03FixedDelay',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       delayTimeMs: 0.023,
@@ -30,12 +31,9 @@ export default {
     }
   },
   computed: {
-    engine() { return useAudioEngineStore() },
     minTimeMs() { return 1000 / this.engine.sampleRate },
     delaySamples() { return (this.delayTimeMs * 0.001 * this.engine.sampleRate).toFixed(2) }
   },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -48,8 +46,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -84,9 +80,11 @@ export default {
       }
     },
     onTimeChange(val) {
+      if (!this.audioReady) return
       this.delayNode.delayTime.setTargetAtTime(val * 0.001, this.engine.context.currentTime, 0.05)
     },
     onFeedChange(val) {
+      if (!this.audioReady) return
       this.feedbackGain.gain.setTargetAtTime(val * 0.01, this.engine.context.currentTime, 0.05)
     }
   }

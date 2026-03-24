@@ -26,7 +26,7 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import DrawableMultiSlider from '../controls/DrawableMultiSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 const FFT_SIZES = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
 const OVERLAPS = [2, 4, 8, 16, 32]
@@ -34,6 +34,7 @@ const OVERLAPS = [2, 4, 8, 16, 32]
 export default {
   name: 'Mod06SpectralFilter',
   components: { SourcePanel, DrawableMultiSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       fftSizeIdx: 4,
@@ -44,11 +45,6 @@ export default {
       workletNode: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -61,8 +57,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -85,6 +79,7 @@ export default {
       }
     },
     async onFftChange() {
+      if (!this.audioReady) return
       // Rebuild worklet with new FFT size
       if (this.workletNode) {
         try { this.workletNode.disconnect() } catch (e) { /* */ }

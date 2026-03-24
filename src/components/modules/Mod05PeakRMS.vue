@@ -12,11 +12,12 @@
 
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod05PeakRMS',
   components: { SourcePanel },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       peakValue: '0.000',
@@ -25,16 +26,12 @@ export default {
       analyser: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
+  computed: {},
   mounted() {
-    this.setup()
     this.startMeasure()
   },
   beforeUnmount() {
     if (this.animFrameId) cancelAnimationFrame(this.animFrameId)
-    this.teardown()
   },
   methods: {
     t(key) {
@@ -48,8 +45,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       // Create analyser to measure peak and RMS
       this.analyser = ctx.createAnalyser()
       this.analyser.fftSize = 2048

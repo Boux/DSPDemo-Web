@@ -13,11 +13,12 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod03Transpose',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       transpo: -7,
@@ -29,11 +30,6 @@ export default {
       outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -46,8 +42,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -90,6 +84,7 @@ export default {
       if (this.workletNode) this.workletNode.port.postMessage({ feedback: val * 0.01 })
     },
     onBalanceChange(val) {
+      if (!this.audioReady) return
       const t = this.engine.context.currentTime
       this.dryGain.gain.setTargetAtTime(1 - val, t, 0.02)
       this.wetGain.gain.setTargetAtTime(val, t, 0.02)

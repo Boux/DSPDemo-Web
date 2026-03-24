@@ -29,8 +29,8 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
 import { WAVEFORM_LABELS } from '../../utils/waveformLabels'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 function buildPeriodicWave(ctx, index) {
   // For sine, use the built-in type
@@ -74,6 +74,7 @@ function buildPeriodicWave(ctx, index) {
 export default {
   name: 'Mod09AmpMod',
   components: { ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       modType: 0,
@@ -89,11 +90,6 @@ export default {
       dcOffset: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -110,7 +106,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx) return
 
       // Disconnect source panel from master (this module generates its own audio)
       if (this.engine.sourcePanel) {
@@ -177,17 +172,21 @@ export default {
     },
     onModTypeChange() { this.applyModType() },
     onCarrierFreqChange(val) {
+      if (!this.audioReady) return
       this.carrier.frequency.setTargetAtTime(val, this.engine.context.currentTime, 0.05)
     },
     onModFreqChange(val) {
+      if (!this.audioReady) return
       this.modulator.frequency.setTargetAtTime(val, this.engine.context.currentTime, 0.05)
     },
     onCarrierWaveChange() {
+      if (!this.audioReady) return
       const wave = buildPeriodicWave(this.engine.context, this.carrierWaveIdx)
       if (wave) this.carrier.setPeriodicWave(wave)
       else this.carrier.type = 'sine'
     },
     onModWaveChange() {
+      if (!this.audioReady) return
       const wave = buildPeriodicWave(this.engine.context, this.modWaveIdx)
       if (wave) this.modulator.setPeriodicWave(wave)
       else this.modulator.type = 'sine'

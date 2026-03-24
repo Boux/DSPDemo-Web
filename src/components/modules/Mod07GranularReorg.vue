@@ -23,11 +23,12 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod07GranularReorg',
   components: { ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       jumpAmount: 0, jumpSpeed: 8, randomAmount: 0, randomSpeed: 8,
@@ -35,11 +36,6 @@ export default {
       workletNode: null, outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -56,10 +52,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx) return
-      if (this.engine.sourcePanel) {
-        try { this.engine.sourcePanel.output.disconnect(this.engine.masterGain) } catch (e) { /* */ }
-      }
 
       await ctx.audioWorklet.addModule(
         new URL('../../audio/worklets/granular.js', import.meta.url)

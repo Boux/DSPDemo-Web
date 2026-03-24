@@ -23,8 +23,8 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
 import { WAVEFORM_LABELS } from '../../utils/waveformLabels'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 function buildPeriodicWave(ctx, index) {
   if (index === 0) return null
@@ -46,6 +46,7 @@ function buildPeriodicWave(ctx, index) {
 export default {
   name: 'Mod09FreqMod',
   components: { ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       carrierFreq: 344,
@@ -61,12 +62,9 @@ export default {
     }
   },
   computed: {
-    engine() { return useAudioEngineStore() },
     modFreq() { return this.carrierFreq / this.ratio },
     modAmp() { return this.modFreq * this.modIndex }
   },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -81,7 +79,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx) return
 
       // Disconnect source panel
       if (this.engine.sourcePanel) {
@@ -123,6 +120,7 @@ export default {
       }
     },
     updateModParams() {
+      if (!this.audioReady) return
       const t = this.engine.context.currentTime
       const mf = this.carrierFreq / this.ratio
       const ma = mf * this.modIndex
@@ -130,17 +128,20 @@ export default {
       this.modGainNode.gain.setTargetAtTime(ma, t, 0.05)
     },
     onCarrierFreqChange(val) {
+      if (!this.audioReady) return
       this.carrier.frequency.setTargetAtTime(val, this.engine.context.currentTime, 0.05)
       this.updateModParams()
     },
     onRatioChange() { this.updateModParams() },
     onIndexChange() { this.updateModParams() },
     onCarrierWaveChange() {
+      if (!this.audioReady) return
       const wave = buildPeriodicWave(this.engine.context, this.carrierWaveIdx)
       if (wave) this.carrier.setPeriodicWave(wave)
       else this.carrier.type = 'sine'
     },
     onModWaveChange() {
+      if (!this.audioReady) return
       const wave = buildPeriodicWave(this.engine.context, this.modWaveIdx)
       if (wave) this.modulator.setPeriodicWave(wave)
       else this.modulator.type = 'sine'

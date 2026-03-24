@@ -22,7 +22,7 @@ import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
 import LabelKnob from '../controls/LabelKnob.vue'
 import TransferFunction from '../visualization/TransferFunction.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 // Chebyshev polynomial T_n(x)
 function chebyshev(n, x) {
@@ -64,6 +64,7 @@ function buildCurve(amps, size) {
 export default {
   name: 'Mod10Chebyshev',
   components: { SourcePanel, ControlSlider, LabelKnob, TransferFunction },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       amps: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -75,14 +76,9 @@ export default {
       outputGain: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
   mounted() {
-    this.setup()
     this.updateCurve()
   },
-  beforeUnmount() { this.teardown() },
   methods: {
     t(key) {
       const texts = {
@@ -95,8 +91,6 @@ export default {
     },
     setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 

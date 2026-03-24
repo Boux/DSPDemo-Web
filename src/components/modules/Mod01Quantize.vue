@@ -24,11 +24,12 @@
 <script>
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
-import { useAudioEngineStore } from '../../stores/audioEngine'
+import { moduleAudioMixin } from '../../mixins/moduleAudio'
 
 export default {
   name: 'Mod01Quantize',
   components: { SourcePanel, ControlSlider },
+  mixins: [moduleAudioMixin],
   data() {
     return {
       bits: 16,
@@ -45,11 +46,7 @@ export default {
       workletNode: null
     }
   },
-  computed: {
-    engine() { return useAudioEngineStore() }
-  },
-  mounted() { this.setup() },
-  beforeUnmount() { this.teardown() },
+  computed: {},
   methods: {
     t(key) {
       const texts = {
@@ -64,8 +61,6 @@ export default {
     },
     async setup() {
       const ctx = this.engine.context
-      if (!ctx || !this.engine.sourcePanel) return
-
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
@@ -93,9 +88,9 @@ export default {
         showNoise: this.signalMode === 1
       })
     },
-    onBitsChange() { this.updateParams() },
-    onSignalChange() { this.updateParams() },
-    onDitherChange() { this.updateParams() }
+    onBitsChange() { if (!this.audioReady) return; this.updateParams() },
+    onSignalChange() { if (!this.audioReady) return; this.updateParams() },
+    onDitherChange() { if (!this.audioReady) return; this.updateParams() }
   }
 }
 </script>
