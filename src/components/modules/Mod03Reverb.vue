@@ -21,6 +21,8 @@ import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
 import { moduleAudioMixin } from '../../mixins/moduleAudio'
 import { FaustMonoDspGenerator } from '@grame/faustwasm'
+import freeverbWasmUrl from '../../audio/faust/compiled/freeverb.wasm?url'
+import freeverbMetaUrl from '../../audio/faust/compiled/freeverb-meta.json?url'
 
 export default {
   name: 'Mod03Reverb',
@@ -99,8 +101,8 @@ export default {
       const ctx = this.ctx
 
       // Load pre-compiled Faust Freeverb WASM
-      const dspMeta = await (await fetch('/dsp/dsp-meta.json')).json()
-      const dspModule = await WebAssembly.compileStreaming(await fetch('/dsp/dsp-module.wasm'))
+      const dspMeta = await (await fetch(freeverbMetaUrl)).json()
+      const dspModule = await WebAssembly.compileStreaming(await fetch(freeverbWasmUrl))
 
       const generator = new FaustMonoDspGenerator()
       this.faustNode = await generator.createNode(ctx, 'freeverb', { module: dspModule, json: JSON.stringify(dspMeta) })

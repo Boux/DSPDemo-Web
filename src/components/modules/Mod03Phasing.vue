@@ -15,6 +15,8 @@ import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
 import { moduleAudioMixin } from '../../mixins/moduleAudio'
 import { FaustMonoDspGenerator } from '@grame/faustwasm'
+import phaserWasmUrl from '../../audio/faust/compiled/phaser.wasm?url'
+import phaserMetaUrl from '../../audio/faust/compiled/phaser-meta.json?url'
 
 export default {
   name: 'Mod03Phasing',
@@ -45,8 +47,8 @@ export default {
       source.disconnect(this.engine.masterGain)
 
       // Load pre-compiled Faust phaser
-      const dspMeta = await (await fetch('/dsp/phaser/dsp-meta.json')).json()
-      const dspModule = await WebAssembly.compileStreaming(await fetch('/dsp/phaser/dsp-module.wasm'))
+      const dspMeta = await (await fetch(phaserMetaUrl)).json()
+      const dspModule = await WebAssembly.compileStreaming(await fetch(phaserWasmUrl))
 
       const generator = new FaustMonoDspGenerator()
       this.faustNode = await generator.createNode(ctx, 'phaser', {

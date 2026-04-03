@@ -16,6 +16,8 @@ import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
 import { moduleAudioMixin } from '../../mixins/moduleAudio'
 import { FaustMonoDspGenerator } from '@grame/faustwasm'
+import vardelayWasmUrl from '../../audio/faust/compiled/vardelay.wasm?url'
+import vardelayMetaUrl from '../../audio/faust/compiled/vardelay-meta.json?url'
 
 export default {
   name: 'Mod03VariableDelay',
@@ -48,8 +50,8 @@ export default {
       source.disconnect(this.engine.masterGain)
 
       // Load pre-compiled Faust variable delay
-      const dspMeta = await (await fetch('/dsp/vardelay/dsp-meta.json')).json()
-      const dspModule = await WebAssembly.compileStreaming(await fetch('/dsp/vardelay/dsp-module.wasm'))
+      const dspMeta = await (await fetch(vardelayMetaUrl)).json()
+      const dspModule = await WebAssembly.compileStreaming(await fetch(vardelayWasmUrl))
 
       const generator = new FaustMonoDspGenerator()
       this.faustNode = await generator.createNode(ctx, 'vardelay', {
