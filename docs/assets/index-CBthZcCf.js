@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-pASdvVaF.js","./chunk-f7LOQL_L.js","./ModuleWrapper-C90s54-g.css"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-DcMC9N_B.js","./chunk-f7LOQL_L.js","./ModuleWrapper-w24EgVqn.css"])))=>i.map(i=>d[i]);
 import { n as __exportAll } from "./chunk-f7LOQL_L.js";
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -9754,7 +9754,7 @@ var router = createRouter({
 	}, {
 		path: "/module/:moduleId",
 		name: "module",
-		component: () => __vitePreload(() => import("./ModuleWrapper-pASdvVaF.js"), __vite__mapDeps([0,1,2]), import.meta.url)
+		component: () => __vitePreload(() => import("./ModuleWrapper-DcMC9N_B.js"), __vite__mapDeps([0,1,2]), import.meta.url)
 	}]
 });
 //#endregion
@@ -14104,11 +14104,15 @@ var SourcePanelAudio = class {
 		this.noiseGain = this.ctx.createGain();
 		this.noiseGain.gain.value = 0;
 		this.noiseGain.connect(this.output);
+		this.inputGain = this.ctx.createGain();
+		this.inputGain.gain.value = 0;
+		this.inputGain.connect(this.output);
 		this.sourceGains = {
 			lfo: this.lfoGain,
 			bandlimited: this.blGain,
 			file: this.fileGain,
-			noise: this.noiseGain
+			noise: this.noiseGain,
+			input: this.inputGain
 		};
 	}
 	async init() {
@@ -14245,6 +14249,7 @@ var SourcePanelAudio = class {
 		this.lfoGain.disconnect();
 		this.blGain.disconnect();
 		this.fileGain.disconnect();
+		this.inputGain.disconnect();
 		this.noiseGain.disconnect();
 		this.output.disconnect();
 	}

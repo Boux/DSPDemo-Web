@@ -36,7 +36,7 @@ export default {
 
 <style lang="sass">
 .module-doc
-  margin-top: var(--sp-2)
+  margin: var(--sp-3) var(--sp-3) var(--sp-2)
 
   &__toggle
     width: 100%

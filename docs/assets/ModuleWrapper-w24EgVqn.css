@@ -1,5 +1,5 @@
 .module-doc {
-  margin-top: var(--sp-2);
+  margin: var(--sp-3) var(--sp-3) var(--sp-2);
 }
 .module-doc__toggle {
   width: 100%;
@@ -84,6 +84,14 @@
 .noise-source__buttons .toggle-btn {
   flex: 1;
   font-size: var(--font-size-xs);
+}.input-source {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.input-source__error {
+  font-size: var(--font-size-xs);
+  color: var(--vu-red);
 }.source-panel__tabs {
   display: flex;
   gap: 1px;
@@ -92,20 +100,29 @@
   border-radius: var(--control-radius);
   overflow: hidden;
 }
-.source-panel__tabs .toggle-btn {
+.source-panel__tab {
   flex: 1;
-  min-width: 0;
-  font-size: var(--font-size-xs);
-  padding: 5px 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 0;
   border: none;
   border-radius: 0;
   background: var(--color-surface);
+  color: var(--color-text-dim);
+  cursor: pointer;
+  transition: all 0.12s ease;
 }
-.source-panel__tabs .toggle-btn.active {
+.source-panel__tab:hover {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+}
+.source-panel__tab.active {
   background: var(--color-accent);
+  color: #fff;
+}
+.source-panel__tab svg {
+  display: block;
 }
 .source-panel__content {
   min-height: 40px;

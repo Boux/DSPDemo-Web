@@ -42,11 +42,17 @@ export class SourcePanelAudio {
     this.noiseGain.gain.value = 0
     this.noiseGain.connect(this.output)
 
+    // Audio input source (mic)
+    this.inputGain = this.ctx.createGain()
+    this.inputGain.gain.value = 0
+    this.inputGain.connect(this.output)
+
     this.sourceGains = {
       lfo: this.lfoGain,
       bandlimited: this.blGain,
       file: this.fileGain,
-      noise: this.noiseGain
+      noise: this.noiseGain,
+      input: this.inputGain
     }
   }
 
@@ -218,6 +224,7 @@ export class SourcePanelAudio {
     this.lfoGain.disconnect()
     this.blGain.disconnect()
     this.fileGain.disconnect()
+    this.inputGain.disconnect()
     this.noiseGain.disconnect()
     this.output.disconnect()
   }

@@ -1,6 +1,6 @@
 const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./__vite-browser-external-D6v0R7Vd.js","./chunk-f7LOQL_L.js"])))=>i.map(i=>d[i]);
 import { r as __toESM } from "./chunk-f7LOQL_L.js";
-import { C as renderList, D as normalizeClass, E as withDirectives, O as toDisplayString, S as openBlock, T as resolveDynamicComponent, _ as createBlock, a as interpFloat, b as createTextVNode, c as toLog, d as useModuleRegistryStore, f as __vitePreload, g as createBaseVNode, h as Fragment, i as formatValue, l as useAudioEngineStore, m as vModelSelect, n as EditableValue_default, o as tFromValue, p as vModelCheckbox, r as clamp, s as toExp, t as LabelKnob_default, u as _plugin_vue_export_helper_default, v as createCommentVNode, w as resolveComponent, x as createVNode, y as createElementBlock } from "./index-DgwoDmzU.js";
+import { C as renderList, D as normalizeClass, E as withDirectives, O as toDisplayString, S as openBlock, T as resolveDynamicComponent, _ as createBlock, a as interpFloat, b as createTextVNode, c as toLog, d as useModuleRegistryStore, f as __vitePreload, g as createBaseVNode, h as Fragment, i as formatValue, l as useAudioEngineStore, m as vModelSelect, n as EditableValue_default, o as tFromValue, p as vModelCheckbox, r as clamp, s as toExp, t as LabelKnob_default, u as _plugin_vue_export_helper_default, v as createCommentVNode, w as resolveComponent, x as createVNode, y as createElementBlock } from "./index-CBthZcCf.js";
 //#region src/components/docs/moduleDocs.js
 var MODULE_DOCS = {
 	"mod-00-sources": {
@@ -198,7 +198,7 @@ Triangle wave: odd harmonics, A(n) = 1/n², alternating phase.`
 };
 //#endregion
 //#region src/components/docs/ModuleDoc.vue
-var _sfc_main$41 = {
+var _sfc_main$42 = {
 	name: "ModuleDoc",
 	props: { moduleId: {
 		type: String,
@@ -221,25 +221,25 @@ var _sfc_main$41 = {
 		this.showDoc = false;
 	} }
 };
-var _hoisted_1$41 = {
+var _hoisted_1$42 = {
 	key: 0,
 	class: "module-doc"
 };
-var _hoisted_2$40 = {
+var _hoisted_2$41 = {
 	key: 0,
 	class: "module-doc__content"
 };
 var _hoisted_3$36 = { class: "module-doc__text" };
-function _sfc_render$41(_ctx, _cache, $props, $setup, $data, $options) {
-	return $options.docText ? (openBlock(), createElementBlock("div", _hoisted_1$41, [createBaseVNode("button", {
+function _sfc_render$42(_ctx, _cache, $props, $setup, $data, $options) {
+	return $options.docText ? (openBlock(), createElementBlock("div", _hoisted_1$42, [createBaseVNode("button", {
 		class: "toggle-btn module-doc__toggle",
 		onClick: _cache[0] || (_cache[0] = ($event) => $data.showDoc = !$data.showDoc)
-	}, toDisplayString($data.showDoc ? $options.locale === "fr" ? "Masquer la doc" : "Hide docs" : $options.locale === "fr" ? "Documentation" : "Documentation"), 1), $data.showDoc ? (openBlock(), createElementBlock("div", _hoisted_2$40, [createBaseVNode("pre", _hoisted_3$36, toDisplayString($options.docText), 1)])) : createCommentVNode("", true)])) : createCommentVNode("", true);
+	}, toDisplayString($data.showDoc ? $options.locale === "fr" ? "Masquer la doc" : "Hide docs" : $options.locale === "fr" ? "Documentation" : "Documentation"), 1), $data.showDoc ? (openBlock(), createElementBlock("div", _hoisted_2$41, [createBaseVNode("pre", _hoisted_3$36, toDisplayString($options.docText), 1)])) : createCommentVNode("", true)])) : createCommentVNode("", true);
 }
-var ModuleDoc_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$41, [["render", _sfc_render$41]]);
+var ModuleDoc_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$42, [["render", _sfc_render$42]]);
 //#endregion
 //#region src/components/controls/ControlSlider.vue
-var _sfc_main$40 = {
+var _sfc_main$41 = {
 	name: "ControlSlider",
 	components: { EditableValue: EditableValue_default },
 	props: {
@@ -301,16 +301,16 @@ var _sfc_main$40 = {
 		}
 	}
 };
-var _hoisted_1$40 = { class: "control-slider" };
-var _hoisted_2$39 = {
+var _hoisted_1$41 = { class: "control-slider" };
+var _hoisted_2$40 = {
 	key: 0,
 	class: "control-slider__label"
 };
 var _hoisted_3$35 = { class: "control-slider__row" };
 var _hoisted_4$26 = ["value"];
-function _sfc_render$40(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$41(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_EditableValue = resolveComponent("EditableValue");
-	return openBlock(), createElementBlock("div", _hoisted_1$40, [$props.label ? (openBlock(), createElementBlock("label", _hoisted_2$39, toDisplayString($props.label), 1)) : createCommentVNode("", true), createBaseVNode("div", _hoisted_3$35, [createBaseVNode("input", {
+	return openBlock(), createElementBlock("div", _hoisted_1$41, [$props.label ? (openBlock(), createElementBlock("label", _hoisted_2$40, toDisplayString($props.label), 1)) : createCommentVNode("", true), createBaseVNode("div", _hoisted_3$35, [createBaseVNode("input", {
 		ref: "range",
 		type: "range",
 		min: 0,
@@ -330,10 +330,10 @@ function _sfc_render$40(_ctx, _cache, $props, $setup, $data, $options) {
 		"onReset"
 	])])]);
 }
-var ControlSlider_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$40, [["render", _sfc_render$40]]);
+var ControlSlider_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$41, [["render", _sfc_render$41]]);
 //#endregion
 //#region src/components/source/LFOSource.vue
-var _sfc_main$39 = {
+var _sfc_main$40 = {
 	name: "LFOSource",
 	components: { ControlSlider: ControlSlider_default },
 	props: { audio: {
@@ -396,11 +396,11 @@ var _sfc_main$39 = {
 		}
 	}
 };
-var _hoisted_1$39 = { class: "lfo-source" };
-var _hoisted_2$38 = ["value"];
-function _sfc_render$39(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$40 = { class: "lfo-source" };
+var _hoisted_2$39 = ["value"];
+function _sfc_render$40(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_ControlSlider = resolveComponent("ControlSlider");
-	return openBlock(), createElementBlock("div", _hoisted_1$39, [withDirectives(createBaseVNode("select", {
+	return openBlock(), createElementBlock("div", _hoisted_1$40, [withDirectives(createBaseVNode("select", {
 		"onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.waveType = $event),
 		onChange: _cache[1] || (_cache[1] = (...args) => $options.onWaveTypeChange && $options.onWaveTypeChange(...args)),
 		class: "lfo-source__select"
@@ -408,7 +408,7 @@ function _sfc_render$39(_ctx, _cache, $props, $setup, $data, $options) {
 		return openBlock(), createElementBlock("option", {
 			key: i,
 			value: i
-		}, toDisplayString(w[_ctx.$i18n.locale]), 9, _hoisted_2$38);
+		}, toDisplayString(w[_ctx.$i18n.locale]), 9, _hoisted_2$39);
 	}), 128))], 544), [[vModelSelect, $data.waveType]]), createVNode(_component_ControlSlider, {
 		label: _ctx.$i18n.locale === "fr" ? "Fréquence" : "Frequency",
 		modelValue: $data.frequency,
@@ -422,10 +422,10 @@ function _sfc_render$39(_ctx, _cache, $props, $setup, $data, $options) {
 		"onUpdate:modelValue"
 	])]);
 }
-var LFOSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$39, [["render", _sfc_render$39]]);
+var LFOSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$40, [["render", _sfc_render$40]]);
 //#endregion
 //#region src/components/source/BandLimitedSource.vue
-var _sfc_main$38 = {
+var _sfc_main$39 = {
 	name: "BandLimitedSource",
 	components: { ControlSlider: ControlSlider_default },
 	props: { audio: {
@@ -464,11 +464,11 @@ var _sfc_main$38 = {
 		}
 	}
 };
-var _hoisted_1$38 = { class: "bl-source" };
-var _hoisted_2$37 = { class: "bl-source__row" };
-function _sfc_render$38(_ctx, _cache, $props, $setup, $data, $options) {
+var _hoisted_1$39 = { class: "bl-source" };
+var _hoisted_2$38 = { class: "bl-source__row" };
+function _sfc_render$39(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_ControlSlider = resolveComponent("ControlSlider");
-	return openBlock(), createElementBlock("div", _hoisted_1$38, [createVNode(_component_ControlSlider, {
+	return openBlock(), createElementBlock("div", _hoisted_1$39, [createVNode(_component_ControlSlider, {
 		label: _ctx.$i18n.locale === "fr" ? "Fréquence" : "Frequency",
 		modelValue: $data.frequency,
 		mini: 20,
@@ -479,7 +479,7 @@ function _sfc_render$38(_ctx, _cache, $props, $setup, $data, $options) {
 		"label",
 		"modelValue",
 		"onUpdate:modelValue"
-	]), createBaseVNode("div", _hoisted_2$37, [createVNode(_component_ControlSlider, {
+	]), createBaseVNode("div", _hoisted_2$38, [createVNode(_component_ControlSlider, {
 		label: _ctx.$i18n.locale === "fr" ? "Forme d'onde" : "Waveform",
 		modelValue: $data.shape,
 		mini: 0,
@@ -501,10 +501,10 @@ function _sfc_render$38(_ctx, _cache, $props, $setup, $data, $options) {
 		"onUpdate:modelValue"
 	])])]);
 }
-var BandLimitedSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$38, [["render", _sfc_render$38]]);
+var BandLimitedSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$39, [["render", _sfc_render$39]]);
 //#endregion
 //#region src/components/source/SoundFileSource.vue
-var _sfc_main$37 = {
+var _sfc_main$38 = {
 	name: "SoundFileSource",
 	components: { ControlSlider: ControlSlider_default },
 	props: { audio: {
@@ -550,18 +550,18 @@ var _sfc_main$37 = {
 		}
 	}
 };
-var _hoisted_1$37 = { class: "file-source" };
-var _hoisted_2$36 = { class: "file-source__buttons" };
+var _hoisted_1$38 = { class: "file-source" };
+var _hoisted_2$37 = { class: "file-source__buttons" };
 var _hoisted_3$34 = { class: "toggle-btn file-source__load" };
 var _hoisted_4$25 = ["disabled"];
 var _hoisted_5$22 = {
 	key: 0,
 	class: "file-source__name"
 };
-function _sfc_render$37(_ctx, _cache, $props, $setup, $data, $options) {
+function _sfc_render$38(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_ControlSlider = resolveComponent("ControlSlider");
-	return openBlock(), createElementBlock("div", _hoisted_1$37, [
-		createBaseVNode("div", _hoisted_2$36, [
+	return openBlock(), createElementBlock("div", _hoisted_1$38, [
+		createBaseVNode("div", _hoisted_2$37, [
 			createBaseVNode("label", _hoisted_3$34, [createTextVNode(toDisplayString(_ctx.$i18n.locale === "fr" ? "Choisir" : "Choose") + " ", 1), createBaseVNode("input", {
 				type: "file",
 				accept: "audio/*",
@@ -593,10 +593,10 @@ function _sfc_render$37(_ctx, _cache, $props, $setup, $data, $options) {
 		])
 	]);
 }
-var SoundFileSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$37, [["render", _sfc_render$37]]);
+var SoundFileSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$38, [["render", _sfc_render$38]]);
 //#endregion
 //#region src/components/source/NoiseSource.vue
-var _sfc_main$36 = {
+var _sfc_main$37 = {
 	name: "NoiseSource",
 	props: { audio: {
 		type: Object,
@@ -632,11 +632,11 @@ var _sfc_main$36 = {
 		if (this.audio) this.audio.setNoiseType(type);
 	} }
 };
-var _hoisted_1$36 = { class: "noise-source" };
-var _hoisted_2$35 = { class: "noise-source__buttons" };
+var _hoisted_1$37 = { class: "noise-source" };
+var _hoisted_2$36 = { class: "noise-source__buttons" };
 var _hoisted_3$33 = ["onClick"];
-function _sfc_render$36(_ctx, _cache, $props, $setup, $data, $options) {
-	return openBlock(), createElementBlock("div", _hoisted_1$36, [createBaseVNode("div", _hoisted_2$35, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.noiseTypes, (n, i) => {
+function _sfc_render$37(_ctx, _cache, $props, $setup, $data, $options) {
+	return openBlock(), createElementBlock("div", _hoisted_1$37, [createBaseVNode("div", _hoisted_2$36, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.noiseTypes, (n, i) => {
 		return openBlock(), createElementBlock("button", {
 			key: i,
 			class: normalizeClass(["toggle-btn", { active: $data.noiseType === i }]),
@@ -644,15 +644,128 @@ function _sfc_render$36(_ctx, _cache, $props, $setup, $data, $options) {
 		}, toDisplayString(n[_ctx.$i18n.locale]), 11, _hoisted_3$33);
 	}), 128))])]);
 }
+var NoiseSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$37, [["render", _sfc_render$37]]);
+//#endregion
+//#region src/components/source/AudioInputSource.vue
+var _sfc_main$36 = {
+	name: "AudioInputSource",
+	components: { ControlSlider: ControlSlider_default },
+	props: { audio: {
+		type: Object,
+		default: null
+	} },
+	data() {
+		return {
+			isActive: false,
+			gain: 1,
+			error: "",
+			stream: null,
+			inputNode: null,
+			gainNode: null
+		};
+	},
+	watch: { audio(val) {
+		if (val && this.isActive) this.connectInput();
+	} },
+	beforeUnmount() {
+		this.stopInput();
+	},
+	methods: {
+		async toggleInput() {
+			if (this.isActive) this.stopInput();
+			else await this.startInput();
+		},
+		async startInput() {
+			const engine = useAudioEngineStore();
+			if (!engine.isRunning) await engine.start();
+			try {
+				this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+				this.error = "";
+				this.connectInput();
+				this.isActive = true;
+			} catch (e) {
+				this.error = this.$i18n.locale === "fr" ? "Accès au microphone refusé" : "Microphone access denied";
+			}
+		},
+		connectInput() {
+			if (!this.audio || !this.stream) return;
+			const ctx = useAudioEngineStore().context;
+			if (!ctx) return;
+			this.inputNode = ctx.createMediaStreamSource(this.stream);
+			this.gainNode = ctx.createGain();
+			this.gainNode.gain.value = this.gain;
+			this.inputNode.connect(this.gainNode);
+			this.gainNode.connect(this.audio.inputGain || this.audio.output);
+		},
+		stopInput() {
+			if (this.inputNode) {
+				try {
+					this.inputNode.disconnect();
+				} catch (e) {}
+				this.inputNode = null;
+			}
+			if (this.gainNode) {
+				try {
+					this.gainNode.disconnect();
+				} catch (e) {}
+				this.gainNode = null;
+			}
+			if (this.stream) {
+				this.stream.getTracks().forEach((t) => t.stop());
+				this.stream = null;
+			}
+			this.isActive = false;
+		},
+		onGainChange(val) {
+			this.gain = val;
+			if (this.gainNode) this.gainNode.gain.setTargetAtTime(val, useAudioEngineStore().context.currentTime, .05);
+		}
+	}
+};
+var _hoisted_1$36 = { class: "input-source" };
+var _hoisted_2$35 = {
+	key: 0,
+	class: "input-source__error"
+};
+function _sfc_render$36(_ctx, _cache, $props, $setup, $data, $options) {
+	const _component_ControlSlider = resolveComponent("ControlSlider");
+	return openBlock(), createElementBlock("div", _hoisted_1$36, [
+		createBaseVNode("button", {
+			class: normalizeClass(["toggle-btn", { active: $data.isActive }]),
+			onClick: _cache[0] || (_cache[0] = (...args) => $options.toggleInput && $options.toggleInput(...args))
+		}, toDisplayString($data.isActive ? _ctx.$i18n.locale === "fr" ? "Arrêter" : "Stop" : _ctx.$i18n.locale === "fr" ? "Activer le micro" : "Enable Microphone"), 3),
+		$data.error ? (openBlock(), createElementBlock("div", _hoisted_2$35, toDisplayString($data.error), 1)) : createCommentVNode("", true),
+		createVNode(_component_ControlSlider, {
+			label: _ctx.$i18n.locale === "fr" ? "Volume d'entrée" : "Input Gain",
+			modelValue: $data.gain,
+			mini: 0,
+			maxi: 2,
+			"onUpdate:modelValue": $options.onGainChange
+		}, null, 8, [
+			"label",
+			"modelValue",
+			"onUpdate:modelValue"
+		])
+	]);
+}
+var AudioInputSource_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$36, [["render", _sfc_render$36]]);
 //#endregion
 //#region src/components/source/SourcePanel.vue
+var icons = {
+	waveform: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M1 8 Q4 2, 8 8 Q12 14, 15 8\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" fill=\"none\"/></svg>",
+	antialias: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M1 12 L4 12 L4 9 L7 9 L7 6 L10 6 L10 4 L13 4 L15 4\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>",
+	file: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M4 2 L10 2 L13 5 L13 14 L4 14 Z\" stroke=\"currentColor\" stroke-width=\"1.3\" stroke-linejoin=\"round\" fill=\"none\"/><path d=\"M10 2 L10 5 L13 5\" stroke=\"currentColor\" stroke-width=\"1.3\" stroke-linejoin=\"round\" fill=\"none\"/></svg>",
+	noise: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><path d=\"M1 8 L3 4 L5 11 L7 3 L9 13 L11 5 L13 10 L15 7\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/></svg>",
+	mic: "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\"><rect x=\"6\" y=\"2\" width=\"4\" height=\"7\" rx=\"2\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\"/><path d=\"M4 8 Q4 13, 8 13 Q12 13, 12 8\" stroke=\"currentColor\" stroke-width=\"1.3\" stroke-linecap=\"round\" fill=\"none\"/><line x1=\"8\" y1=\"13\" x2=\"8\" y2=\"15\" stroke=\"currentColor\" stroke-width=\"1.3\" stroke-linecap=\"round\"/></svg>"
+};
 var _sfc_main$35 = {
 	name: "SourcePanel",
 	components: {
 		LFOSource: LFOSource_default,
 		BandLimitedSource: BandLimitedSource_default,
 		SoundFileSource: SoundFileSource_default,
-		NoiseSource: /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$36, [["render", _sfc_render$36]])
+		NoiseSource: NoiseSource_default,
+		AudioInputSource: AudioInputSource_default
 	},
 	props: { audio: {
 		type: Object,
@@ -663,7 +776,8 @@ var _sfc_main$35 = {
 			"lfo",
 			"bandlimited",
 			"file",
-			"noise"
+			"noise",
+			"input"
 		];
 		const currentSource = this.audio ? this.audio.activeSource : "lfo";
 		return {
@@ -674,10 +788,7 @@ var _sfc_main$35 = {
 						fr: "Oscillateur multiforme",
 						en: "Multi-waveform Oscillator"
 					},
-					short: {
-						fr: "Multiforme",
-						en: "Waveform"
-					},
+					icon: icons.waveform,
 					source: "lfo"
 				},
 				{
@@ -685,10 +796,7 @@ var _sfc_main$35 = {
 						fr: "Oscillateur anti-alias",
 						en: "Anti-alias Oscillator"
 					},
-					short: {
-						fr: "Anti-alias",
-						en: "Anti-alias"
-					},
+					icon: icons.antialias,
 					source: "bandlimited"
 				},
 				{
@@ -696,10 +804,7 @@ var _sfc_main$35 = {
 						fr: "Fichier sonore",
 						en: "Sound File"
 					},
-					short: {
-						fr: "Fichier",
-						en: "File"
-					},
+					icon: icons.file,
 					source: "file"
 				},
 				{
@@ -707,11 +812,16 @@ var _sfc_main$35 = {
 						fr: "Générateur de bruit",
 						en: "Noise Generator"
 					},
-					short: {
-						fr: "Bruit",
-						en: "Noise"
-					},
+					icon: icons.noise,
 					source: "noise"
+				},
+				{
+					label: {
+						fr: "Entrée audio",
+						en: "Audio Input"
+					},
+					icon: icons.mic,
+					source: "input"
 				}
 			]
 		};
@@ -731,20 +841,26 @@ var _hoisted_1$35 = { class: "source-panel" };
 var _hoisted_2$34 = { class: "section-head" };
 var _hoisted_3$32 = { class: "section-body" };
 var _hoisted_4$24 = { class: "source-panel__tabs" };
-var _hoisted_5$21 = ["title", "onClick"];
+var _hoisted_5$21 = [
+	"title",
+	"onClick",
+	"innerHTML"
+];
 var _hoisted_6$20 = { class: "source-panel__content" };
 function _sfc_render$35(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_LFOSource = resolveComponent("LFOSource");
 	const _component_BandLimitedSource = resolveComponent("BandLimitedSource");
 	const _component_SoundFileSource = resolveComponent("SoundFileSource");
 	const _component_NoiseSource = resolveComponent("NoiseSource");
+	const _component_AudioInputSource = resolveComponent("AudioInputSource");
 	return openBlock(), createElementBlock("div", _hoisted_1$35, [createBaseVNode("div", _hoisted_2$34, toDisplayString(_ctx.$i18n.locale === "fr" ? "Source Sonore" : "Audio Source"), 1), createBaseVNode("div", _hoisted_3$32, [createBaseVNode("div", _hoisted_4$24, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.tabs, (tab, i) => {
 		return openBlock(), createElementBlock("button", {
 			key: i,
-			class: normalizeClass(["toggle-btn", { active: $data.activeTab === i }]),
+			class: normalizeClass(["source-panel__tab", { active: $data.activeTab === i }]),
 			title: tab.label[_ctx.$i18n.locale],
-			onClick: ($event) => $options.switchTab(i)
-		}, toDisplayString(tab.short[_ctx.$i18n.locale]), 11, _hoisted_5$21);
+			onClick: ($event) => $options.switchTab(i),
+			innerHTML: tab.icon
+		}, null, 10, _hoisted_5$21);
 	}), 128))]), createBaseVNode("div", _hoisted_6$20, [$data.activeTab === 0 ? (openBlock(), createBlock(_component_LFOSource, {
 		key: 0,
 		audio: $props.audio
@@ -756,6 +872,9 @@ function _sfc_render$35(_ctx, _cache, $props, $setup, $data, $options) {
 		audio: $props.audio
 	}, null, 8, ["audio"])) : $data.activeTab === 3 ? (openBlock(), createBlock(_component_NoiseSource, {
 		key: 3,
+		audio: $props.audio
+	}, null, 8, ["audio"])) : $data.activeTab === 4 ? (openBlock(), createBlock(_component_AudioInputSource, {
+		key: 4,
 		audio: $props.audio
 	}, null, 8, ["audio"])) : createCommentVNode("", true)])])]);
 }
