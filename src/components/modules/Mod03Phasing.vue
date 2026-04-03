@@ -14,8 +14,7 @@
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
 import { moduleAudioMixin } from '../../mixins/moduleAudio'
-
-const NUM_ALLPASS = 12
+import { FaustMonoDspGenerator } from '@grame/faustwasm'
 
 export default {
   name: 'Mod03Phasing',
@@ -26,8 +25,7 @@ export default {
       baseFreq: 100,
       spread: 1.3,
       feedback: 50,
-      allpassFilters: [],
-      feedbackGain: null,
+      faustNode: null,
       outputGain: null
     }
   },
@@ -41,66 +39,62 @@ export default {
       }
       return (texts[key] || {})[this.$i18n.locale] || key
     },
-    setup() {
-      const ctx = this.engine.context
+    async setup() {
+      const ctx = this.ctx
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
-      // Build 12 allpass filters in series
-      this.allpassFilters = []
-      for (let i = 0; i < NUM_ALLPASS; i++) {
-        const f = ctx.createBiquadFilter()
-        f.type = 'allpass'
-        f.frequency.value = this.baseFreq * Math.pow(this.spread, i)
-        f.Q.value = 1
-        this.allpassFilters.push(f)
+      // Load pre-compiled Faust phaser
+      const dspMeta = await (await fetch('/dsp/phaser/dsp-meta.json')).json()
+      const dspModule = await WebAssembly.compileStreaming(await fetch('/dsp/phaser/dsp-module.wasm'))
+
+      const generator = new FaustMonoDspGenerator()
+      this.faustNode = await generator.createNode(ctx, 'phaser', {
+        module: dspModule,
+        json: JSON.stringify(dspMeta)
+      })
+
+      if (!this.faustNode) {
+        console.warn('Failed to create Faust phaser node')
+        return
       }
 
-      // Chain allpass filters
-      for (let i = 0; i < NUM_ALLPASS - 1; i++) {
-        this.allpassFilters[i].connect(this.allpassFilters[i + 1])
-      }
+      // Set initial parameters
+      this.faustNode.setParamValue('/phaser/baseFreq', this.baseFreq)
+      this.faustNode.setParamValue('/phaser/spread', this.spread)
+      this.faustNode.setParamValue('/phaser/feedback', this.feedback * 0.01)
 
-      // Feedback: output of last allpass -> gain -> input of first allpass
-      this.feedbackGain = ctx.createGain()
-      this.feedbackGain.gain.value = this.feedback * 0.01
-      this.allpassFilters[NUM_ALLPASS - 1].connect(this.feedbackGain)
-      this.feedbackGain.connect(this.allpassFilters[0])
-
-      // Output: mix dry + wet
+      // Output gain
       this.outputGain = ctx.createGain()
-      this.outputGain.gain.value = 0.3
+      this.outputGain.gain.value = 1
 
-      source.connect(this.allpassFilters[0])
-      this.allpassFilters[NUM_ALLPASS - 1].connect(this.outputGain)
+      source.connect(this.faustNode)
+      this.faustNode.connect(this.outputGain)
       this.outputGain.connect(this.engine.masterGain)
     },
     teardown() {
-      this.allpassFilters.forEach(f => { try { f.disconnect() } catch (e) { /* */ } })
-      const nodes = [this.feedbackGain, this.outputGain]
-      nodes.forEach(n => { if (n) try { n.disconnect() } catch (e) { /* */ } })
-      if (this.engine.sourcePanel) {
-        try { this.engine.sourcePanel.output.disconnect() } catch (e) { /* */ }
-        try { this.engine.sourcePanel.output.connect(this.engine.masterGain) } catch (e) { /* */ }
+      if (this.faustNode) {
+        try { this.faustNode.disconnect() } catch (e) { /* */ }
+        if (this.faustNode.destroy) this.faustNode.destroy()
+        this.faustNode = null
       }
+      if (this.outputGain) {
+        try { this.outputGain.disconnect() } catch (e) { /* */ }
+        this.outputGain = null
+      }
+      this.releaseSource()
     },
     onFreqChange(val) {
-      if (!this.audioReady) return
-      const t = this.engine.context.currentTime
-      this.allpassFilters.forEach((f, i) => {
-        f.frequency.setTargetAtTime(val * Math.pow(this.spread, i), t, 0.05)
-      })
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/phaser/baseFreq', val)
     },
     onSpreadChange(val) {
-      if (!this.audioReady) return
-      const t = this.engine.context.currentTime
-      this.allpassFilters.forEach((f, i) => {
-        f.frequency.setTargetAtTime(this.baseFreq * Math.pow(val, i), t, 0.05)
-      })
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/phaser/spread', val)
     },
     onFeedChange(val) {
-      if (!this.audioReady) return
-      this.feedbackGain.gain.setTargetAtTime(val * 0.01, this.engine.context.currentTime, 0.05)
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/phaser/feedback', val * 0.01)
     }
   }
 }
