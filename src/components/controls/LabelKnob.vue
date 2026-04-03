@@ -5,18 +5,24 @@
       :modelValue="knobValue"
       :size="28"
       @update:modelValue="onKnobChange"
+      @dblclick.native="resetToDefault"
     />
-    <span class="label-knob__value">{{ displayValue }}</span>
+    <EditableValue
+      :display="displayValue"
+      @submit="onTextSubmit"
+      @reset="resetToDefault"
+    />
   </div>
 </template>
 
 <script>
 import RotaryKnob from './RotaryKnob.vue'
-import { interpFloat, tFromValue, toLog, toExp, formatValue } from '../../utils/dspMath'
+import EditableValue from './EditableValue.vue'
+import { interpFloat, tFromValue, toLog, toExp, formatValue, clamp } from '../../utils/dspMath'
 
 export default {
   name: 'LabelKnob',
-  components: { RotaryKnob },
+  components: { RotaryKnob, EditableValue },
   props: {
     label: { type: String, default: '' },
     modelValue: { type: Number, default: 0 },
@@ -24,7 +30,8 @@ export default {
     maxi: { type: Number, default: 1 },
     init: { type: Number, default: null },
     log: { type: Boolean, default: false },
-    integer: { type: Boolean, default: false }
+    integer: { type: Boolean, default: false },
+    defaultValue: { type: Number, default: null }
   },
   emits: ['update:modelValue'],
   computed: {
@@ -50,6 +57,17 @@ export default {
         realVal = Math.round(realVal)
       }
       this.$emit('update:modelValue', realVal)
+    },
+    onTextSubmit(parsed) {
+      let val = clamp(parsed, this.mini, this.maxi)
+      if (this.integer) val = Math.round(val)
+      this.$emit('update:modelValue', val)
+    },
+    resetToDefault() {
+      const def = this.defaultValue !== null ? this.defaultValue : this.init
+      if (def !== null) {
+        this.$emit('update:modelValue', def)
+      }
     }
   }
 }
@@ -67,9 +85,4 @@ export default {
     font-size: var(--font-size-xs)
     color: var(--color-text-muted)
     white-space: nowrap
-
-  &__value
-    font-size: var(--font-size-xs)
-    color: var(--color-text-dim)
-    font-family: var(--font-mono)
 </style>

@@ -6,6 +6,7 @@
 
 <script>
 import { scopeCanvasMixin } from '../../mixins/scopeCanvas'
+import { useUiStateStore } from '../../stores/uiState'
 
 export default {
   name: 'XYScope',
@@ -44,14 +45,14 @@ export default {
       if (!sd) return
       const { engine, data, bufLen, samplesToShow, displayGain } = sd
 
-      // Phase offset: quarter of one period based on source frequency.
-      // Falls back to quarter of the display window.
+      // Phase offset as a fraction of one period (0=same, 0.25=quarter, 0.5=half)
+      const phase = useUiStateStore()[this.storeKey].phase ?? 0.25
       const sourceFreq = engine.sourcePanel ? engine.sourcePanel.currentFrequency : 0
       let phaseOffset
       if (sourceFreq > 0) {
-        phaseOffset = Math.round(engine.sampleRate / sourceFreq / 4)
+        phaseOffset = Math.round(engine.sampleRate / sourceFreq * phase)
       } else {
-        phaseOffset = Math.round(samplesToShow / 4)
+        phaseOffset = Math.round(samplesToShow * phase)
       }
       phaseOffset = Math.max(1, Math.min(phaseOffset, Math.floor(bufLen / 3)))
 

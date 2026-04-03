@@ -39,7 +39,8 @@ const SCOPE_DEFAULTS = {
 const XY_DEFAULTS = {
   windowLength: 50,
   amplitude: 0.5,
-  autoNormalize: true
+  autoNormalize: true,
+  phase: 0.25
 }
 
 const settings = loadSettings()
