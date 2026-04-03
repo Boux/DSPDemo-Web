@@ -85,14 +85,15 @@ export class SourcePanelAudio {
     const t = this.ctx.currentTime
     const fadeTime = 0.1
 
-    // Fade out all
+    // Mute all, then fade in selected
     for (const [key, gain] of Object.entries(this.sourceGains)) {
-      gain.gain.setTargetAtTime(0, t, fadeTime / 3)
-    }
-
-    // Fade in selected
-    if (this.sourceGains[name]) {
-      this.sourceGains[name].gain.setTargetAtTime(1, t + fadeTime * 0.5, fadeTime / 3)
+      gain.gain.cancelScheduledValues(t)
+      if (key === name) {
+        gain.gain.setTargetAtTime(1, t + fadeTime * 0.5, fadeTime / 3)
+      } else {
+        // Hard-set to 0 so it works even on a suspended context
+        gain.gain.setValueAtTime(0, t)
+      }
     }
 
     this.activeSource = name

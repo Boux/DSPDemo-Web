@@ -2,18 +2,22 @@
   <div class="module-controls">
     <div class="section-head">{{ t('sources') }}</div>
     <div class="section-body">
-      <div class="control-row">
-        <label class="toggle-btn file-source__load">
-          {{ t('envelope') }}
+      <div class="vocoder-source">
+        <label class="vocoder-source__label">{{ t('envelope') }}</label>
+        <label class="toggle-btn vocoder-source__btn">
+          {{ envName || t('choose') }}
           <input type="file" accept="audio/*" @change="loadEnvelope" hidden />
         </label>
-        <label class="toggle-btn file-source__load">
-          {{ t('excitation') }}
+      </div>
+      <div class="vocoder-source">
+        <label class="vocoder-source__label">{{ t('excitation') }}</label>
+        <label class="toggle-btn vocoder-source__btn">
+          {{ excName || t('choose') }}
           <input type="file" accept="audio/*" @change="loadExcitation" hidden />
         </label>
       </div>
-      <button class="toggle-btn" :class="{ active: isPlaying }" @click="togglePlay">
-        {{ t('play') }}
+      <button class="toggle-btn" :class="{ active: isPlaying }" @click="togglePlay" :disabled="!envBuffer || !excBuffer">
+        {{ isPlaying ? t('stop') : t('play') }}
       </button>
     </div>
     <div class="section-head">{{ t('moduleInterface') }}</div>
@@ -43,10 +47,10 @@ export default {
     return {
       freq: 100, expansion: 1.2, qFactor: 20, slope: 0.5, stages: 24,
       volumeDb: 0, isPlaying: false,
-      envBuffer: null, excBuffer: null,
+      envBuffer: null, excBuffer: null, envName: '', excName: '',
       envSource: null, excSource: null,
       analysisBands: [], synthBands: [], followers: [], modulators: [],
-      outputGain: null, mixGain: null
+      outputGain: null
     }
   },
   methods: {
@@ -55,14 +59,19 @@ export default {
         sources: { fr: 'Sources Sonores', en: 'Audio Sources' },
         envelope: { fr: 'Enveloppe', en: 'Envelope' },
         excitation: { fr: 'Excitation', en: 'Excitation' },
+        choose: { fr: 'Choisir...', en: 'Choose...' },
         play: { fr: 'Jouer les sons', en: 'Play sounds' },
+        stop: { fr: 'Arrêter', en: 'Stop' },
         moduleInterface: { fr: 'Interface du Module', en: 'Module Interface' }
       }
       return (texts[key] || {})[this.$i18n.locale] || key
     },
     setup() {
-      const ctx = this.engine.context
-      this.outputGain = ctx.createGain()
+      // Disconnect source panel — vocoder uses its own file sources
+      const source = this.engine.sourcePanel.output
+      try { source.disconnect(this.engine.masterGain) } catch (e) { /* */ }
+
+      this.outputGain = this.ctx.createGain()
       this.outputGain.gain.value = Math.pow(10, this.volumeDb * 0.05) * 0.25
       this.outputGain.connect(this.engine.masterGain)
     },
@@ -70,44 +79,48 @@ export default {
       this.stopPlay()
       this.cleanupBands()
       if (this.outputGain) try { this.outputGain.disconnect() } catch (e) { /* */ }
-      if (this.engine.sourcePanel) {
-        try { this.engine.sourcePanel.output.connect(this.engine.masterGain) } catch (e) { /* */ }
-      }
+      this.releaseSource()
     },
     async loadEnvelope(e) {
       const file = e.target.files[0]
-      if (!file) return
+      if (!file || !this.ctx) return
+      this.envName = file.name
       const buf = await file.arrayBuffer()
-      this.envBuffer = await this.engine.context.decodeAudioData(buf)
+      this.envBuffer = await this.ctx.decodeAudioData(buf)
     },
     async loadExcitation(e) {
       const file = e.target.files[0]
-      if (!file) return
+      if (!file || !this.ctx) return
+      this.excName = file.name
       const buf = await file.arrayBuffer()
-      this.excBuffer = await this.engine.context.decodeAudioData(buf)
+      this.excBuffer = await this.ctx.decodeAudioData(buf)
     },
     togglePlay() {
       if (this.isPlaying) { this.stopPlay() } else { this.startPlay() }
     },
     startPlay() {
       if (!this.envBuffer || !this.excBuffer) return
-      const ctx = this.engine.context
-      this.envSource = ctx.createBufferSource()
+
+      this.envSource = this.ctx.createBufferSource()
       this.envSource.buffer = this.envBuffer
       this.envSource.loop = true
-      this.excSource = ctx.createBufferSource()
+      this.excSource = this.ctx.createBufferSource()
       this.excSource.buffer = this.excBuffer
       this.excSource.loop = true
-      this.rebuildVocoder()
+
+      this.buildBands()
+
       this.envSource.start()
       this.excSource.start()
       this.isPlaying = true
     },
     stopPlay() {
+      if (this._followerFrame) cancelAnimationFrame(this._followerFrame)
       if (this.envSource) try { this.envSource.stop() } catch (e) { /* */ }
       if (this.excSource) try { this.excSource.stop() } catch (e) { /* */ }
       this.envSource = null
       this.excSource = null
+      this.cleanupBands()
       this.isPlaying = false
     },
     cleanupBands() {
@@ -119,29 +132,29 @@ export default {
       this.followers = []
       this.modulators = []
     },
-    rebuildVocoder() {
+    buildBands() {
       this.cleanupBands()
       if (!this.envSource || !this.excSource) return
-      const ctx = this.engine.context
+
       const numBands = Math.round(this.stages)
 
       for (let i = 0; i < numBands; i++) {
         const bandFreq = this.freq * Math.pow(this.expansion, i)
-        if (bandFreq > ctx.sampleRate / 2) break
+        if (bandFreq > this.ctx.sampleRate / 2) break
 
-        // Analysis: envelope -> bandpass -> rectify (abs approximation via squaring+sqrt) -> lowpass (follower)
-        const aBp = ctx.createBiquadFilter()
+        // Analysis: envelope → bandpass → analyser (for envelope following)
+        const aBp = this.ctx.createBiquadFilter()
         aBp.type = 'bandpass'
         aBp.frequency.value = bandFreq
         aBp.Q.value = this.qFactor
 
-        // Synthesis: excitation -> bandpass -> gain (modulated by follower)
-        const sBp = ctx.createBiquadFilter()
+        // Synthesis: excitation → bandpass → gain (modulated by envelope)
+        const sBp = this.ctx.createBiquadFilter()
         sBp.type = 'bandpass'
         sBp.frequency.value = bandFreq
         sBp.Q.value = this.qFactor
 
-        const modGain = ctx.createGain()
+        const modGain = this.ctx.createGain()
         modGain.gain.value = 0
 
         this.envSource.connect(aBp)
@@ -149,8 +162,8 @@ export default {
         sBp.connect(modGain)
         modGain.connect(this.outputGain)
 
-        // Use analyser for envelope following (approximate with JS)
-        const analyser = ctx.createAnalyser()
+        // Analyser for envelope following
+        const analyser = this.ctx.createAnalyser()
         analyser.fftSize = 256
         analyser.smoothingTimeConstant = 1 - this.slope
         aBp.connect(analyser)
@@ -161,7 +174,6 @@ export default {
         this.followers.push(analyser)
       }
 
-      // Start envelope following loop
       this.startFollowerLoop()
     },
     startFollowerLoop() {
@@ -173,15 +185,13 @@ export default {
           let rms = 0
           for (let j = 0; j < data.length; j++) rms += data[j] * data[j]
           rms = Math.sqrt(rms / data.length)
-          this.modulators[i].gain.setTargetAtTime(rms * 4, this.engine.context.currentTime, 0.01)
+          this.modulators[i].gain.setTargetAtTime(rms * 20, this.ctx.currentTime, 0.01)
         }
         this._followerFrame = requestAnimationFrame(update)
       }
       update()
     },
     updateVocoder() {
-      if (!this.audioReady) return
-      // Update band frequencies and Q in place
       for (let i = 0; i < this.analysisBands.length; i++) {
         const f = this.freq * Math.pow(this.expansion, i)
         this.analysisBands[i].frequency.value = f
@@ -191,9 +201,13 @@ export default {
         if (this.followers[i]) this.followers[i].smoothingTimeConstant = 1 - this.slope
       }
     },
+    rebuildVocoder() {
+      if (!this.isPlaying) return
+      this.buildBands()
+    },
     updateGain() {
       if (this.outputGain) {
-        this.outputGain.gain.setTargetAtTime(Math.pow(10, this.volumeDb * 0.05) * 0.25, this.engine.context.currentTime, 0.05)
+        this.outputGain.gain.setTargetAtTime(Math.pow(10, this.volumeDb * 0.05) * 0.25, this.ctx.currentTime, 0.05)
       }
     }
   }
@@ -206,4 +220,24 @@ export default {
   justify-content: center
   gap: 2px
   margin: var(--sp-2) 0
+
+.vocoder-source
+  display: flex
+  align-items: center
+  gap: var(--sp-2)
+  margin-bottom: var(--sp-1)
+
+  &__label
+    font-size: var(--font-size-sm)
+    color: var(--color-text-muted)
+    min-width: 70px
+
+  &__btn
+    flex: 1
+    text-align: center
+    cursor: pointer
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+    font-size: var(--font-size-xs)
 </style>

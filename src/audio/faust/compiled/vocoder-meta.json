@@ -1,0 +1,233 @@
+{
+    "name": "vocoder",
+    "filename": "vocoder",
+    "version": "2.84.3",
+    "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2",
+    "library_list": [
+        "/usr/share/faust/stdfaust.lib",
+        "/usr/share/faust/filters.lib",
+        "/usr/share/faust/signals.lib",
+        "/usr/share/faust/maths.lib",
+        "/usr/share/faust/platform.lib",
+        "/usr/share/faust/basics.lib"
+    ],
+    "include_pathnames": [
+        "/faust/user/inc0",
+        "/share/faust",
+        "/usr/local/share/faust",
+        "/usr/share/faust",
+        "."
+    ],
+    "size": 2640,
+    "code": "WBOmA1Q8Hw==",
+    "inputs": 2,
+    "outputs": 1,
+    "meta": [
+        {
+            "basics.lib/name": "Faust Basic Element Library"
+        },
+        {
+            "basics.lib/version": "1.22.0"
+        },
+        {
+            "compile_options": "-lang wasm-i -fpga-mem-th 4 -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -single -ftz 2"
+        },
+        {
+            "filename": "vocoder"
+        },
+        {
+            "filters.lib/fir:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/fir:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/fir:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/iir:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/iir:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/iir:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/lowpass0_highpass1": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/lowpass0_highpass1:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/lowpass:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/lowpass:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/lowpass:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/name": "Faust Filters Library"
+        },
+        {
+            "filters.lib/resonbp:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/resonbp:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/resonbp:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/tf1:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/tf1:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/tf1:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/tf1s:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/tf1s:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/tf1s:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/tf2:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/tf2:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/tf2:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/tf2s:author": "Julius O. Smith III"
+        },
+        {
+            "filters.lib/tf2s:copyright": "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>"
+        },
+        {
+            "filters.lib/tf2s:license": "MIT-style STK-4.3 license"
+        },
+        {
+            "filters.lib/version": "1.7.1"
+        },
+        {
+            "maths.lib/author": "GRAME"
+        },
+        {
+            "maths.lib/copyright": "GRAME"
+        },
+        {
+            "maths.lib/license": "LGPL with exception"
+        },
+        {
+            "maths.lib/name": "Faust Math Library"
+        },
+        {
+            "maths.lib/version": "2.9.0"
+        },
+        {
+            "name": "vocoder"
+        },
+        {
+            "platform.lib/name": "Generic Platform Library"
+        },
+        {
+            "platform.lib/version": "1.3.0"
+        },
+        {
+            "signals.lib/name": "Faust Signal Routing Library"
+        },
+        {
+            "signals.lib/version": "1.6.0"
+        }
+    ],
+    "ui": [
+        {
+            "type": "vgroup",
+            "label": "vocoder",
+            "items": [
+                {
+                    "type": "hslider",
+                    "label": "baseFreq",
+                    "varname": "fHslider2",
+                    "shortname": "baseFreq",
+                    "address": "/vocoder/baseFreq",
+                    "index": 36,
+                    "init": 100,
+                    "min": 40,
+                    "max": 250,
+                    "step": 1
+                },
+                {
+                    "type": "hslider",
+                    "label": "expansion",
+                    "varname": "fHslider4",
+                    "shortname": "expansion",
+                    "address": "/vocoder/expansion",
+                    "index": 108,
+                    "init": 1.2,
+                    "min": 0.5,
+                    "max": 2,
+                    "step": 0.01
+                },
+                {
+                    "type": "hslider",
+                    "label": "gain",
+                    "varname": "fHslider0",
+                    "shortname": "gain",
+                    "address": "/vocoder/gain",
+                    "index": 12,
+                    "init": 0,
+                    "min": -60,
+                    "max": 18,
+                    "step": 0.1
+                },
+                {
+                    "type": "hslider",
+                    "label": "q",
+                    "varname": "fHslider3",
+                    "shortname": "q",
+                    "address": "/vocoder/q",
+                    "index": 48,
+                    "init": 20,
+                    "min": 1,
+                    "max": 100,
+                    "step": 0.1
+                },
+                {
+                    "type": "hslider",
+                    "label": "slope",
+                    "varname": "fHslider1",
+                    "shortname": "slope",
+                    "address": "/vocoder/slope",
+                    "index": 32,
+                    "init": 0.5,
+                    "min": 0,
+                    "max": 1,
+                    "step": 0.01
+                },
+                {
+                    "type": "nentry",
+                    "label": "stages",
+                    "varname": "fEntry0",
+                    "shortname": "stages",
+                    "address": "/vocoder/stages",
+                    "index": 100,
+                    "init": 24,
+                    "min": 2,
+                    "max": 64,
+                    "step": 1
+                }
+            ]
+        }
+    ]
+}

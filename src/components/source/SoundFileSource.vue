@@ -31,6 +31,7 @@
 
 <script>
 import ControlSlider from '../controls/ControlSlider.vue'
+import { useAudioEngineStore } from '../../stores/audioEngine'
 
 export default {
   name: 'SoundFileSource',
@@ -55,12 +56,14 @@ export default {
       await this.audio.loadFile(file)
       this.hasFile = true
     },
-    togglePlay() {
+    async togglePlay() {
       if (!this.audio || !this.hasFile) return
       if (this.isPlaying) {
         this.audio.stopFile()
         this.isPlaying = false
       } else {
+        const engine = useAudioEngineStore()
+        if (!engine.isRunning) await engine.start()
         this.audio.playFile(this.loop, this.speed)
         this.isPlaying = true
       }

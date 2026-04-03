@@ -23,6 +23,9 @@
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
 import { moduleAudioMixin } from '../../mixins/moduleAudio'
+import { FaustMonoDspGenerator } from '@grame/faustwasm'
+import distortionWasmUrl from '../../audio/faust/compiled/distortion.wasm?url'
+import distortionMetaUrl from '../../audio/faust/compiled/distortion-meta.json?url'
 
 export default {
   name: 'Mod10Distortion',
@@ -40,10 +43,8 @@ export default {
         { fr: 'Arctangente', en: 'Arctangent' },
         { fr: 'Waveshaper', en: 'Waveshaper' }
       ],
-      workletNode: null,
-      lowpassFilter: null,
-      bypassGain: null,
-      filterGain: null
+      faustNode: null,
+      outputGain: null
     }
   },
   methods: {
@@ -57,63 +58,66 @@ export default {
       return (texts[key] || {})[this.$i18n.locale] || key
     },
     async setup() {
-      const ctx = this.engine.context
+      const ctx = this.ctx
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
-      await ctx.audioWorklet.addModule(
-        new URL('../../audio/worklets/distortion.js', import.meta.url)
-      )
-      this.workletNode = new AudioWorkletNode(ctx, 'distortion')
-      this.workletNode.port.postMessage({ type: this.distoType, drive: this.drive })
+      // Load pre-compiled Faust distortion
+      const dspMeta = await (await fetch(distortionMetaUrl)).json()
+      const dspModule = await WebAssembly.compileStreaming(await fetch(distortionWasmUrl))
 
-      // Optional lowpass filter
-      this.lowpassFilter = ctx.createBiquadFilter()
-      this.lowpassFilter.type = 'lowpass'
-      this.lowpassFilter.frequency.value = this.cutoff
-      this.lowpassFilter.Q.value = 0.707
+      const generator = new FaustMonoDspGenerator()
+      this.faustNode = await generator.createNode(ctx, 'distortion', {
+        module: dspModule,
+        json: JSON.stringify(dspMeta)
+      })
 
-      // Bypass/filter routing
-      this.bypassGain = ctx.createGain()
-      this.bypassGain.gain.value = 1
-      this.filterGain = ctx.createGain()
-      this.filterGain.gain.value = 0
+      if (!this.faustNode) {
+        console.warn('Failed to create Faust distortion node')
+        return
+      }
 
-      source.connect(this.workletNode)
-      this.workletNode.connect(this.bypassGain)
-      this.workletNode.connect(this.lowpassFilter)
-      this.lowpassFilter.connect(this.filterGain)
-      this.bypassGain.connect(this.engine.masterGain)
-      this.filterGain.connect(this.engine.masterGain)
+      // Set initial parameters
+      this.faustNode.setParamValue('/distortion/type', this.distoType)
+      this.faustNode.setParamValue('/distortion/drive', this.drive)
+      this.faustNode.setParamValue('/distortion/filterOn', this.filterEnabled ? 1 : 0)
+      this.faustNode.setParamValue('/distortion/cutoff', this.cutoff)
+
+      // Output gain
+      this.outputGain = ctx.createGain()
+      this.outputGain.gain.value = 1
+
+      source.connect(this.faustNode)
+      this.faustNode.connect(this.outputGain)
+      this.outputGain.connect(this.engine.masterGain)
     },
     teardown() {
-      const nodes = [this.workletNode, this.lowpassFilter, this.bypassGain, this.filterGain]
-      nodes.forEach(n => { if (n) try { n.disconnect() } catch (e) { /* */ } })
-      if (this.engine.sourcePanel) {
-        try { this.engine.sourcePanel.output.disconnect() } catch (e) { /* */ }
-        try { this.engine.sourcePanel.output.connect(this.engine.masterGain) } catch (e) { /* */ }
+      if (this.faustNode) {
+        try { this.faustNode.disconnect() } catch (e) { /* */ }
+        if (this.faustNode.destroy) this.faustNode.destroy()
+        this.faustNode = null
       }
+      if (this.outputGain) {
+        try { this.outputGain.disconnect() } catch (e) { /* */ }
+        this.outputGain = null
+      }
+      this.releaseSource()
     },
     onTypeChange() {
-      if (this.workletNode) this.workletNode.port.postMessage({ type: this.distoType })
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/distortion/type', this.distoType)
     },
     onDriveChange(val) {
-      if (this.workletNode) this.workletNode.port.postMessage({ drive: val })
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/distortion/drive', val)
     },
     onFilterToggle() {
-      if (!this.audioReady) return
-      const t = this.engine.context.currentTime
-      if (this.filterEnabled) {
-        this.bypassGain.gain.setTargetAtTime(0, t, 0.02)
-        this.filterGain.gain.setTargetAtTime(1, t, 0.02)
-      } else {
-        this.bypassGain.gain.setTargetAtTime(1, t, 0.02)
-        this.filterGain.gain.setTargetAtTime(0, t, 0.02)
-      }
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/distortion/filterOn', this.filterEnabled ? 1 : 0)
     },
     onCutoffChange(val) {
-      if (!this.audioReady) return
-      this.lowpassFilter.frequency.setTargetAtTime(val, this.engine.context.currentTime, 0.05)
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/distortion/cutoff', val)
     }
   }
 }

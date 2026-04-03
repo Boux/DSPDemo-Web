@@ -1,6 +1,6 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/__vite-browser-external-D6v0R7Vd.js","assets/chunk-f7LOQL_L.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./__vite-browser-external-D6v0R7Vd.js","./chunk-f7LOQL_L.js"])))=>i.map(i=>d[i]);
 import { r as __toESM } from "./chunk-f7LOQL_L.js";
-import { C as renderList, D as normalizeClass, E as withDirectives, O as toDisplayString, S as openBlock, T as resolveDynamicComponent, _ as createBlock, a as interpFloat, b as createTextVNode, c as toLog, d as useModuleRegistryStore, f as __vitePreload, g as createBaseVNode, h as Fragment, i as formatValue, l as useAudioEngineStore, m as vModelSelect, n as EditableValue_default, o as tFromValue, p as vModelCheckbox, r as clamp, s as toExp, t as LabelKnob_default, u as _plugin_vue_export_helper_default, v as createCommentVNode, w as resolveComponent, x as createVNode, y as createElementBlock } from "./index-CKGspW4U.js";
+import { C as renderList, D as normalizeClass, E as withDirectives, O as toDisplayString, S as openBlock, T as resolveDynamicComponent, _ as createBlock, a as interpFloat, b as createTextVNode, c as toLog, d as useModuleRegistryStore, f as __vitePreload, g as createBaseVNode, h as Fragment, i as formatValue, l as useAudioEngineStore, m as vModelSelect, n as EditableValue_default, o as tFromValue, p as vModelCheckbox, r as clamp, s as toExp, t as LabelKnob_default, u as _plugin_vue_export_helper_default, v as createCommentVNode, w as resolveComponent, x as createVNode, y as createElementBlock } from "./index-Dl-yF8XT.js";
 //#region src/components/docs/moduleDocs.js
 var MODULE_DOCS = {
 	"mod-00-sources": {
@@ -528,12 +528,14 @@ var _sfc_main$37 = {
 			await this.audio.loadFile(file);
 			this.hasFile = true;
 		},
-		togglePlay() {
+		async togglePlay() {
 			if (!this.audio || !this.hasFile) return;
 			if (this.isPlaying) {
 				this.audio.stopFile();
 				this.isPlaying = false;
 			} else {
+				const engine = useAudioEngineStore();
+				if (!engine.isRunning) await engine.start();
 				this.audio.playFile(this.loop, this.speed);
 				this.isPlaying = true;
 			}
@@ -1005,7 +1007,7 @@ var _hoisted_6$19 = ["value"];
 var _hoisted_7$14 = { class: "control-group" };
 var _hoisted_8$13 = { class: "control-label" };
 var _hoisted_9$11 = ["disabled"];
-var _hoisted_10$7 = ["value"];
+var _hoisted_10$8 = ["value"];
 function _sfc_render$33(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_SourcePanel = resolveComponent("SourcePanel");
 	const _component_ControlSlider = resolveComponent("ControlSlider");
@@ -1077,7 +1079,7 @@ function _sfc_render$33(_ctx, _cache, $props, $setup, $data, $options) {
 				return createBaseVNode("option", {
 					key: o,
 					value: o
-				}, toDisplayString(o), 9, _hoisted_10$7);
+				}, toDisplayString(o), 9, _hoisted_10$8);
 			}), 64))], 40, _hoisted_9$11), [[
 				vModelSelect,
 				$data.order,
@@ -1088,141 +1090,6 @@ function _sfc_render$33(_ctx, _cache, $props, $setup, $data, $options) {
 	]);
 }
 var Mod02Filters_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$33, [["render", _sfc_render$33]]);
-//#endregion
-//#region src/components/modules/Mod03FixedDelay.vue
-var _sfc_main$32 = {
-	name: "Mod03FixedDelay",
-	components: {
-		SourcePanel: SourcePanel_default,
-		ControlSlider: ControlSlider_default
-	},
-	mixins: [moduleAudioMixin],
-	data() {
-		return {
-			delayTimeMs: .023,
-			feedback: 0,
-			delayNode: null,
-			feedbackGain: null,
-			dryGain: null,
-			wetGain: null,
-			mixGain: null
-		};
-	},
-	computed: {
-		minTimeMs() {
-			return 1e3 / this.engine.sampleRate;
-		},
-		delaySamples() {
-			return (this.delayTimeMs * .001 * this.engine.sampleRate).toFixed(2);
-		}
-	},
-	methods: {
-		t(key) {
-			return ({
-				moduleInterface: {
-					fr: "Interface du Module",
-					en: "Module Interface"
-				},
-				delayTime: {
-					fr: "Temps de délai (ms)",
-					en: "Delay Time (ms)"
-				},
-				delaySamples: {
-					fr: "Délai en échantillons",
-					en: "Delay in samples"
-				},
-				feedback: {
-					fr: "Réinjection en %",
-					en: "Feedback %"
-				}
-			}[key] || {})[this.$i18n.locale] || key;
-		},
-		setup() {
-			const ctx = this.engine.context;
-			const source = this.engine.sourcePanel.output;
-			source.disconnect(this.engine.masterGain);
-			this.delayNode = ctx.createDelay(1);
-			this.delayNode.delayTime.value = this.delayTimeMs * .001;
-			this.feedbackGain = ctx.createGain();
-			this.feedbackGain.gain.value = 0;
-			this.mixGain = ctx.createGain();
-			this.mixGain.gain.value = .5;
-			source.connect(this.delayNode);
-			this.delayNode.connect(this.feedbackGain);
-			this.feedbackGain.connect(this.delayNode);
-			source.connect(this.mixGain);
-			this.delayNode.connect(this.mixGain);
-			this.mixGain.connect(this.engine.masterGain);
-		},
-		teardown() {
-			[
-				this.delayNode,
-				this.feedbackGain,
-				this.mixGain
-			].forEach((n) => {
-				if (n) try {
-					n.disconnect();
-				} catch (e) {}
-			});
-			if (this.engine.sourcePanel) {
-				try {
-					this.engine.sourcePanel.output.disconnect();
-				} catch (e) {}
-				try {
-					this.engine.sourcePanel.output.connect(this.engine.masterGain);
-				} catch (e) {}
-			}
-		},
-		onTimeChange(val) {
-			if (!this.audioReady) return;
-			this.delayNode.delayTime.setTargetAtTime(val * .001, this.engine.context.currentTime, .05);
-		},
-		onFeedChange(val) {
-			if (!this.audioReady) return;
-			this.feedbackGain.gain.setTargetAtTime(val * .01, this.engine.context.currentTime, .05);
-		}
-	}
-};
-var _hoisted_1$32 = { class: "module-controls" };
-var _hoisted_2$32 = { class: "section-head" };
-var _hoisted_3$30 = { class: "section-body" };
-var _hoisted_4$22 = { class: "control-label delay-samples" };
-function _sfc_render$32(_ctx, _cache, $props, $setup, $data, $options) {
-	const _component_SourcePanel = resolveComponent("SourcePanel");
-	const _component_ControlSlider = resolveComponent("ControlSlider");
-	return openBlock(), createElementBlock("div", _hoisted_1$32, [
-		createVNode(_component_SourcePanel, { audio: _ctx.engine.sourcePanel }, null, 8, ["audio"]),
-		createBaseVNode("div", _hoisted_2$32, toDisplayString($options.t("moduleInterface")), 1),
-		createBaseVNode("div", _hoisted_3$30, [
-			createVNode(_component_ControlSlider, {
-				label: $options.t("delayTime"),
-				modelValue: $data.delayTimeMs,
-				"onUpdate:modelValue": [_cache[0] || (_cache[0] = ($event) => $data.delayTimeMs = $event), $options.onTimeChange],
-				mini: $options.minTimeMs,
-				maxi: 100,
-				log: true
-			}, null, 8, [
-				"label",
-				"modelValue",
-				"mini",
-				"onUpdate:modelValue"
-			]),
-			createBaseVNode("div", _hoisted_4$22, toDisplayString($options.t("delaySamples")) + ": " + toDisplayString($options.delaySamples), 1),
-			createVNode(_component_ControlSlider, {
-				label: $options.t("feedback"),
-				modelValue: $data.feedback,
-				"onUpdate:modelValue": [_cache[1] || (_cache[1] = ($event) => $data.feedback = $event), $options.onFeedChange],
-				mini: 0,
-				maxi: 99
-			}, null, 8, [
-				"label",
-				"modelValue",
-				"onUpdate:modelValue"
-			])
-		])
-	]);
-}
-var Mod03FixedDelay_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$32, [["render", _sfc_render$32]]);
 //#endregion
 //#region node_modules/@grame/faustwasm/dist/esm/index.js
 var __typeError = (msg) => {
@@ -1250,18 +1117,18 @@ export default ${(_a = jsCode.match(jsCodeHead)) == null ? void 0 : _a[1]};
 				jsFileMod
 );
 			return { default: __vite_default__ };
-		}, [])).default;
+		}, [], import.meta.url)).default;
 		dataBinary = await (await fetch(dataFile)).arrayBuffer();
 		wasmBinary = await (await fetch(wasmFile)).arrayBuffer();
 	} else {
 		const { promises: fs } = await __vitePreload(async () => {
 			const { promises: fs } = await import("./__vite-browser-external-D6v0R7Vd.js").then((m) => /* @__PURE__ */ __toESM(m.default, 1));
 			return { promises: fs };
-		}, __vite__mapDeps([0,1]));
+		}, __vite__mapDeps([0,1]), import.meta.url);
 		const { pathToFileURL } = await __vitePreload(async () => {
 			const { pathToFileURL } = await import("./__vite-browser-external-D6v0R7Vd.js").then((m) => /* @__PURE__ */ __toESM(m.default, 1));
 			return { pathToFileURL };
-		}, __vite__mapDeps([0,1]));
+		}, __vite__mapDeps([0,1]), import.meta.url);
 		let jsCode = await fs.readFile(jsFile, { encoding: "utf-8" });
 		jsCode = `
 import process from "process";
@@ -1285,7 +1152,7 @@ export default ${(_b = jsCode.match(jsCodeHead)) == null ? void 0 : _b[1]};
 				pathToFileURL(jsFileMod).href
 );
 			return { default: __vite_default__ };
-		}, [])).default;
+		}, [], import.meta.url)).default;
 		await fs.unlink(jsFileMod);
 		dataBinary = new Uint8Array(await fs.readFile(dataFile)).buffer;
 		wasmBinary = new Uint8Array(await fs.readFile(wasmFile)).buffer;
@@ -5578,8 +5445,148 @@ var _FaustDspGenerator = class _FaustDspGenerator {
 };
 _FaustDspGenerator.compilerPromise = null;
 //#endregion
+//#region src/audio/faust/compiled/fixeddelay.wasm?url
+var fixeddelay_default = "data:application/wasm;base64,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VkR3ZiIsImlucHV0cyI6IDEsIm91dHB1dHMiOiAxLCJtZXRhIjogWyB7ICJjb21waWxlX29wdGlvbnMiOiAiLWxhbmcgd2FzbS1pIC1mcGdhLW1lbS10aCA0IC1jdCAxIC1lcyAxIC1tY2QgMTYgLW1kZCAxMDI0IC1tZHkgMzMgLXNpbmdsZSAtZnR6IDIiIH0seyAiZGVsYXlzLmxpYi9uYW1lIjogIkZhdXN0IERlbGF5IExpYnJhcnkiIH0seyAiZGVsYXlzLmxpYi92ZXJzaW9uIjogIjEuMi4wIiB9LHsgImZpbGVuYW1lIjogImZpeGVkZGVsYXkiIH0seyAibWF0aHMubGliL2F1dGhvciI6ICJHUkFNRSIgfSx7ICJtYXRocy5saWIvY29weXJpZ2h0IjogIkdSQU1FIiB9LHsgIm1hdGhzLmxpYi9saWNlbnNlIjogIkxHUEwgd2l0aCBleGNlcHRpb24iIH0seyAibWF0aHMubGliL25hbWUiOiAiRmF1c3QgTWF0aCBMaWJyYXJ5IiB9LHsgIm1hdGhzLmxpYi92ZXJzaW9uIjogIjIuOS4wIiB9LHsgIm5hbWUiOiAiZml4ZWRkZWxheSIgfSx7ICJwbGF0Zm9ybS5saWIvbmFtZSI6ICJHZW5lcmljIFBsYXRmb3JtIExpYnJhcnkiIH0seyAicGxhdGZvcm0ubGliL3ZlcnNpb24iOiAiMS4zLjAiIH0seyAic2lnbmFscy5saWIvbmFtZSI6ICJGYXVzdCBTaWduYWwgUm91dGluZyBMaWJyYXJ5IiB9LHsgInNpZ25hbHMubGliL3ZlcnNpb24iOiAiMS42LjAiIH1dLCJ1aSI6IFsgeyJ0eXBlIjogInZncm91cCIsImxhYmVsIjogImZpeGVkZGVsYXkiLCJpdGVtcyI6IFsgeyJ0eXBlIjogImhzbGlkZXIiLCJsYWJlbCI6ICJkZWxheU1zIiwidmFybmFtZSI6ICJmSHNsaWRlcjEiLCJzaG9ydG5hbWUiOiAiZGVsYXlNcyIsImFkZHJlc3MiOiAiL2ZpeGVkZGVsYXkvZGVsYXlNcyIsImluZGV4IjogMzYsImluaXQiOiA1LCJtaW4iOiAwLjAyLCJtYXgiOiAxMDAsInN0ZXAiOiAwLjAxfSx7InR5cGUiOiAiaHNsaWRlciIsImxhYmVsIjogImZlZWRiYWNrIiwidmFybmFtZSI6ICJmSHNsaWRlcjAiLCJzaG9ydG5hbWUiOiAiZmVlZGJhY2siLCJhZGRyZXNzIjogIi9maXhlZGRlbGF5L2ZlZWRiYWNrIiwiaW5kZXgiOiAxMiwiaW5pdCI6IDAsIm1pbiI6IDAsIm1heCI6IDAuOTksInN0ZXAiOiAwLjAxfV19XX0=";
+//#endregion
+//#region src/audio/faust/compiled/fixeddelay-meta.json?url
+var fixeddelay_meta_default = "data:application/json;base64,ewogICAgIm5hbWUiOiAiZml4ZWRkZWxheSIsCiAgICAiZmlsZW5hbWUiOiAiZml4ZWRkZWxheSIsCiAgICAidmVyc2lvbiI6ICIyLjg0LjMiLAogICAgImNvbXBpbGVfb3B0aW9ucyI6ICItbGFuZyB3YXNtLWkgLWZwZ2EtbWVtLXRoIDQgLWN0IDEgLWVzIDEgLW1jZCAxNiAtbWRkIDEwMjQgLW1keSAzMyAtc2luZ2xlIC1mdHogMiIsCiAgICAibGlicmFyeV9saXN0IjogWwogICAgICAgICIvdXNyL3NoYXJlL2ZhdXN0L3N0ZGZhdXN0LmxpYiIsCiAgICAgICAgIi91c3Ivc2hhcmUvZmF1c3QvZGVsYXlzLmxpYiIsCiAgICAgICAgIi91c3Ivc2hhcmUvZmF1c3Qvc2lnbmFscy5saWIiLAogICAgICAgICIvdXNyL3NoYXJlL2ZhdXN0L21hdGhzLmxpYiIsCiAgICAgICAgIi91c3Ivc2hhcmUvZmF1c3QvcGxhdGZvcm0ubGliIgogICAgXSwKICAgICJpbmNsdWRlX3BhdGhuYW1lcyI6IFsKICAgICAgICAiL2ZhdXN0L3VzZXIvaW5jMCIsCiAgICAgICAgIi9zaGFyZS9mYXVzdCIsCiAgICAgICAgIi91c3IvbG9jYWwvc2hhcmUvZmF1c3QiLAogICAgICAgICIvdXNyL3NoYXJlL2ZhdXN0IiwKICAgICAgICAiLiIKICAgIF0sCiAgICAic2l6ZSI6IDY1NTg0LAogICAgImNvZGUiOiAiVkR3ZiIsCiAgICAiaW5wdXRzIjogMSwKICAgICJvdXRwdXRzIjogMSwKICAgICJtZXRhIjogWwogICAgICAgIHsKICAgICAgICAgICAgImNvbXBpbGVfb3B0aW9ucyI6ICItbGFuZyB3YXNtLWkgLWZwZ2EtbWVtLXRoIDQgLWN0IDEgLWVzIDEgLW1jZCAxNiAtbWRkIDEwMjQgLW1keSAzMyAtc2luZ2xlIC1mdHogMiIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgImRlbGF5cy5saWIvbmFtZSI6ICJGYXVzdCBEZWxheSBMaWJyYXJ5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAiZGVsYXlzLmxpYi92ZXJzaW9uIjogIjEuMi4wIgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAiZmlsZW5hbWUiOiAiZml4ZWRkZWxheSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgIm1hdGhzLmxpYi9hdXRob3IiOiAiR1JBTUUiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJtYXRocy5saWIvY29weXJpZ2h0IjogIkdSQU1FIgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAibWF0aHMubGliL2xpY2Vuc2UiOiAiTEdQTCB3aXRoIGV4Y2VwdGlvbiIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgIm1hdGhzLmxpYi9uYW1lIjogIkZhdXN0IE1hdGggTGlicmFyeSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgIm1hdGhzLmxpYi92ZXJzaW9uIjogIjIuOS4wIgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAibmFtZSI6ICJmaXhlZGRlbGF5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAicGxhdGZvcm0ubGliL25hbWUiOiAiR2VuZXJpYyBQbGF0Zm9ybSBMaWJyYXJ5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAicGxhdGZvcm0ubGliL3ZlcnNpb24iOiAiMS4zLjAiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJzaWduYWxzLmxpYi9uYW1lIjogIkZhdXN0IFNpZ25hbCBSb3V0aW5nIExpYnJhcnkiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJzaWduYWxzLmxpYi92ZXJzaW9uIjogIjEuNi4wIgogICAgICAgIH0KICAgIF0sCiAgICAidWkiOiBbCiAgICAgICAgewogICAgICAgICAgICAidHlwZSI6ICJ2Z3JvdXAiLAogICAgICAgICAgICAibGFiZWwiOiAiZml4ZWRkZWxheSIsCiAgICAgICAgICAgICJpdGVtcyI6IFsKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJoc2xpZGVyIiwKICAgICAgICAgICAgICAgICAgICAibGFiZWwiOiAiZGVsYXlNcyIsCiAgICAgICAgICAgICAgICAgICAgInZhcm5hbWUiOiAiZkhzbGlkZXIxIiwKICAgICAgICAgICAgICAgICAgICAic2hvcnRuYW1lIjogImRlbGF5TXMiLAogICAgICAgICAgICAgICAgICAgICJhZGRyZXNzIjogIi9maXhlZGRlbGF5L2RlbGF5TXMiLAogICAgICAgICAgICAgICAgICAgICJpbmRleCI6IDM2LAogICAgICAgICAgICAgICAgICAgICJpbml0IjogNSwKICAgICAgICAgICAgICAgICAgICAibWluIjogMC4wMiwKICAgICAgICAgICAgICAgICAgICAibWF4IjogMTAwLAogICAgICAgICAgICAgICAgICAgICJzdGVwIjogMC4wMQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJoc2xpZGVyIiwKICAgICAgICAgICAgICAgICAgICAibGFiZWwiOiAiZmVlZGJhY2siLAogICAgICAgICAgICAgICAgICAgICJ2YXJuYW1lIjogImZIc2xpZGVyMCIsCiAgICAgICAgICAgICAgICAgICAgInNob3J0bmFtZSI6ICJmZWVkYmFjayIsCiAgICAgICAgICAgICAgICAgICAgImFkZHJlc3MiOiAiL2ZpeGVkZGVsYXkvZmVlZGJhY2siLAogICAgICAgICAgICAgICAgICAgICJpbmRleCI6IDEyLAogICAgICAgICAgICAgICAgICAgICJpbml0IjogMCwKICAgICAgICAgICAgICAgICAgICAibWluIjogMCwKICAgICAgICAgICAgICAgICAgICAibWF4IjogMC45OSwKICAgICAgICAgICAgICAgICAgICAic3RlcCI6IDAuMDEKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgXQogICAgICAgIH0KICAgIF0KfQ==";
+//#endregion
+//#region src/components/modules/Mod03FixedDelay.vue
+var _sfc_main$32 = {
+	name: "Mod03FixedDelay",
+	components: {
+		SourcePanel: SourcePanel_default,
+		ControlSlider: ControlSlider_default
+	},
+	mixins: [moduleAudioMixin],
+	data() {
+		return {
+			delayTimeMs: 5,
+			feedback: 0,
+			faustNode: null,
+			outputGain: null
+		};
+	},
+	computed: {
+		minTimeMs() {
+			return 1e3 / this.engine.sampleRate;
+		},
+		delaySamples() {
+			return (this.delayTimeMs * .001 * this.engine.sampleRate).toFixed(2);
+		}
+	},
+	methods: {
+		t(key) {
+			return ({
+				moduleInterface: {
+					fr: "Interface du Module",
+					en: "Module Interface"
+				},
+				delayTime: {
+					fr: "Temps de délai (ms)",
+					en: "Delay Time (ms)"
+				},
+				delaySamples: {
+					fr: "Délai en échantillons",
+					en: "Delay in samples"
+				},
+				feedback: {
+					fr: "Réinjection en %",
+					en: "Feedback %"
+				}
+			}[key] || {})[this.$i18n.locale] || key;
+		},
+		async setup() {
+			const ctx = this.ctx;
+			const source = this.engine.sourcePanel.output;
+			source.disconnect(this.engine.masterGain);
+			const dspMeta = await (await fetch(fixeddelay_meta_default)).json();
+			const dspModule = await WebAssembly.compileStreaming(await fetch(fixeddelay_default));
+			this.faustNode = await new FaustMonoDspGenerator().createNode(ctx, "fixeddelay", {
+				module: dspModule,
+				json: JSON.stringify(dspMeta)
+			});
+			if (!this.faustNode) {
+				console.warn("Failed to create Faust fixeddelay node");
+				return;
+			}
+			this.faustNode.setParamValue("/fixeddelay/delayMs", this.delayTimeMs);
+			this.faustNode.setParamValue("/fixeddelay/feedback", this.feedback * .01);
+			this.outputGain = ctx.createGain();
+			this.outputGain.gain.value = 1;
+			source.connect(this.faustNode);
+			this.faustNode.connect(this.outputGain);
+			this.outputGain.connect(this.engine.masterGain);
+		},
+		teardown() {
+			if (this.faustNode) {
+				try {
+					this.faustNode.disconnect();
+				} catch (e) {}
+				if (this.faustNode.destroy) this.faustNode.destroy();
+				this.faustNode = null;
+			}
+			if (this.outputGain) {
+				try {
+					this.outputGain.disconnect();
+				} catch (e) {}
+				this.outputGain = null;
+			}
+			this.releaseSource();
+		},
+		onTimeChange(val) {
+			if (!this.audioReady || !this.faustNode) return;
+			this.faustNode.setParamValue("/fixeddelay/delayMs", val);
+		},
+		onFeedChange(val) {
+			if (!this.audioReady || !this.faustNode) return;
+			this.faustNode.setParamValue("/fixeddelay/feedback", val * .01);
+		}
+	}
+};
+var _hoisted_1$32 = { class: "module-controls" };
+var _hoisted_2$32 = { class: "section-head" };
+var _hoisted_3$30 = { class: "section-body" };
+var _hoisted_4$22 = { class: "control-label delay-samples" };
+function _sfc_render$32(_ctx, _cache, $props, $setup, $data, $options) {
+	const _component_SourcePanel = resolveComponent("SourcePanel");
+	const _component_ControlSlider = resolveComponent("ControlSlider");
+	return openBlock(), createElementBlock("div", _hoisted_1$32, [
+		createVNode(_component_SourcePanel, { audio: _ctx.engine.sourcePanel }, null, 8, ["audio"]),
+		createBaseVNode("div", _hoisted_2$32, toDisplayString($options.t("moduleInterface")), 1),
+		createBaseVNode("div", _hoisted_3$30, [
+			createVNode(_component_ControlSlider, {
+				label: $options.t("delayTime"),
+				modelValue: $data.delayTimeMs,
+				"onUpdate:modelValue": [_cache[0] || (_cache[0] = ($event) => $data.delayTimeMs = $event), $options.onTimeChange],
+				mini: $options.minTimeMs,
+				maxi: 100,
+				log: true
+			}, null, 8, [
+				"label",
+				"modelValue",
+				"mini",
+				"onUpdate:modelValue"
+			]),
+			createBaseVNode("div", _hoisted_4$22, toDisplayString($options.t("delaySamples")) + ": " + toDisplayString($options.delaySamples), 1),
+			createVNode(_component_ControlSlider, {
+				label: $options.t("feedback"),
+				modelValue: $data.feedback,
+				"onUpdate:modelValue": [_cache[1] || (_cache[1] = ($event) => $data.feedback = $event), $options.onFeedChange],
+				mini: 0,
+				maxi: 99
+			}, null, 8, [
+				"label",
+				"modelValue",
+				"onUpdate:modelValue"
+			])
+		])
+	]);
+}
+var Mod03FixedDelay_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$32, [["render", _sfc_render$32]]);
+//#endregion
 //#region src/audio/faust/compiled/vardelay.wasm?url
-var vardelay_default = "/DSPDemo-Web/assets/vardelay-BYoAUPaa.wasm";
+var vardelay_default = "" + new URL("vardelay-BYoAUPaa.wasm", import.meta.url).href;
 //#endregion
 //#region src/audio/faust/compiled/vardelay-meta.json?url
 var vardelay_meta_default = "data:application/json;base64,ewogICAgIm5hbWUiOiAidmFyZGVsYXkiLAogICAgImZpbGVuYW1lIjogInZhcmRlbGF5IiwKICAgICJ2ZXJzaW9uIjogIjIuODQuMyIsCiAgICAiY29tcGlsZV9vcHRpb25zIjogIi1sYW5nIHdhc20taSAtZnBnYS1tZW0tdGggNCAtY3QgMSAtZXMgMSAtbWNkIDE2IC1tZGQgMTAyNCAtbWR5IDMzIC1zaW5nbGUgLWZ0eiAyIiwKICAgICJsaWJyYXJ5X2xpc3QiOiBbCiAgICAgICAgIi91c3Ivc2hhcmUvZmF1c3Qvc3RkZmF1c3QubGliIiwKICAgICAgICAiL3Vzci9zaGFyZS9mYXVzdC9kZWxheXMubGliIiwKICAgICAgICAiL3Vzci9zaGFyZS9mYXVzdC9zaWduYWxzLmxpYiIsCiAgICAgICAgIi91c3Ivc2hhcmUvZmF1c3QvbWF0aHMubGliIiwKICAgICAgICAiL3Vzci9zaGFyZS9mYXVzdC9wbGF0Zm9ybS5saWIiLAogICAgICAgICIvdXNyL3NoYXJlL2ZhdXN0L29zY2lsbGF0b3JzLmxpYiIsCiAgICAgICAgIi91c3Ivc2hhcmUvZmF1c3QvYmFzaWNzLmxpYiIKICAgIF0sCiAgICAiaW5jbHVkZV9wYXRobmFtZXMiOiBbCiAgICAgICAgIi9mYXVzdC91c2VyL2luYzAiLAogICAgICAgICIvc2hhcmUvZmF1c3QiLAogICAgICAgICIvdXNyL2xvY2FsL3NoYXJlL2ZhdXN0IiwKICAgICAgICAiL3Vzci9zaGFyZS9mYXVzdCIsCiAgICAgICAgIi4iCiAgICBdLAogICAgInNpemUiOiAzMjc3ODgsCiAgICAiY29kZSI6ICIyTmpaIiwKICAgICJpbnB1dHMiOiAxLAogICAgIm91dHB1dHMiOiAxLAogICAgIm1ldGEiOiBbCiAgICAgICAgewogICAgICAgICAgICAiYmFzaWNzLmxpYi9uYW1lIjogIkZhdXN0IEJhc2ljIEVsZW1lbnQgTGlicmFyeSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgImJhc2ljcy5saWIvdmVyc2lvbiI6ICIxLjIyLjAiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJjb21waWxlX29wdGlvbnMiOiAiLWxhbmcgd2FzbS1pIC1mcGdhLW1lbS10aCA0IC1jdCAxIC1lcyAxIC1tY2QgMTYgLW1kZCAxMDI0IC1tZHkgMzMgLXNpbmdsZSAtZnR6IDIiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJkZWxheXMubGliL25hbWUiOiAiRmF1c3QgRGVsYXkgTGlicmFyeSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgImRlbGF5cy5saWIvdmVyc2lvbiI6ICIxLjIuMCIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgImZpbGVuYW1lIjogInZhcmRlbGF5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAibWF0aHMubGliL2F1dGhvciI6ICJHUkFNRSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgIm1hdGhzLmxpYi9jb3B5cmlnaHQiOiAiR1JBTUUiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJtYXRocy5saWIvbGljZW5zZSI6ICJMR1BMIHdpdGggZXhjZXB0aW9uIgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAibWF0aHMubGliL25hbWUiOiAiRmF1c3QgTWF0aCBMaWJyYXJ5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAibWF0aHMubGliL3ZlcnNpb24iOiAiMi45LjAiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJuYW1lIjogInZhcmRlbGF5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAib3NjaWxsYXRvcnMubGliL25hbWUiOiAiRmF1c3QgT3NjaWxsYXRvciBMaWJyYXJ5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgICAib3NjaWxsYXRvcnMubGliL3ZlcnNpb24iOiAiMS43LjAiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJwbGF0Zm9ybS5saWIvbmFtZSI6ICJHZW5lcmljIFBsYXRmb3JtIExpYnJhcnkiCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAgICJwbGF0Zm9ybS5saWIvdmVyc2lvbiI6ICIxLjMuMCIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgInNpZ25hbHMubGliL25hbWUiOiAiRmF1c3QgU2lnbmFsIFJvdXRpbmcgTGlicmFyeSIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICAgInNpZ25hbHMubGliL3ZlcnNpb24iOiAiMS42LjAiCiAgICAgICAgfQogICAgXSwKICAgICJ1aSI6IFsKICAgICAgICB7CiAgICAgICAgICAgICJ0eXBlIjogInZncm91cCIsCiAgICAgICAgICAgICJsYWJlbCI6ICJ2YXJkZWxheSIsCiAgICAgICAgICAgICJpdGVtcyI6IFsKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJoc2xpZGVyIiwKICAgICAgICAgICAgICAgICAgICAibGFiZWwiOiAiZGVwdGgiLAogICAgICAgICAgICAgICAgICAgICJ2YXJuYW1lIjogImZIc2xpZGVyMSIsCiAgICAgICAgICAgICAgICAgICAgInNob3J0bmFtZSI6ICJkZXB0aCIsCiAgICAgICAgICAgICAgICAgICAgImFkZHJlc3MiOiAiL3ZhcmRlbGF5L2RlcHRoIiwKICAgICAgICAgICAgICAgICAgICAiaW5kZXgiOiAyNjIxODQsCiAgICAgICAgICAgICAgICAgICAgImluaXQiOiAwLjk5NSwKICAgICAgICAgICAgICAgICAgICAibWluIjogMCwKICAgICAgICAgICAgICAgICAgICAibWF4IjogMC45OTUsCiAgICAgICAgICAgICAgICAgICAgInN0ZXAiOiAwLjAwMQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJoc2xpZGVyIiwKICAgICAgICAgICAgICAgICAgICAibGFiZWwiOiAiZmVlZGJhY2siLAogICAgICAgICAgICAgICAgICAgICJ2YXJuYW1lIjogImZIc2xpZGVyMyIsCiAgICAgICAgICAgICAgICAgICAgInNob3J0bmFtZSI6ICJmZWVkYmFjayIsCiAgICAgICAgICAgICAgICAgICAgImFkZHJlc3MiOiAiL3ZhcmRlbGF5L2ZlZWRiYWNrIiwKICAgICAgICAgICAgICAgICAgICAiaW5kZXgiOiAyNjIyMjAsCiAgICAgICAgICAgICAgICAgICAgImluaXQiOiAwLAogICAgICAgICAgICAgICAgICAgICJtaW4iOiAwLAogICAgICAgICAgICAgICAgICAgICJtYXgiOiAwLjk5LAogICAgICAgICAgICAgICAgICAgICJzdGVwIjogMC4wMQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJoc2xpZGVyIiwKICAgICAgICAgICAgICAgICAgICAibGFiZWwiOiAibGZvRnJlcSIsCiAgICAgICAgICAgICAgICAgICAgInZhcm5hbWUiOiAiZkhzbGlkZXIyIiwKICAgICAgICAgICAgICAgICAgICAic2hvcnRuYW1lIjogImxmb0ZyZXEiLAogICAgICAgICAgICAgICAgICAgICJhZGRyZXNzIjogIi92YXJkZWxheS9sZm9GcmVxIiwKICAgICAgICAgICAgICAgICAgICAiaW5kZXgiOiAyNjIyMDAsCiAgICAgICAgICAgICAgICAgICAgImluaXQiOiAwLjEsCiAgICAgICAgICAgICAgICAgICAgIm1pbiI6IDAuMDEsCiAgICAgICAgICAgICAgICAgICAgIm1heCI6IDIwLAogICAgICAgICAgICAgICAgICAgICJzdGVwIjogMC4wMQogICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJoc2xpZGVyIiwKICAgICAgICAgICAgICAgICAgICAibGFiZWwiOiAibWVhbkRlbGF5IiwKICAgICAgICAgICAgICAgICAgICAidmFybmFtZSI6ICJmSHNsaWRlcjAiLAogICAgICAgICAgICAgICAgICAgICJzaG9ydG5hbWUiOiAibWVhbkRlbGF5IiwKICAgICAgICAgICAgICAgICAgICAiYWRkcmVzcyI6ICIvdmFyZGVsYXkvbWVhbkRlbGF5IiwKICAgICAgICAgICAgICAgICAgICAiaW5kZXgiOiAyNjIxNjAsCiAgICAgICAgICAgICAgICAgICAgImluaXQiOiA1LAogICAgICAgICAgICAgICAgICAgICJtaW4iOiAyLAogICAgICAgICAgICAgICAgICAgICJtYXgiOiAxMDAsCiAgICAgICAgICAgICAgICAgICAgInN0ZXAiOiAwLjEKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgXQogICAgICAgIH0KICAgIF0KfQ==";
@@ -5747,10 +5754,10 @@ function _sfc_render$31(_ctx, _cache, $props, $setup, $data, $options) {
 var Mod03VariableDelay_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$31, [["render", _sfc_render$31]]);
 //#endregion
 //#region src/audio/faust/compiled/phaser.wasm?url
-var phaser_default = "/DSPDemo-Web/assets/phaser-DBy0GuC4.wasm";
+var phaser_default = "" + new URL("phaser-DBy0GuC4.wasm", import.meta.url).href;
 //#endregion
 //#region src/audio/faust/compiled/phaser-meta.json?url
-var phaser_meta_default = "/DSPDemo-Web/assets/phaser-meta-DKz115LQ.json";
+var phaser_meta_default = "" + new URL("phaser-meta-DKz115LQ.json", import.meta.url).href;
 //#endregion
 //#region src/components/modules/Mod03Phasing.vue
 var _sfc_main$30 = {
@@ -6432,10 +6439,10 @@ var _hoisted_6$16 = { value: 0 };
 var _hoisted_7$13 = { value: 1 };
 var _hoisted_8$12 = { class: "control-group" };
 var _hoisted_9$10 = { class: "control-label" };
-var _hoisted_10$6 = ["value"];
-var _hoisted_11$5 = { class: "control-group" };
-var _hoisted_12$3 = { class: "control-label" };
-var _hoisted_13$3 = ["value"];
+var _hoisted_10$7 = ["value"];
+var _hoisted_11$6 = { class: "control-group" };
+var _hoisted_12$4 = { class: "control-label" };
+var _hoisted_13$4 = ["value"];
 function _sfc_render$27(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_ControlSlider = resolveComponent("ControlSlider");
 	return openBlock(), createElementBlock("div", _hoisted_1$27, [createBaseVNode("div", _hoisted_2$27, toDisplayString($options.t("moduleInterface")), 1), createBaseVNode("div", _hoisted_3$25, [
@@ -6479,21 +6486,21 @@ function _sfc_render$27(_ctx, _cache, $props, $setup, $data, $options) {
 			return openBlock(), createElementBlock("option", {
 				key: i,
 				value: i
-			}, toDisplayString(w[_ctx.$i18n.locale]), 9, _hoisted_10$6);
+			}, toDisplayString(w[_ctx.$i18n.locale]), 9, _hoisted_10$7);
 		}), 128))], 544), [[
 			vModelSelect,
 			$data.carrierWaveIdx,
 			void 0,
 			{ number: true }
 		]])]),
-		createBaseVNode("div", _hoisted_11$5, [createBaseVNode("label", _hoisted_12$3, toDisplayString($options.t("modWave")), 1), withDirectives(createBaseVNode("select", {
+		createBaseVNode("div", _hoisted_11$6, [createBaseVNode("label", _hoisted_12$4, toDisplayString($options.t("modWave")), 1), withDirectives(createBaseVNode("select", {
 			"onUpdate:modelValue": _cache[6] || (_cache[6] = ($event) => $data.modWaveIdx = $event),
 			onChange: _cache[7] || (_cache[7] = (...args) => $options.onModWaveChange && $options.onModWaveChange(...args))
 		}, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.waveforms, (w, i) => {
 			return openBlock(), createElementBlock("option", {
 				key: i,
 				value: i
-			}, toDisplayString(w[_ctx.$i18n.locale]), 9, _hoisted_13$3);
+			}, toDisplayString(w[_ctx.$i18n.locale]), 9, _hoisted_13$4);
 		}), 128))], 544), [[
 			vModelSelect,
 			$data.modWaveIdx,
@@ -6857,8 +6864,8 @@ var _hoisted_6$14 = { class: "control-group" };
 var _hoisted_7$11 = { class: "control-label" };
 var _hoisted_8$10 = { value: 0 };
 var _hoisted_9$8 = { class: "control-group" };
-var _hoisted_10$5 = { class: "control-label" };
-var _hoisted_11$4 = { value: 0 };
+var _hoisted_10$6 = { class: "control-label" };
+var _hoisted_11$5 = { value: 0 };
 function _sfc_render$25(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_SourcePanel = resolveComponent("SourcePanel");
 	return openBlock(), createElementBlock("div", _hoisted_1$25, [
@@ -6893,11 +6900,11 @@ function _sfc_render$25(_ctx, _cache, $props, $setup, $data, $options) {
 				void 0,
 				{ number: true }
 			]])]),
-			createBaseVNode("div", _hoisted_9$8, [createBaseVNode("label", _hoisted_10$5, toDisplayString($options.t("reconstruction")), 1), withDirectives(createBaseVNode("select", {
+			createBaseVNode("div", _hoisted_9$8, [createBaseVNode("label", _hoisted_10$6, toDisplayString($options.t("reconstruction")), 1), withDirectives(createBaseVNode("select", {
 				"onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => $data.reconstructOrder = $event),
 				onChange: _cache[5] || (_cache[5] = (...args) => $options.onFilterChange && $options.onFilterChange(...args))
 			}, [
-				createBaseVNode("option", _hoisted_11$4, toDisplayString($options.t("none")), 1),
+				createBaseVNode("option", _hoisted_11$5, toDisplayString($options.t("none")), 1),
 				_cache[10] || (_cache[10] = createBaseVNode("option", { value: 8 }, "FIR-8", -1)),
 				_cache[11] || (_cache[11] = createBaseVNode("option", { value: 32 }, "FIR-32", -1)),
 				_cache[12] || (_cache[12] = createBaseVNode("option", { value: 128 }, "FIR-128", -1))
@@ -7038,7 +7045,7 @@ var _hoisted_6$13 = { value: 0 };
 var _hoisted_7$10 = { value: 1 };
 var _hoisted_8$9 = { class: "control-group" };
 var _hoisted_9$7 = { class: "control-label" };
-var _hoisted_10$4 = ["value"];
+var _hoisted_10$5 = ["value"];
 function _sfc_render$24(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_SourcePanel = resolveComponent("SourcePanel");
 	const _component_ControlSlider = resolveComponent("ControlSlider");
@@ -7074,7 +7081,7 @@ function _sfc_render$24(_ctx, _cache, $props, $setup, $data, $options) {
 				return openBlock(), createElementBlock("option", {
 					key: i,
 					value: i
-				}, toDisplayString(d[_ctx.$i18n.locale]), 9, _hoisted_10$4);
+				}, toDisplayString(d[_ctx.$i18n.locale]), 9, _hoisted_10$5);
 			}), 128))], 544), [[
 				vModelSelect,
 				$data.ditherType,
@@ -7875,6 +7882,12 @@ function _sfc_render$18(_ctx, _cache, $props, $setup, $data, $options) {
 }
 var Mod10Chebyshev_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$18, [["render", _sfc_render$18]]);
 //#endregion
+//#region src/audio/faust/compiled/distortion.wasm?url
+var distortion_default = "" + new URL("distortion-NXgzjmXX.wasm", import.meta.url).href;
+//#endregion
+//#region src/audio/faust/compiled/distortion-meta.json?url
+var distortion_meta_default = "" + new URL("distortion-meta-BTbmrGEB.json", import.meta.url).href;
+//#endregion
 //#region src/components/modules/Mod10Distortion.vue
 var _sfc_main$17 = {
 	name: "Mod10Distortion",
@@ -7907,10 +7920,8 @@ var _sfc_main$17 = {
 					en: "Waveshaper"
 				}
 			],
-			workletNode: null,
-			lowpassFilter: null,
-			bypassGain: null,
-			filterGain: null
+			faustNode: null,
+			outputGain: null
 		};
 	},
 	methods: {
@@ -7935,70 +7946,60 @@ var _sfc_main$17 = {
 			}[key] || {})[this.$i18n.locale] || key;
 		},
 		async setup() {
-			const ctx = this.engine.context;
+			const ctx = this.ctx;
 			const source = this.engine.sourcePanel.output;
 			source.disconnect(this.engine.masterGain);
-			await ctx.audioWorklet.addModule(new URL("data:text/javascript;base64,Y2xhc3MgRGlzdG9ydGlvblByb2Nlc3NvciBleHRlbmRzIEF1ZGlvV29ya2xldFByb2Nlc3NvciB7CiAgY29uc3RydWN0b3IoKSB7CiAgICBzdXBlcigpCiAgICB0aGlzLnR5cGUgPSAwIC8vIDA9Y2xpcCwgMT1yZWN0aWZpZXIsIDI9YXJjdGFuLCAzPXdhdmVzaGFwZXIKICAgIHRoaXMuZHJpdmUgPSAwLjUKCiAgICB0aGlzLnBvcnQub25tZXNzYWdlID0gKGUpID0+IHsKICAgICAgaWYgKGUuZGF0YS50eXBlICE9PSB1bmRlZmluZWQpIHRoaXMudHlwZSA9IGUuZGF0YS50eXBlCiAgICAgIGlmIChlLmRhdGEuZHJpdmUgIT09IHVuZGVmaW5lZCkgdGhpcy5kcml2ZSA9IGUuZGF0YS5kcml2ZQogICAgfQogIH0KCiAgcHJvY2VzcyhpbnB1dHMsIG91dHB1dHMpIHsKICAgIGNvbnN0IGlucHV0ID0gaW5wdXRzWzBdCiAgICBjb25zdCBvdXRwdXQgPSBvdXRwdXRzWzBdCiAgICBpZiAoIWlucHV0WzBdIHx8ICFvdXRwdXRbMF0pIHJldHVybiB0cnVlCgogICAgY29uc3QgaW5EYXRhID0gaW5wdXRbMF0KICAgIGNvbnN0IG91dERhdGEgPSBvdXRwdXRbMF0KICAgIGNvbnN0IGRyaXZlID0gdGhpcy5kcml2ZQoKICAgIGZvciAobGV0IGkgPSAwOyBpIDwgaW5EYXRhLmxlbmd0aDsgaSsrKSB7CiAgICAgIGNvbnN0IHggPSBpbkRhdGFbaV0KCiAgICAgIHN3aXRjaCAodGhpcy50eXBlKSB7CiAgICAgICAgY2FzZSAwOiB7CiAgICAgICAgICAvLyBDbGlwcGluZwogICAgICAgICAgY29uc3QgdGhyZXNoID0gTWF0aC5tYXgoMC4wMSwgMSAtIGRyaXZlKQogICAgICAgICAgb3V0RGF0YVtpXSA9IE1hdGgubWF4KC10aHJlc2gsIE1hdGgubWluKHRocmVzaCwgeCkpICogKDAuNzA3IC8gdGhyZXNoKQogICAgICAgICAgYnJlYWsKICAgICAgICB9CiAgICAgICAgY2FzZSAxOiB7CiAgICAgICAgICAvLyBSZWN0aWZpZXI6IGJsZW5kIGJldHdlZW4gb3JpZ2luYWwgYW5kIGFicwogICAgICAgICAgb3V0RGF0YVtpXSA9IHggKiAoMSAtIGRyaXZlKSArIE1hdGguYWJzKHgpICogZHJpdmUKICAgICAgICAgIGJyZWFrCiAgICAgICAgfQogICAgICAgIGNhc2UgMjogewogICAgICAgICAgLy8gQXJjdGFuZ2VudAogICAgICAgICAgY29uc3QgY29tcCA9IGRyaXZlICogKE1hdGguUEkgLyA0KSArIChNYXRoLlBJIC8gNCkKICAgICAgICAgIG91dERhdGFbaV0gPSBNYXRoLmF0YW4yKHgsICgxIC0gZHJpdmUpICogTWF0aC5QSSkgLyBjb21wCiAgICAgICAgICBicmVhawogICAgICAgIH0KICAgICAgICBjYXNlIDM6IHsKICAgICAgICAgIC8vIFdhdmVzaGFwZXI6ICgxK2spKnggLyAoMStrKnx4fCkKICAgICAgICAgIGNvbnN0IGNsaXBwZWQgPSBNYXRoLm1pbihkcml2ZSwgMC45OTkpCiAgICAgICAgICBjb25zdCBrID0gKDIgKiBjbGlwcGVkKSAvICgxIC0gY2xpcHBlZCkKICAgICAgICAgIG91dERhdGFbaV0gPSAoKDEgKyBrKSAqIHgpIC8gKDEgKyBrICogTWF0aC5hYnMoeCkpCiAgICAgICAgICBicmVhawogICAgICAgIH0KICAgICAgfQogICAgfQoKICAgIGZvciAobGV0IGNoID0gMTsgY2ggPCBvdXRwdXQubGVuZ3RoOyBjaCsrKSB7CiAgICAgIG91dHB1dFtjaF0uc2V0KG91dERhdGEpCiAgICB9CgogICAgcmV0dXJuIHRydWUKICB9Cn0KCnJlZ2lzdGVyUHJvY2Vzc29yKCdkaXN0b3J0aW9uJywgRGlzdG9ydGlvblByb2Nlc3NvcikK", "" + import.meta.url));
-			this.workletNode = new AudioWorkletNode(ctx, "distortion");
-			this.workletNode.port.postMessage({
-				type: this.distoType,
-				drive: this.drive
+			const dspMeta = await (await fetch(distortion_meta_default)).json();
+			const dspModule = await WebAssembly.compileStreaming(await fetch(distortion_default));
+			this.faustNode = await new FaustMonoDspGenerator().createNode(ctx, "distortion", {
+				module: dspModule,
+				json: JSON.stringify(dspMeta)
 			});
-			this.lowpassFilter = ctx.createBiquadFilter();
-			this.lowpassFilter.type = "lowpass";
-			this.lowpassFilter.frequency.value = this.cutoff;
-			this.lowpassFilter.Q.value = .707;
-			this.bypassGain = ctx.createGain();
-			this.bypassGain.gain.value = 1;
-			this.filterGain = ctx.createGain();
-			this.filterGain.gain.value = 0;
-			source.connect(this.workletNode);
-			this.workletNode.connect(this.bypassGain);
-			this.workletNode.connect(this.lowpassFilter);
-			this.lowpassFilter.connect(this.filterGain);
-			this.bypassGain.connect(this.engine.masterGain);
-			this.filterGain.connect(this.engine.masterGain);
+			if (!this.faustNode) {
+				console.warn("Failed to create Faust distortion node");
+				return;
+			}
+			this.faustNode.setParamValue("/distortion/type", this.distoType);
+			this.faustNode.setParamValue("/distortion/drive", this.drive);
+			this.faustNode.setParamValue("/distortion/filterOn", this.filterEnabled ? 1 : 0);
+			this.faustNode.setParamValue("/distortion/cutoff", this.cutoff);
+			this.outputGain = ctx.createGain();
+			this.outputGain.gain.value = 1;
+			source.connect(this.faustNode);
+			this.faustNode.connect(this.outputGain);
+			this.outputGain.connect(this.engine.masterGain);
 		},
 		teardown() {
-			[
-				this.workletNode,
-				this.lowpassFilter,
-				this.bypassGain,
-				this.filterGain
-			].forEach((n) => {
-				if (n) try {
-					n.disconnect();
-				} catch (e) {}
-			});
-			if (this.engine.sourcePanel) {
+			if (this.faustNode) {
 				try {
-					this.engine.sourcePanel.output.disconnect();
+					this.faustNode.disconnect();
 				} catch (e) {}
-				try {
-					this.engine.sourcePanel.output.connect(this.engine.masterGain);
-				} catch (e) {}
+				if (this.faustNode.destroy) this.faustNode.destroy();
+				this.faustNode = null;
 			}
+			if (this.outputGain) {
+				try {
+					this.outputGain.disconnect();
+				} catch (e) {}
+				this.outputGain = null;
+			}
+			this.releaseSource();
 		},
 		onTypeChange() {
-			if (this.workletNode) this.workletNode.port.postMessage({ type: this.distoType });
+			if (!this.audioReady || !this.faustNode) return;
+			this.faustNode.setParamValue("/distortion/type", this.distoType);
 		},
 		onDriveChange(val) {
-			if (this.workletNode) this.workletNode.port.postMessage({ drive: val });
+			if (!this.audioReady || !this.faustNode) return;
+			this.faustNode.setParamValue("/distortion/drive", val);
 		},
 		onFilterToggle() {
-			if (!this.audioReady) return;
-			const t = this.engine.context.currentTime;
-			if (this.filterEnabled) {
-				this.bypassGain.gain.setTargetAtTime(0, t, .02);
-				this.filterGain.gain.setTargetAtTime(1, t, .02);
-			} else {
-				this.bypassGain.gain.setTargetAtTime(1, t, .02);
-				this.filterGain.gain.setTargetAtTime(0, t, .02);
-			}
+			if (!this.audioReady || !this.faustNode) return;
+			this.faustNode.setParamValue("/distortion/filterOn", this.filterEnabled ? 1 : 0);
 		},
 		onCutoffChange(val) {
-			if (!this.audioReady) return;
-			this.lowpassFilter.frequency.setTargetAtTime(val, this.engine.context.currentTime, .05);
+			if (!this.audioReady || !this.faustNode) return;
+			this.faustNode.setParamValue("/distortion/cutoff", val);
 		}
 	}
 };
@@ -8205,10 +8206,28 @@ function _sfc_render$16(_ctx, _cache, $props, $setup, $data, $options) {
 var Mod03Transpose_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$16, [["render", _sfc_render$16]]);
 //#endregion
 //#region src/audio/faust/compiled/freeverb.wasm?url
-var freeverb_default = "/DSPDemo-Web/assets/freeverb-q6nEgfm1.wasm";
+var freeverb_default = "" + new URL("freeverb-q6nEgfm1.wasm", import.meta.url).href;
 //#endregion
 //#region src/audio/faust/compiled/freeverb-meta.json?url
-var freeverb_meta_default = "/DSPDemo-Web/assets/freeverb-meta-Bfcoe697.json";
+var freeverb_meta_default = "" + new URL("freeverb-meta-Bfcoe697.json", import.meta.url).href;
+//#endregion
+//#region src/audio/faust/compiled/schroeder1.wasm?url
+var schroeder1_default = "" + new URL("schroeder1-C7cLaceZ.wasm", import.meta.url).href;
+//#endregion
+//#region src/audio/faust/compiled/schroeder1-meta.json?url
+var schroeder1_meta_default = "" + new URL("schroeder1-meta-DmmGdn77.json", import.meta.url).href;
+//#endregion
+//#region src/audio/faust/compiled/schroeder2.wasm?url
+var schroeder2_default = "" + new URL("schroeder2-8o_KVDO3.wasm", import.meta.url).href;
+//#endregion
+//#region src/audio/faust/compiled/schroeder2-meta.json?url
+var schroeder2_meta_default = "" + new URL("schroeder2-meta-ZVuvzhAi.json", import.meta.url).href;
+//#endregion
+//#region src/audio/faust/compiled/fdn.wasm?url
+var fdn_default = "" + new URL("fdn-ZIVMrMWu.wasm", import.meta.url).href;
+//#endregion
+//#region src/audio/faust/compiled/fdn-meta.json?url
+var fdn_meta_default = "" + new URL("fdn-meta-BZ0ODOPu.json", import.meta.url).href;
 //#endregion
 //#region src/components/modules/Mod03Reverb.vue
 var _sfc_main$15 = {
@@ -8224,13 +8243,28 @@ var _sfc_main$15 = {
 			roomSize: .5,
 			damping: .5,
 			balance: .33,
-			reverbTypes: [{
-				fr: "Freeverb",
-				en: "Freeverb"
-			}, {
-				fr: "Réverbe par convolution",
-				en: "Convolution Reverb"
-			}],
+			reverbTypes: [
+				{
+					fr: "Schroeder modèle 1",
+					en: "Schroeder Model 1"
+				},
+				{
+					fr: "Schroeder modèle 2",
+					en: "Schroeder Model 2"
+				},
+				{
+					fr: "Freeverb",
+					en: "Freeverb"
+				},
+				{
+					fr: "Réseau de délais récursifs",
+					en: "Feedback Delay Network"
+				},
+				{
+					fr: "Réverbe par convolution",
+					en: "Convolution Reverb"
+				}
+			],
 			faustNode: null,
 			convNodes: null,
 			dryGain: null,
@@ -8279,7 +8313,7 @@ var _sfc_main$15 = {
 		},
 		async loadIR() {
 			try {
-				const arrayBuffer = await (await fetch(new URL("/DSPDemo-Web/assets/IRMediumHallStereo-CuldImGm.wav", "" + import.meta.url))).arrayBuffer();
+				const arrayBuffer = await (await fetch(new URL("" + new URL("IRMediumHallStereo-CuldImGm.wav", import.meta.url).href, "" + import.meta.url))).arrayBuffer();
 				this.irBuffer = await this.ctx.decodeAudioData(arrayBuffer);
 			} catch (e) {
 				console.warn("Failed to load IR:", e);
@@ -8287,8 +8321,37 @@ var _sfc_main$15 = {
 		},
 		async buildEffect(source) {
 			this.cleanupEffect();
-			if (this.reverbType === 0) await this.buildFreeverb(source);
-			else if (this.reverbType === 1) this.buildConvolution(source);
+			if (this.reverbType === 0) {
+				this._paramPrefix = "/schroeder1";
+				await this.createFaustReverb(source, schroeder1_default, schroeder1_meta_default, "schroeder1", "/schroeder1");
+			} else if (this.reverbType === 1) {
+				this._paramPrefix = "/schroeder2";
+				await this.createFaustReverb(source, schroeder2_default, schroeder2_meta_default, "schroeder2", "/schroeder2");
+			} else if (this.reverbType === 2) {
+				this._paramPrefix = "freeverb";
+				await this.buildFreeverb(source);
+			} else if (this.reverbType === 3) {
+				this._paramPrefix = "/fdn";
+				await this.createFaustReverb(source, fdn_default, fdn_meta_default, "fdn", "/fdn");
+			} else if (this.reverbType === 4) {
+				this._paramPrefix = null;
+				this.buildConvolution(source);
+			}
+		},
+		async createFaustReverb(source, wasmUrl, metaUrl, name, paramPrefix) {
+			const dspMeta = await (await fetch(metaUrl)).json();
+			const dspModule = await WebAssembly.compileStreaming(await fetch(wasmUrl));
+			this.faustNode = await new FaustMonoDspGenerator().createNode(this.ctx, name, {
+				module: dspModule,
+				json: JSON.stringify(dspMeta)
+			});
+			if (!this.faustNode) return;
+			this.faustNode.setParamValue(paramPrefix + "/roomSize", this.roomSize);
+			this.faustNode.setParamValue(paramPrefix + "/damping", this.damping);
+			this.faustNode.setParamValue(paramPrefix + "/wet", this.balance);
+			source.connect(this.faustNode);
+			this.faustNode.connect(this.reverbOutput);
+			this.dryGain.gain.value = 0;
 		},
 		async buildFreeverb(source) {
 			const ctx = this.ctx;
@@ -8361,16 +8424,19 @@ var _sfc_main$15 = {
 			await this.buildEffect(source);
 		},
 		onRoomChange(val) {
-			if (!this.audioReady) return;
-			this.setFaustParam("/Freeverb/0x00/RoomSize", val);
+			if (!this.audioReady || !this.faustNode) return;
+			if (this._paramPrefix === "freeverb") this.setFaustParam("/Freeverb/0x00/RoomSize", val);
+			else this.setFaustParam(this._paramPrefix + "/roomSize", val);
 		},
 		onDampChange(val) {
-			if (!this.audioReady) return;
-			this.setFaustParam("/Freeverb/0x00/Damp", val);
+			if (!this.audioReady || !this.faustNode) return;
+			if (this._paramPrefix === "freeverb") this.setFaustParam("/Freeverb/0x00/Damp", val);
+			else this.setFaustParam(this._paramPrefix + "/damping", val);
 		},
 		onBalanceChange(val) {
 			if (!this.audioReady) return;
-			if (this.faustNode) this.setFaustParam("/Freeverb/Wet", val);
+			if (this.faustNode) if (this._paramPrefix === "freeverb") this.setFaustParam("/Freeverb/Wet", val);
+			else this.setFaustParam(this._paramPrefix + "/wet", val);
 			else if (this.convNodes) {
 				const t = this.ctx.currentTime;
 				this.dryGain.gain.setTargetAtTime(1 - val, t, .02);
@@ -8463,14 +8529,15 @@ var _sfc_main$14 = {
 			isPlaying: false,
 			envBuffer: null,
 			excBuffer: null,
+			envName: "",
+			excName: "",
 			envSource: null,
 			excSource: null,
 			analysisBands: [],
 			synthBands: [],
 			followers: [],
 			modulators: [],
-			outputGain: null,
-			mixGain: null
+			outputGain: null
 		};
 	},
 	methods: {
@@ -8488,9 +8555,17 @@ var _sfc_main$14 = {
 					fr: "Excitation",
 					en: "Excitation"
 				},
+				choose: {
+					fr: "Choisir...",
+					en: "Choose..."
+				},
 				play: {
 					fr: "Jouer les sons",
 					en: "Play sounds"
+				},
+				stop: {
+					fr: "Arrêter",
+					en: "Stop"
 				},
 				moduleInterface: {
 					fr: "Interface du Module",
@@ -8499,7 +8574,11 @@ var _sfc_main$14 = {
 			}[key] || {})[this.$i18n.locale] || key;
 		},
 		setup() {
-			this.outputGain = this.engine.context.createGain();
+			const source = this.engine.sourcePanel.output;
+			try {
+				source.disconnect(this.engine.masterGain);
+			} catch (e) {}
+			this.outputGain = this.ctx.createGain();
 			this.outputGain.gain.value = Math.pow(10, this.volumeDb * .05) * .25;
 			this.outputGain.connect(this.engine.masterGain);
 		},
@@ -8509,21 +8588,21 @@ var _sfc_main$14 = {
 			if (this.outputGain) try {
 				this.outputGain.disconnect();
 			} catch (e) {}
-			if (this.engine.sourcePanel) try {
-				this.engine.sourcePanel.output.connect(this.engine.masterGain);
-			} catch (e) {}
+			this.releaseSource();
 		},
 		async loadEnvelope(e) {
 			const file = e.target.files[0];
-			if (!file) return;
+			if (!file || !this.ctx) return;
+			this.envName = file.name;
 			const buf = await file.arrayBuffer();
-			this.envBuffer = await this.engine.context.decodeAudioData(buf);
+			this.envBuffer = await this.ctx.decodeAudioData(buf);
 		},
 		async loadExcitation(e) {
 			const file = e.target.files[0];
-			if (!file) return;
+			if (!file || !this.ctx) return;
+			this.excName = file.name;
 			const buf = await file.arrayBuffer();
-			this.excBuffer = await this.engine.context.decodeAudioData(buf);
+			this.excBuffer = await this.ctx.decodeAudioData(buf);
 		},
 		togglePlay() {
 			if (this.isPlaying) this.stopPlay();
@@ -8531,19 +8610,19 @@ var _sfc_main$14 = {
 		},
 		startPlay() {
 			if (!this.envBuffer || !this.excBuffer) return;
-			const ctx = this.engine.context;
-			this.envSource = ctx.createBufferSource();
+			this.envSource = this.ctx.createBufferSource();
 			this.envSource.buffer = this.envBuffer;
 			this.envSource.loop = true;
-			this.excSource = ctx.createBufferSource();
+			this.excSource = this.ctx.createBufferSource();
 			this.excSource.buffer = this.excBuffer;
 			this.excSource.loop = true;
-			this.rebuildVocoder();
+			this.buildBands();
 			this.envSource.start();
 			this.excSource.start();
 			this.isPlaying = true;
 		},
 		stopPlay() {
+			if (this._followerFrame) cancelAnimationFrame(this._followerFrame);
 			if (this.envSource) try {
 				this.envSource.stop();
 			} catch (e) {}
@@ -8552,6 +8631,7 @@ var _sfc_main$14 = {
 			} catch (e) {}
 			this.envSource = null;
 			this.excSource = null;
+			this.cleanupBands();
 			this.isPlaying = false;
 		},
 		cleanupBands() {
@@ -8570,29 +8650,28 @@ var _sfc_main$14 = {
 			this.followers = [];
 			this.modulators = [];
 		},
-		rebuildVocoder() {
+		buildBands() {
 			this.cleanupBands();
 			if (!this.envSource || !this.excSource) return;
-			const ctx = this.engine.context;
 			const numBands = Math.round(this.stages);
 			for (let i = 0; i < numBands; i++) {
 				const bandFreq = this.freq * Math.pow(this.expansion, i);
-				if (bandFreq > ctx.sampleRate / 2) break;
-				const aBp = ctx.createBiquadFilter();
+				if (bandFreq > this.ctx.sampleRate / 2) break;
+				const aBp = this.ctx.createBiquadFilter();
 				aBp.type = "bandpass";
 				aBp.frequency.value = bandFreq;
 				aBp.Q.value = this.qFactor;
-				const sBp = ctx.createBiquadFilter();
+				const sBp = this.ctx.createBiquadFilter();
 				sBp.type = "bandpass";
 				sBp.frequency.value = bandFreq;
 				sBp.Q.value = this.qFactor;
-				const modGain = ctx.createGain();
+				const modGain = this.ctx.createGain();
 				modGain.gain.value = 0;
 				this.envSource.connect(aBp);
 				this.excSource.connect(sBp);
 				sBp.connect(modGain);
 				modGain.connect(this.outputGain);
-				const analyser = ctx.createAnalyser();
+				const analyser = this.ctx.createAnalyser();
 				analyser.fftSize = 256;
 				analyser.smoothingTimeConstant = 1 - this.slope;
 				aBp.connect(analyser);
@@ -8612,14 +8691,13 @@ var _sfc_main$14 = {
 					let rms = 0;
 					for (let j = 0; j < data.length; j++) rms += data[j] * data[j];
 					rms = Math.sqrt(rms / data.length);
-					this.modulators[i].gain.setTargetAtTime(rms * 4, this.engine.context.currentTime, .01);
+					this.modulators[i].gain.setTargetAtTime(rms * 20, this.ctx.currentTime, .01);
 				}
 				this._followerFrame = requestAnimationFrame(update);
 			};
 			update();
 		},
 		updateVocoder() {
-			if (!this.audioReady) return;
 			for (let i = 0; i < this.analysisBands.length; i++) {
 				const f = this.freq * Math.pow(this.expansion, i);
 				this.analysisBands[i].frequency.value = f;
@@ -8629,41 +8707,54 @@ var _sfc_main$14 = {
 				if (this.followers[i]) this.followers[i].smoothingTimeConstant = 1 - this.slope;
 			}
 		},
+		rebuildVocoder() {
+			if (!this.isPlaying) return;
+			this.buildBands();
+		},
 		updateGain() {
-			if (this.outputGain) this.outputGain.gain.setTargetAtTime(Math.pow(10, this.volumeDb * .05) * .25, this.engine.context.currentTime, .05);
+			if (this.outputGain) this.outputGain.gain.setTargetAtTime(Math.pow(10, this.volumeDb * .05) * .25, this.ctx.currentTime, .05);
 		}
 	}
 };
 var _hoisted_1$14 = { class: "module-controls" };
 var _hoisted_2$14 = { class: "section-head" };
 var _hoisted_3$13 = { class: "section-body" };
-var _hoisted_4$12 = { class: "control-row" };
-var _hoisted_5$10 = { class: "toggle-btn file-source__load" };
-var _hoisted_6$9 = { class: "toggle-btn file-source__load" };
-var _hoisted_7$8 = { class: "section-head" };
-var _hoisted_8$8 = { class: "section-body" };
-var _hoisted_9$6 = { class: "vocoder-knobs" };
+var _hoisted_4$12 = { class: "vocoder-source" };
+var _hoisted_5$10 = { class: "vocoder-source__label" };
+var _hoisted_6$9 = { class: "toggle-btn vocoder-source__btn" };
+var _hoisted_7$8 = { class: "vocoder-source" };
+var _hoisted_8$8 = { class: "vocoder-source__label" };
+var _hoisted_9$6 = { class: "toggle-btn vocoder-source__btn" };
+var _hoisted_10$4 = ["disabled"];
+var _hoisted_11$4 = { class: "section-head" };
+var _hoisted_12$3 = { class: "section-body" };
+var _hoisted_13$3 = { class: "vocoder-knobs" };
 function _sfc_render$14(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_LabelKnob = resolveComponent("LabelKnob");
 	const _component_ControlSlider = resolveComponent("ControlSlider");
 	return openBlock(), createElementBlock("div", _hoisted_1$14, [
 		createBaseVNode("div", _hoisted_2$14, toDisplayString($options.t("sources")), 1),
-		createBaseVNode("div", _hoisted_3$13, [createBaseVNode("div", _hoisted_4$12, [createBaseVNode("label", _hoisted_5$10, [createTextVNode(toDisplayString($options.t("envelope")) + " ", 1), createBaseVNode("input", {
-			type: "file",
-			accept: "audio/*",
-			onChange: _cache[0] || (_cache[0] = (...args) => $options.loadEnvelope && $options.loadEnvelope(...args)),
-			hidden: ""
-		}, null, 32)]), createBaseVNode("label", _hoisted_6$9, [createTextVNode(toDisplayString($options.t("excitation")) + " ", 1), createBaseVNode("input", {
-			type: "file",
-			accept: "audio/*",
-			onChange: _cache[1] || (_cache[1] = (...args) => $options.loadExcitation && $options.loadExcitation(...args)),
-			hidden: ""
-		}, null, 32)])]), createBaseVNode("button", {
-			class: normalizeClass(["toggle-btn", { active: $data.isPlaying }]),
-			onClick: _cache[2] || (_cache[2] = (...args) => $options.togglePlay && $options.togglePlay(...args))
-		}, toDisplayString($options.t("play")), 3)]),
-		createBaseVNode("div", _hoisted_7$8, toDisplayString($options.t("moduleInterface")), 1),
-		createBaseVNode("div", _hoisted_8$8, [createBaseVNode("div", _hoisted_9$6, [
+		createBaseVNode("div", _hoisted_3$13, [
+			createBaseVNode("div", _hoisted_4$12, [createBaseVNode("label", _hoisted_5$10, toDisplayString($options.t("envelope")), 1), createBaseVNode("label", _hoisted_6$9, [createTextVNode(toDisplayString($data.envName || $options.t("choose")) + " ", 1), createBaseVNode("input", {
+				type: "file",
+				accept: "audio/*",
+				onChange: _cache[0] || (_cache[0] = (...args) => $options.loadEnvelope && $options.loadEnvelope(...args)),
+				hidden: ""
+			}, null, 32)])]),
+			createBaseVNode("div", _hoisted_7$8, [createBaseVNode("label", _hoisted_8$8, toDisplayString($options.t("excitation")), 1), createBaseVNode("label", _hoisted_9$6, [createTextVNode(toDisplayString($data.excName || $options.t("choose")) + " ", 1), createBaseVNode("input", {
+				type: "file",
+				accept: "audio/*",
+				onChange: _cache[1] || (_cache[1] = (...args) => $options.loadExcitation && $options.loadExcitation(...args)),
+				hidden: ""
+			}, null, 32)])]),
+			createBaseVNode("button", {
+				class: normalizeClass(["toggle-btn", { active: $data.isPlaying }]),
+				onClick: _cache[2] || (_cache[2] = (...args) => $options.togglePlay && $options.togglePlay(...args)),
+				disabled: !$data.envBuffer || !$data.excBuffer
+			}, toDisplayString($data.isPlaying ? $options.t("stop") : $options.t("play")), 11, _hoisted_10$4)
+		]),
+		createBaseVNode("div", _hoisted_11$4, toDisplayString($options.t("moduleInterface")), 1),
+		createBaseVNode("div", _hoisted_12$3, [createBaseVNode("div", _hoisted_13$3, [
 			createVNode(_component_LabelKnob, {
 				label: "Freq",
 				modelValue: $data.freq,
@@ -8897,7 +8988,7 @@ var _sfc_main$12 = {
 			const ctx = this.engine.context;
 			const source = this.engine.sourcePanel.output;
 			source.disconnect(this.engine.masterGain);
-			await ctx.audioWorklet.addModule(new URL("/DSPDemo-Web/assets/phase-vocoder-RDqbNA3b.js", "" + import.meta.url));
+			await ctx.audioWorklet.addModule(new URL("" + new URL("phase-vocoder-RDqbNA3b.js", import.meta.url).href, "" + import.meta.url));
 			this.workletNode = new AudioWorkletNode(ctx, "phase-vocoder", { processorOptions: { fftSize: FFT_SIZES$3[this.fftSizeIdx] } });
 			this.workletNode.port.postMessage({
 				mode: "filter",
@@ -9499,7 +9590,7 @@ var _sfc_main$9 = {
 		},
 		async setup() {
 			const ctx = this.engine.context;
-			await ctx.audioWorklet.addModule(new URL("/DSPDemo-Web/assets/phase-vocoder-RDqbNA3b.js", "" + import.meta.url));
+			await ctx.audioWorklet.addModule(new URL("" + new URL("phase-vocoder-RDqbNA3b.js", import.meta.url).href, "" + import.meta.url));
 			this.workletNode = new AudioWorkletNode(ctx, "phase-vocoder", { processorOptions: { fftSize: FFT_SIZES[this.fftSizeIdx] } });
 			this.workletNode.port.postMessage({
 				mode: "delay",
@@ -10463,7 +10554,7 @@ var _sfc_main$4 = {
 		},
 		async setup() {
 			const ctx = this.engine.context;
-			await ctx.audioWorklet.addModule(new URL("/DSPDemo-Web/assets/granular-DKwNfZgo.js", "" + import.meta.url));
+			await ctx.audioWorklet.addModule(new URL("" + new URL("granular-DKwNfZgo.js", import.meta.url).href, "" + import.meta.url));
 			this.workletNode = new AudioWorkletNode(ctx, "granular");
 			this.outputGain = ctx.createGain();
 			this.outputGain.gain.value = 1;
@@ -10637,7 +10728,7 @@ var _sfc_main$3 = {
 		},
 		async setup() {
 			const ctx = this.engine.context;
-			await ctx.audioWorklet.addModule(new URL("/DSPDemo-Web/assets/granular-DKwNfZgo.js", "" + import.meta.url));
+			await ctx.audioWorklet.addModule(new URL("" + new URL("granular-DKwNfZgo.js", import.meta.url).href, "" + import.meta.url));
 			this.workletNode = new AudioWorkletNode(ctx, "granular");
 			this.outputGain = ctx.createGain();
 			this.outputGain.gain.value = 1;

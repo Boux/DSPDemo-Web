@@ -23,6 +23,12 @@ import { moduleAudioMixin } from '../../mixins/moduleAudio'
 import { FaustMonoDspGenerator } from '@grame/faustwasm'
 import freeverbWasmUrl from '../../audio/faust/compiled/freeverb.wasm?url'
 import freeverbMetaUrl from '../../audio/faust/compiled/freeverb-meta.json?url'
+import schroeder1WasmUrl from '../../audio/faust/compiled/schroeder1.wasm?url'
+import schroeder1MetaUrl from '../../audio/faust/compiled/schroeder1-meta.json?url'
+import schroeder2WasmUrl from '../../audio/faust/compiled/schroeder2.wasm?url'
+import schroeder2MetaUrl from '../../audio/faust/compiled/schroeder2-meta.json?url'
+import fdnWasmUrl from '../../audio/faust/compiled/fdn.wasm?url'
+import fdnMetaUrl from '../../audio/faust/compiled/fdn-meta.json?url'
 
 export default {
   name: 'Mod03Reverb',
@@ -35,7 +41,10 @@ export default {
       damping: 0.5,
       balance: 0.33,
       reverbTypes: [
+        { fr: 'Schroeder modèle 1', en: 'Schroeder Model 1' },
+        { fr: 'Schroeder modèle 2', en: 'Schroeder Model 2' },
         { fr: 'Freeverb', en: 'Freeverb' },
+        { fr: 'Réseau de délais récursifs', en: 'Feedback Delay Network' },
         { fr: 'Réverbe par convolution', en: 'Convolution Reverb' }
       ],
       faustNode: null,
@@ -92,10 +101,34 @@ export default {
       this.cleanupEffect()
 
       if (this.reverbType === 0) {
-        await this.buildFreeverb(source)
+        this._paramPrefix = '/schroeder1'
+        await this.createFaustReverb(source, schroeder1WasmUrl, schroeder1MetaUrl, 'schroeder1', '/schroeder1')
       } else if (this.reverbType === 1) {
+        this._paramPrefix = '/schroeder2'
+        await this.createFaustReverb(source, schroeder2WasmUrl, schroeder2MetaUrl, 'schroeder2', '/schroeder2')
+      } else if (this.reverbType === 2) {
+        this._paramPrefix = 'freeverb'
+        await this.buildFreeverb(source)
+      } else if (this.reverbType === 3) {
+        this._paramPrefix = '/fdn'
+        await this.createFaustReverb(source, fdnWasmUrl, fdnMetaUrl, 'fdn', '/fdn')
+      } else if (this.reverbType === 4) {
+        this._paramPrefix = null
         this.buildConvolution(source)
       }
+    },
+    async createFaustReverb(source, wasmUrl, metaUrl, name, paramPrefix) {
+      const dspMeta = await (await fetch(metaUrl)).json()
+      const dspModule = await WebAssembly.compileStreaming(await fetch(wasmUrl))
+      const generator = new FaustMonoDspGenerator()
+      this.faustNode = await generator.createNode(this.ctx, name, { module: dspModule, json: JSON.stringify(dspMeta) })
+      if (!this.faustNode) return
+      this.faustNode.setParamValue(paramPrefix + '/roomSize', this.roomSize)
+      this.faustNode.setParamValue(paramPrefix + '/damping', this.damping)
+      this.faustNode.setParamValue(paramPrefix + '/wet', this.balance)
+      source.connect(this.faustNode)
+      this.faustNode.connect(this.reverbOutput)
+      this.dryGain.gain.value = 0
     },
     async buildFreeverb(source) {
       const ctx = this.ctx
@@ -169,17 +202,29 @@ export default {
       await this.buildEffect(source)
     },
     onRoomChange(val) {
-      if (!this.audioReady) return
-      this.setFaustParam('/Freeverb/0x00/RoomSize', val)
+      if (!this.audioReady || !this.faustNode) return
+      if (this._paramPrefix === 'freeverb') {
+        this.setFaustParam('/Freeverb/0x00/RoomSize', val)
+      } else {
+        this.setFaustParam(this._paramPrefix + '/roomSize', val)
+      }
     },
     onDampChange(val) {
-      if (!this.audioReady) return
-      this.setFaustParam('/Freeverb/0x00/Damp', val)
+      if (!this.audioReady || !this.faustNode) return
+      if (this._paramPrefix === 'freeverb') {
+        this.setFaustParam('/Freeverb/0x00/Damp', val)
+      } else {
+        this.setFaustParam(this._paramPrefix + '/damping', val)
+      }
     },
     onBalanceChange(val) {
       if (!this.audioReady) return
       if (this.faustNode) {
-        this.setFaustParam('/Freeverb/Wet', val)
+        if (this._paramPrefix === 'freeverb') {
+          this.setFaustParam('/Freeverb/Wet', val)
+        } else {
+          this.setFaustParam(this._paramPrefix + '/wet', val)
+        }
       } else if (this.convNodes) {
         const t = this.ctx.currentTime
         this.dryGain.gain.setTargetAtTime(1 - val, t, 0.02)

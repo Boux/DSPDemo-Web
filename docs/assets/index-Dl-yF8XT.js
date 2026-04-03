@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/ModuleWrapper-BaWxFrtM.js","assets/chunk-f7LOQL_L.js","assets/ModuleWrapper-p-ozimvm.css"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-BBT-Xiia.js","./chunk-f7LOQL_L.js","./ModuleWrapper-K8YjZedf.css"])))=>i.map(i=>d[i]);
 import { n as __exportAll } from "./chunk-f7LOQL_L.js";
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -9687,8 +9687,8 @@ function createRouter(options) {
 //#endregion
 //#region \0vite/preload-helper.js
 var scriptRel = "modulepreload";
-var assetsURL = function(dep) {
-	return "/DSPDemo-Web/" + dep;
+var assetsURL = function(dep, importerUrl) {
+	return new URL(dep, importerUrl).href;
 };
 var seen = {};
 var __vitePreload = function preload(baseModule, deps, importerUrl) {
@@ -9754,7 +9754,7 @@ var router = createRouter({
 	}, {
 		path: "/module/:moduleId",
 		name: "module",
-		component: () => __vitePreload(() => import("./ModuleWrapper-BaWxFrtM.js"), __vite__mapDeps([0,1,2]))
+		component: () => __vitePreload(() => import("./ModuleWrapper-BBT-Xiia.js"), __vite__mapDeps([0,1,2]), import.meta.url)
 	}]
 });
 //#endregion
@@ -14135,8 +14135,11 @@ var SourcePanelAudio = class {
 	switchSource(name) {
 		const t = this.ctx.currentTime;
 		const fadeTime = .1;
-		for (const [key, gain] of Object.entries(this.sourceGains)) gain.gain.setTargetAtTime(0, t, fadeTime / 3);
-		if (this.sourceGains[name]) this.sourceGains[name].gain.setTargetAtTime(1, t + fadeTime * .5, fadeTime / 3);
+		for (const [key, gain] of Object.entries(this.sourceGains)) {
+			gain.gain.cancelScheduledValues(t);
+			if (key === name) gain.gain.setTargetAtTime(1, t + fadeTime * .5, fadeTime / 3);
+			else gain.gain.setValueAtTime(0, t);
+		}
 		this.activeSource = name;
 		if (name === "lfo") this.currentFrequency = this.lfo.frequency.value;
 		else if (name === "bandlimited") this.currentFrequency = this.blOsc.frequency.value;

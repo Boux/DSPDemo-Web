@@ -144,6 +144,26 @@
   justify-content: center;
   gap: 2px;
   margin: var(--sp-2) 0;
+}
+.vocoder-source {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+}
+.vocoder-source__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  min-width: 70px;
+}
+.vocoder-source__btn {
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-xs);
 }.multi-slider {
   width: 100%;
 }

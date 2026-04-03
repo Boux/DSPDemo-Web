@@ -14,6 +14,9 @@
 import SourcePanel from '../source/SourcePanel.vue'
 import ControlSlider from '../controls/ControlSlider.vue'
 import { moduleAudioMixin } from '../../mixins/moduleAudio'
+import { FaustMonoDspGenerator } from '@grame/faustwasm'
+import fixeddelayWasmUrl from '../../audio/faust/compiled/fixeddelay.wasm?url'
+import fixeddelayMetaUrl from '../../audio/faust/compiled/fixeddelay-meta.json?url'
 
 export default {
   name: 'Mod03FixedDelay',
@@ -21,13 +24,10 @@ export default {
   mixins: [moduleAudioMixin],
   data() {
     return {
-      delayTimeMs: 0.023,
+      delayTimeMs: 5,
       feedback: 0,
-      delayNode: null,
-      feedbackGain: null,
-      dryGain: null,
-      wetGain: null,
-      mixGain: null
+      faustNode: null,
+      outputGain: null
     }
   },
   computed: {
@@ -44,48 +44,57 @@ export default {
       }
       return (texts[key] || {})[this.$i18n.locale] || key
     },
-    setup() {
-      const ctx = this.engine.context
+    async setup() {
+      const ctx = this.ctx
       const source = this.engine.sourcePanel.output
       source.disconnect(this.engine.masterGain)
 
-      // Delay node
-      this.delayNode = ctx.createDelay(1.0)
-      this.delayNode.delayTime.value = this.delayTimeMs * 0.001
+      // Load pre-compiled Faust fixed delay
+      const dspMeta = await (await fetch(fixeddelayMetaUrl)).json()
+      const dspModule = await WebAssembly.compileStreaming(await fetch(fixeddelayWasmUrl))
 
-      // Feedback loop
-      this.feedbackGain = ctx.createGain()
-      this.feedbackGain.gain.value = 0
+      const generator = new FaustMonoDspGenerator()
+      this.faustNode = await generator.createNode(ctx, 'fixeddelay', {
+        module: dspModule,
+        json: JSON.stringify(dspMeta)
+      })
 
-      // Mix: (dry + wet) * 0.5
-      this.mixGain = ctx.createGain()
-      this.mixGain.gain.value = 0.5
+      if (!this.faustNode) {
+        console.warn('Failed to create Faust fixeddelay node')
+        return
+      }
 
-      // source -> delay -> feedbackGain -> delay (loop)
-      source.connect(this.delayNode)
-      this.delayNode.connect(this.feedbackGain)
-      this.feedbackGain.connect(this.delayNode)
+      // Set initial parameters
+      this.faustNode.setParamValue('/fixeddelay/delayMs', this.delayTimeMs)
+      this.faustNode.setParamValue('/fixeddelay/feedback', this.feedback * 0.01)
 
-      // source + delay -> mix -> master
-      source.connect(this.mixGain)
-      this.delayNode.connect(this.mixGain)
-      this.mixGain.connect(this.engine.masterGain)
+      // Output gain
+      this.outputGain = ctx.createGain()
+      this.outputGain.gain.value = 1
+
+      source.connect(this.faustNode)
+      this.faustNode.connect(this.outputGain)
+      this.outputGain.connect(this.engine.masterGain)
     },
     teardown() {
-      const nodes = [this.delayNode, this.feedbackGain, this.mixGain]
-      nodes.forEach(n => { if (n) try { n.disconnect() } catch (e) { /* */ } })
-      if (this.engine.sourcePanel) {
-        try { this.engine.sourcePanel.output.disconnect() } catch (e) { /* */ }
-        try { this.engine.sourcePanel.output.connect(this.engine.masterGain) } catch (e) { /* */ }
+      if (this.faustNode) {
+        try { this.faustNode.disconnect() } catch (e) { /* */ }
+        if (this.faustNode.destroy) this.faustNode.destroy()
+        this.faustNode = null
       }
+      if (this.outputGain) {
+        try { this.outputGain.disconnect() } catch (e) { /* */ }
+        this.outputGain = null
+      }
+      this.releaseSource()
     },
     onTimeChange(val) {
-      if (!this.audioReady) return
-      this.delayNode.delayTime.setTargetAtTime(val * 0.001, this.engine.context.currentTime, 0.05)
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/fixeddelay/delayMs', val)
     },
     onFeedChange(val) {
-      if (!this.audioReady) return
-      this.feedbackGain.gain.setTargetAtTime(val * 0.01, this.engine.context.currentTime, 0.05)
+      if (!this.audioReady || !this.faustNode) return
+      this.faustNode.setParamValue('/fixeddelay/feedback', val * 0.01)
     }
   }
 }
