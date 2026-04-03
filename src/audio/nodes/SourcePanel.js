@@ -132,8 +132,13 @@ export class SourcePanelAudio {
       case 4: // Triangle
         this._setPeriodicWave((n) => n % 2 === 1 ? ((n - 1) / 2 % 2 === 0 ? 1 : -1) / (n * n) : 0)
         break
-      case 5: // Unipolar pulse
-        this._setPeriodicWave((n, N) => 1 / N)
+      case 5: // Unipolar pulse (all positive, narrow spike)
+        this._setPeriodicWaveRaw((real, imag, N) => {
+          real[0] = 0.5 // DC offset to keep it above zero
+          for (let n = 1; n <= N; n++) {
+            real[n] = 1.0 / N
+          }
+        })
         break
       case 6: // Bipolar pulse
         this._setPeriodicWave((n, N) => (n % 2 === 1 ? 1 : -1) / N)
@@ -147,13 +152,19 @@ export class SourcePanelAudio {
     const N = 64
     const real = new Float32Array(N + 1)
     const imag = new Float32Array(N + 1)
-    real[0] = 0
-    imag[0] = 0
     for (let n = 1; n <= N; n++) {
       imag[n] = ampFn(n, N)
-      real[n] = 0
     }
     const wave = this.ctx.createPeriodicWave(real, imag, { disableNormalization: false })
+    this.lfo.setPeriodicWave(wave)
+  }
+
+  _setPeriodicWaveRaw(fillFn) {
+    const N = 64
+    const real = new Float32Array(N + 1)
+    const imag = new Float32Array(N + 1)
+    fillFn(real, imag, N)
+    const wave = this.ctx.createPeriodicWave(real, imag, { disableNormalization: true })
     this.lfo.setPeriodicWave(wave)
   }
 

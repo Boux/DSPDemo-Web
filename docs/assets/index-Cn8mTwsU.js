@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-GwzT9_w8.js","./chunk-f7LOQL_L.js","./ModuleWrapper-vC5d5CwS.css"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-C-_WjDiB.js","./chunk-f7LOQL_L.js","./ModuleWrapper-vC5d5CwS.css"])))=>i.map(i=>d[i]);
 import { n as __exportAll } from "./chunk-f7LOQL_L.js";
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -9754,7 +9754,7 @@ var router = createRouter({
 	}, {
 		path: "/module/:moduleId",
 		name: "module",
-		component: () => __vitePreload(() => import("./ModuleWrapper-GwzT9_w8.js"), __vite__mapDeps([0,1,2]), import.meta.url)
+		component: () => __vitePreload(() => import("./ModuleWrapper-C-_WjDiB.js"), __vite__mapDeps([0,1,2]), import.meta.url)
 	}]
 });
 //#endregion
@@ -14167,7 +14167,10 @@ var SourcePanelAudio = class {
 				this._setPeriodicWave((n) => n % 2 === 1 ? ((n - 1) / 2 % 2 === 0 ? 1 : -1) / (n * n) : 0);
 				break;
 			case 5:
-				this._setPeriodicWave((n, N) => 1 / N);
+				this._setPeriodicWaveRaw((real, imag, N) => {
+					real[0] = .5;
+					for (let n = 1; n <= N; n++) real[n] = 1 / N;
+				});
 				break;
 			case 6:
 				this._setPeriodicWave((n, N) => (n % 2 === 1 ? 1 : -1) / N);
@@ -14179,13 +14182,16 @@ var SourcePanelAudio = class {
 		const N = 64;
 		const real = new Float32Array(N + 1);
 		const imag = new Float32Array(N + 1);
-		real[0] = 0;
-		imag[0] = 0;
-		for (let n = 1; n <= N; n++) {
-			imag[n] = ampFn(n, N);
-			real[n] = 0;
-		}
+		for (let n = 1; n <= N; n++) imag[n] = ampFn(n, N);
 		const wave = this.ctx.createPeriodicWave(real, imag, { disableNormalization: false });
+		this.lfo.setPeriodicWave(wave);
+	}
+	_setPeriodicWaveRaw(fillFn) {
+		const N = 64;
+		const real = new Float32Array(N + 1);
+		const imag = new Float32Array(N + 1);
+		fillFn(real, imag, N);
+		const wave = this.ctx.createPeriodicWave(real, imag, { disableNormalization: true });
 		this.lfo.setPeriodicWave(wave);
 	}
 	setLFOFrequency(freq) {
