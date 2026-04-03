@@ -42,8 +42,36 @@
   flex-direction: column;
   gap: var(--sp-2);
 }
-.lfo-source__select {
-  width: 100%;
+.lfo-source__waves {
+  display: flex;
+  gap: 1px;
+  background: var(--color-border);
+  border-radius: var(--control-radius);
+  overflow: hidden;
+}
+.lfo-source__wave {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 0;
+  border: none;
+  border-radius: 0;
+  background: var(--color-surface);
+  color: var(--color-text-dim);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.lfo-source__wave:hover {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+}
+.lfo-source__wave.active {
+  background: var(--color-accent);
+  color: #fff;
+}
+.lfo-source__wave svg {
+  display: block;
 }.bl-source {
   display: flex;
   flex-direction: column;

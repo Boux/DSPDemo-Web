@@ -1,6 +1,6 @@
 const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./__vite-browser-external-D6v0R7Vd.js","./chunk-f7LOQL_L.js"])))=>i.map(i=>d[i]);
 import { r as __toESM } from "./chunk-f7LOQL_L.js";
-import { C as renderList, D as normalizeClass, E as withDirectives, O as toDisplayString, S as openBlock, T as resolveDynamicComponent, _ as createBlock, a as interpFloat, b as createTextVNode, c as toLog, d as useModuleRegistryStore, f as __vitePreload, g as createBaseVNode, h as Fragment, i as formatValue, l as useAudioEngineStore, m as vModelSelect, n as EditableValue_default, o as tFromValue, p as vModelCheckbox, r as clamp, s as toExp, t as LabelKnob_default, u as _plugin_vue_export_helper_default, v as createCommentVNode, w as resolveComponent, x as createVNode, y as createElementBlock } from "./index-CBthZcCf.js";
+import { C as renderList, D as normalizeClass, E as withDirectives, O as toDisplayString, S as openBlock, T as resolveDynamicComponent, _ as createBlock, a as interpFloat, b as createTextVNode, c as toLog, d as useModuleRegistryStore, f as __vitePreload, g as createBaseVNode, h as Fragment, i as formatValue, l as useAudioEngineStore, m as vModelSelect, n as EditableValue_default, o as tFromValue, p as vModelCheckbox, r as clamp, s as toExp, t as LabelKnob_default, u as _plugin_vue_export_helper_default, v as createCommentVNode, w as resolveComponent, x as createVNode, y as createElementBlock } from "./index-CoteY__X.js";
 //#region src/components/docs/moduleDocs.js
 var MODULE_DOCS = {
 	"mod-00-sources": {
@@ -229,12 +229,12 @@ var _hoisted_2$41 = {
 	key: 0,
 	class: "module-doc__content"
 };
-var _hoisted_3$36 = { class: "module-doc__text" };
+var _hoisted_3$37 = { class: "module-doc__text" };
 function _sfc_render$42(_ctx, _cache, $props, $setup, $data, $options) {
 	return $options.docText ? (openBlock(), createElementBlock("div", _hoisted_1$42, [createBaseVNode("button", {
 		class: "toggle-btn module-doc__toggle",
 		onClick: _cache[0] || (_cache[0] = ($event) => $data.showDoc = !$data.showDoc)
-	}, toDisplayString($data.showDoc ? $options.locale === "fr" ? "Masquer la doc" : "Hide docs" : $options.locale === "fr" ? "Documentation" : "Documentation"), 1), $data.showDoc ? (openBlock(), createElementBlock("div", _hoisted_2$41, [createBaseVNode("pre", _hoisted_3$36, toDisplayString($options.docText), 1)])) : createCommentVNode("", true)])) : createCommentVNode("", true);
+	}, toDisplayString($data.showDoc ? $options.locale === "fr" ? "Masquer la doc" : "Hide docs" : $options.locale === "fr" ? "Documentation" : "Documentation"), 1), $data.showDoc ? (openBlock(), createElementBlock("div", _hoisted_2$41, [createBaseVNode("pre", _hoisted_3$37, toDisplayString($options.docText), 1)])) : createCommentVNode("", true)])) : createCommentVNode("", true);
 }
 var ModuleDoc_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$42, [["render", _sfc_render$42]]);
 //#endregion
@@ -306,11 +306,11 @@ var _hoisted_2$40 = {
 	key: 0,
 	class: "control-slider__label"
 };
-var _hoisted_3$35 = { class: "control-slider__row" };
+var _hoisted_3$36 = { class: "control-slider__row" };
 var _hoisted_4$26 = ["value"];
 function _sfc_render$41(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_EditableValue = resolveComponent("EditableValue");
-	return openBlock(), createElementBlock("div", _hoisted_1$41, [$props.label ? (openBlock(), createElementBlock("label", _hoisted_2$40, toDisplayString($props.label), 1)) : createCommentVNode("", true), createBaseVNode("div", _hoisted_3$35, [createBaseVNode("input", {
+	return openBlock(), createElementBlock("div", _hoisted_1$41, [$props.label ? (openBlock(), createElementBlock("label", _hoisted_2$40, toDisplayString($props.label), 1)) : createCommentVNode("", true), createBaseVNode("div", _hoisted_3$36, [createBaseVNode("input", {
 		ref: "range",
 		type: "range",
 		min: 0,
@@ -333,6 +333,15 @@ function _sfc_render$41(_ctx, _cache, $props, $setup, $data, $options) {
 var ControlSlider_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$41, [["render", _sfc_render$41]]);
 //#endregion
 //#region src/components/source/LFOSource.vue
+var waveIcons = {
+	sine: "<svg width=\"20\" height=\"12\" viewBox=\"0 0 20 12\"><path d=\"M1 6 Q5 0, 10 6 Q15 12, 19 6\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" stroke-linecap=\"round\"/></svg>",
+	ramp: "<svg width=\"20\" height=\"12\" viewBox=\"0 0 20 12\"><path d=\"M2 10 L10 2 L10 10 L18 2 L18 10\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+	saw: "<svg width=\"20\" height=\"12\" viewBox=\"0 0 20 12\"><path d=\"M2 10 L2 2 L10 10 L10 2 L18 10\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+	square: "<svg width=\"20\" height=\"12\" viewBox=\"0 0 20 12\"><path d=\"M1 10 L1 2 L6 2 L6 10 L11 10 L11 2 L16 2 L16 10 L19 10\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+	triangle: "<svg width=\"20\" height=\"12\" viewBox=\"0 0 20 12\"><path d=\"M1 6 L5 2 L10 10 L15 2 L19 6\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+	uniPulse: "<svg width=\"20\" height=\"12\" viewBox=\"0 0 20 12\"><path d=\"M1 10 L4 10 L4 2 L6 2 L6 10 L14 10 L14 2 L16 2 L16 10 L19 10\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
+	biPulse: "<svg width=\"20\" height=\"12\" viewBox=\"0 0 20 12\"><path d=\"M1 6 L3 6 L3 2 L5 2 L5 6 L7 6 L7 10 L9 10 L9 6 L13 6 L13 2 L15 2 L15 6 L17 6 L17 10 L19 10 L19 6\" stroke=\"currentColor\" stroke-width=\"1.3\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+};
 var _sfc_main$40 = {
 	name: "LFOSource",
 	components: { ControlSlider: ControlSlider_default },
@@ -346,32 +355,53 @@ var _sfc_main$40 = {
 			frequency: 172,
 			waveTypes: [
 				{
-					fr: "Sinusoïde",
-					en: "Sine"
+					label: {
+						fr: "Sinusoïde",
+						en: "Sine"
+					},
+					icon: waveIcons.sine
 				},
 				{
-					fr: "Rampe",
-					en: "Ramp"
+					label: {
+						fr: "Rampe",
+						en: "Ramp"
+					},
+					icon: waveIcons.ramp
 				},
 				{
-					fr: "Dent de scie",
-					en: "Sawtooth"
+					label: {
+						fr: "Dent de scie",
+						en: "Sawtooth"
+					},
+					icon: waveIcons.saw
 				},
 				{
-					fr: "Carrée",
-					en: "Square"
+					label: {
+						fr: "Carrée",
+						en: "Square"
+					},
+					icon: waveIcons.square
 				},
 				{
-					fr: "Triangle",
-					en: "Triangle"
+					label: {
+						fr: "Triangle",
+						en: "Triangle"
+					},
+					icon: waveIcons.triangle
 				},
 				{
-					fr: "Impulsion unipolaire",
-					en: "Unipolar Pulse"
+					label: {
+						fr: "Impulsion unipolaire",
+						en: "Unipolar Pulse"
+					},
+					icon: waveIcons.uniPulse
 				},
 				{
-					fr: "Impulsion bipolaire",
-					en: "Bipolar Pulse"
+					label: {
+						fr: "Impulsion bipolaire",
+						en: "Bipolar Pulse"
+					},
+					icon: waveIcons.biPulse
 				}
 			]
 		};
@@ -387,8 +417,9 @@ var _sfc_main$40 = {
 			this.audio.setLFOType(this.waveType);
 			this.audio.setLFOFrequency(this.frequency);
 		},
-		onWaveTypeChange() {
-			if (this.audio) this.audio.setLFOType(this.waveType);
+		selectWave(i) {
+			this.waveType = i;
+			if (this.audio) this.audio.setLFOType(i);
 		},
 		onFreqChange(val) {
 			this.frequency = val;
@@ -397,19 +428,23 @@ var _sfc_main$40 = {
 	}
 };
 var _hoisted_1$40 = { class: "lfo-source" };
-var _hoisted_2$39 = ["value"];
+var _hoisted_2$39 = { class: "lfo-source__waves" };
+var _hoisted_3$35 = [
+	"title",
+	"onClick",
+	"innerHTML"
+];
 function _sfc_render$40(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_ControlSlider = resolveComponent("ControlSlider");
-	return openBlock(), createElementBlock("div", _hoisted_1$40, [withDirectives(createBaseVNode("select", {
-		"onUpdate:modelValue": _cache[0] || (_cache[0] = ($event) => $data.waveType = $event),
-		onChange: _cache[1] || (_cache[1] = (...args) => $options.onWaveTypeChange && $options.onWaveTypeChange(...args)),
-		class: "lfo-source__select"
-	}, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.waveTypes, (w, i) => {
-		return openBlock(), createElementBlock("option", {
+	return openBlock(), createElementBlock("div", _hoisted_1$40, [createBaseVNode("div", _hoisted_2$39, [(openBlock(true), createElementBlock(Fragment, null, renderList($data.waveTypes, (w, i) => {
+		return openBlock(), createElementBlock("button", {
 			key: i,
-			value: i
-		}, toDisplayString(w[_ctx.$i18n.locale]), 9, _hoisted_2$39);
-	}), 128))], 544), [[vModelSelect, $data.waveType]]), createVNode(_component_ControlSlider, {
+			class: normalizeClass(["lfo-source__wave", { active: $data.waveType === i }]),
+			title: w.label[_ctx.$i18n.locale],
+			onClick: ($event) => $options.selectWave(i),
+			innerHTML: w.icon
+		}, null, 10, _hoisted_3$35);
+	}), 128))]), createVNode(_component_ControlSlider, {
 		label: _ctx.$i18n.locale === "fr" ? "Fréquence" : "Frequency",
 		modelValue: $data.frequency,
 		mini: 20,

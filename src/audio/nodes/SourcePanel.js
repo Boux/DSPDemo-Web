@@ -112,10 +112,49 @@ export class SourcePanelAudio {
 
   // LFO controls
   setLFOType(type) {
-    // Map from original indices to Web Audio types
-    // Original: 0=sine(LFO type 7), 1=ramp(0), 2=sawtooth(1), 3=square(2), 4=triangle(3), 5=pulse-uni(4), 6=pulse-bi(5)
-    const typeMap = ['sine', 'sawtooth', 'sawtooth', 'square', 'triangle', 'square', 'square']
-    this.lfo.type = typeMap[type] || 'sine'
+    // 0=sine, 1=ramp (down-slope), 2=sawtooth (up-slope), 3=square, 4=triangle,
+    // 5=unipolar pulse, 6=bipolar pulse
+    // Use PeriodicWave for all custom types to avoid issues with .type not
+    // overriding a previously set PeriodicWave.
+    switch (type) {
+      case 0: // Sine
+        this._setPeriodicWave((n) => n === 1 ? 1 : 0)
+        break
+      case 1: // Ramp (ramps up slowly, drops fast)
+        this._setPeriodicWave((n) => -1 / n)
+        break
+      case 2: // Sawtooth (jumps up fast, slides down slowly)
+        this._setPeriodicWave((n) => 1 / n)
+        break
+      case 3: // Square
+        this._setPeriodicWave((n) => n % 2 === 1 ? 1 / n : 0)
+        break
+      case 4: // Triangle
+        this._setPeriodicWave((n) => n % 2 === 1 ? ((n - 1) / 2 % 2 === 0 ? 1 : -1) / (n * n) : 0)
+        break
+      case 5: // Unipolar pulse
+        this._setPeriodicWave((n, N) => 1 / N)
+        break
+      case 6: // Bipolar pulse
+        this._setPeriodicWave((n, N) => (n % 2 === 1 ? 1 : -1) / N)
+        break
+      default:
+        this._setPeriodicWave((n) => n === 1 ? 1 : 0)
+    }
+  }
+
+  _setPeriodicWave(ampFn) {
+    const N = 64
+    const real = new Float32Array(N + 1)
+    const imag = new Float32Array(N + 1)
+    real[0] = 0
+    imag[0] = 0
+    for (let n = 1; n <= N; n++) {
+      imag[n] = ampFn(n, N)
+      real[n] = 0
+    }
+    const wave = this.ctx.createPeriodicWave(real, imag, { disableNormalization: false })
+    this.lfo.setPeriodicWave(wave)
   }
 
   setLFOFrequency(freq) {

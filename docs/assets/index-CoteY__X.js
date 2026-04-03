@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-DcMC9N_B.js","./chunk-f7LOQL_L.js","./ModuleWrapper-w24EgVqn.css"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-GwzT9_w8.js","./chunk-f7LOQL_L.js","./ModuleWrapper-vC5d5CwS.css"])))=>i.map(i=>d[i]);
 import { n as __exportAll } from "./chunk-f7LOQL_L.js";
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -9754,7 +9754,7 @@ var router = createRouter({
 	}, {
 		path: "/module/:moduleId",
 		name: "module",
-		component: () => __vitePreload(() => import("./ModuleWrapper-DcMC9N_B.js"), __vite__mapDeps([0,1,2]), import.meta.url)
+		component: () => __vitePreload(() => import("./ModuleWrapper-GwzT9_w8.js"), __vite__mapDeps([0,1,2]), import.meta.url)
 	}]
 });
 //#endregion
@@ -14150,16 +14150,43 @@ var SourcePanelAudio = class {
 		else this.currentFrequency = 0;
 	}
 	setLFOType(type) {
-		const typeMap = [
-			"sine",
-			"sawtooth",
-			"sawtooth",
-			"square",
-			"triangle",
-			"square",
-			"square"
-		];
-		this.lfo.type = typeMap[type] || "sine";
+		switch (type) {
+			case 0:
+				this._setPeriodicWave((n) => n === 1 ? 1 : 0);
+				break;
+			case 1:
+				this._setPeriodicWave((n) => -1 / n);
+				break;
+			case 2:
+				this._setPeriodicWave((n) => 1 / n);
+				break;
+			case 3:
+				this._setPeriodicWave((n) => n % 2 === 1 ? 1 / n : 0);
+				break;
+			case 4:
+				this._setPeriodicWave((n) => n % 2 === 1 ? ((n - 1) / 2 % 2 === 0 ? 1 : -1) / (n * n) : 0);
+				break;
+			case 5:
+				this._setPeriodicWave((n, N) => 1 / N);
+				break;
+			case 6:
+				this._setPeriodicWave((n, N) => (n % 2 === 1 ? 1 : -1) / N);
+				break;
+			default: this._setPeriodicWave((n) => n === 1 ? 1 : 0);
+		}
+	}
+	_setPeriodicWave(ampFn) {
+		const N = 64;
+		const real = new Float32Array(N + 1);
+		const imag = new Float32Array(N + 1);
+		real[0] = 0;
+		imag[0] = 0;
+		for (let n = 1; n <= N; n++) {
+			imag[n] = ampFn(n, N);
+			real[n] = 0;
+		}
+		const wave = this.ctx.createPeriodicWave(real, imag, { disableNormalization: false });
+		this.lfo.setPeriodicWave(wave);
 	}
 	setLFOFrequency(freq) {
 		this.lfo.frequency.setTargetAtTime(freq, this.ctx.currentTime, .05);
