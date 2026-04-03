@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "compile-dsp": "bash compile-faust.sh",
+    "build": "bash compile-faust.sh && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
