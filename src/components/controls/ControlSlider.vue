@@ -12,7 +12,22 @@
         class="control-slider__input"
         @input="onInput"
       />
-      <span class="control-slider__value">{{ displayValue }}</span>
+      <input
+        v-if="editing"
+        ref="textInput"
+        type="text"
+        class="control-slider__value control-slider__value--editing"
+        :value="editText"
+        @input="editText = $event.target.value"
+        @keydown.enter="commitEdit"
+        @keydown.escape="cancelEdit"
+        @blur="commitEdit"
+      />
+      <span
+        v-else
+        class="control-slider__value"
+        @click="startEdit"
+      >{{ displayValue }}</span>
     </div>
   </div>
 </template>
@@ -31,6 +46,12 @@ export default {
     integer: { type: Boolean, default: false }
   },
   emits: ['update:modelValue'],
+  data() {
+    return {
+      editing: false,
+      editText: ''
+    }
+  },
   computed: {
     normalizedValue() {
       if (this.log) {
@@ -55,6 +76,30 @@ export default {
         val = Math.round(val)
       }
       this.$emit('update:modelValue', val)
+    },
+    startEdit() {
+      this.editText = this.displayValue
+      this.editing = true
+      this.$nextTick(() => {
+        const input = this.$refs.textInput
+        if (input) {
+          input.focus()
+          input.select()
+        }
+      })
+    },
+    commitEdit() {
+      if (!this.editing) return
+      const parsed = parseFloat(this.editText)
+      if (!isNaN(parsed)) {
+        let val = clamp(parsed, this.mini, this.maxi)
+        if (this.integer) val = Math.round(val)
+        this.$emit('update:modelValue', val)
+      }
+      this.editing = false
+    },
+    cancelEdit() {
+      this.editing = false
     }
   }
 }
@@ -83,4 +128,16 @@ export default {
     color: var(--color-text-dim)
     font-family: var(--font-mono)
     text-align: right
+    cursor: default
+
+    &--editing
+      background: var(--color-bg, #0a0a0e)
+      border: 1px solid var(--color-accent, #4ade80)
+      border-radius: 2px
+      color: var(--color-text, #ddd)
+      padding: 0 1px
+      outline: none
+      text-align: right
+      width: 50px
+      min-width: 50px
 </style>
