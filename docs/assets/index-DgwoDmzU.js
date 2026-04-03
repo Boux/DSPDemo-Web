@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-BBT-Xiia.js","./chunk-f7LOQL_L.js","./ModuleWrapper-K8YjZedf.css"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./ModuleWrapper-pASdvVaF.js","./chunk-f7LOQL_L.js","./ModuleWrapper-C90s54-g.css"])))=>i.map(i=>d[i]);
 import { n as __exportAll } from "./chunk-f7LOQL_L.js";
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -9754,7 +9754,7 @@ var router = createRouter({
 	}, {
 		path: "/module/:moduleId",
 		name: "module",
-		component: () => __vitePreload(() => import("./ModuleWrapper-BBT-Xiia.js"), __vite__mapDeps([0,1,2]), import.meta.url)
+		component: () => __vitePreload(() => import("./ModuleWrapper-pASdvVaF.js"), __vite__mapDeps([0,1,2]), import.meta.url)
 	}]
 });
 //#endregion
@@ -13982,8 +13982,8 @@ var _hoisted_4$6 = {
 	key: 0,
 	class: "module-menu__dropdown"
 };
-var _hoisted_5$6 = { class: "module-menu__category-label" };
-var _hoisted_6$4 = ["onClick"];
+var _hoisted_5$5 = { class: "module-menu__category-label" };
+var _hoisted_6$3 = ["onClick"];
 var _hoisted_7$3 = { class: "app-header__lang" };
 var _hoisted_8$1 = { class: "about-dialog" };
 var _hoisted_9 = { class: "about-dialog__text" };
@@ -14000,12 +14000,12 @@ function _sfc_render$18(_ctx, _cache, $props, $setup, $data, $options) {
 			return openBlock(), createElementBlock("div", {
 				key: cat.id,
 				class: "module-menu__category"
-			}, [createBaseVNode("div", _hoisted_5$6, toDisplayString$1(_ctx.$t("categories." + cat.id)), 1), (openBlock(true), createElementBlock(Fragment, null, renderList(cat.modules, (mod) => {
+			}, [createBaseVNode("div", _hoisted_5$5, toDisplayString$1(_ctx.$t("categories." + cat.id)), 1), (openBlock(true), createElementBlock(Fragment, null, renderList(cat.modules, (mod) => {
 				return openBlock(), createElementBlock("button", {
 					key: mod.id,
 					class: normalizeClass(["module-menu__item", { "module-menu__item--active": mod.id === $options.activeModuleId }]),
 					onClick: ($event) => $options.selectModule(mod.id)
-				}, toDisplayString$1(mod.name[_ctx.$i18n.locale] || mod.name.fr), 11, _hoisted_6$4);
+				}, toDisplayString$1(mod.name[_ctx.$i18n.locale] || mod.name.fr), 11, _hoisted_6$3);
 			}), 128))]);
 		}), 128))])) : createCommentVNode("", true)], 512)]),
 		_cache[13] || (_cache[13] = createBaseVNode("div", { class: "app-header__spacer" }, null, -1)),
@@ -14380,23 +14380,22 @@ var _sfc_main$17 = {
 		}
 	}
 };
-var _hoisted_1$17 = { class: "section-head" };
-var _hoisted_2$13 = { class: "section-body" };
-var _hoisted_3$6 = { class: "control-row" };
-var _hoisted_4$5 = ["disabled"];
-var _hoisted_5$5 = {
+var _hoisted_1$17 = { class: "audio-controls" };
+var _hoisted_2$13 = { class: "audio-controls__row" };
+var _hoisted_3$6 = ["disabled"];
+var _hoisted_4$5 = {
 	key: 0,
-	class: "recording-indicator"
+	class: "audio-controls__rec-dot"
 };
 function _sfc_render$17(_ctx, _cache, $props, $setup, $data, $options) {
-	return openBlock(), createElementBlock("div", null, [createBaseVNode("div", _hoisted_1$17, toDisplayString$1(_ctx.$t("controls.audioControls")), 1), createBaseVNode("div", _hoisted_2$13, [createBaseVNode("div", _hoisted_3$6, [createBaseVNode("button", {
-		class: normalizeClass(["toggle-btn", { active: $options.isRunning }]),
+	return openBlock(), createElementBlock("div", _hoisted_1$17, [createBaseVNode("div", _hoisted_2$13, [createBaseVNode("button", {
+		class: normalizeClass(["toggle-btn audio-controls__btn", { active: $options.isRunning }]),
 		onClick: _cache[0] || (_cache[0] = (...args) => $options.toggleAudio && $options.toggleAudio(...args))
 	}, toDisplayString$1($options.isRunning ? _ctx.$t("controls.disable") : _ctx.$t("controls.enable")), 3), createBaseVNode("button", {
-		class: normalizeClass(["toggle-btn", { active: $options.isRecording }]),
+		class: normalizeClass(["toggle-btn audio-controls__btn", { active: $options.isRecording }]),
 		disabled: !$options.isRunning,
 		onClick: _cache[1] || (_cache[1] = (...args) => $options.toggleRecord && $options.toggleRecord(...args))
-	}, toDisplayString$1($options.isRecording ? _ctx.$t("controls.stopRecord") : _ctx.$t("controls.record")), 11, _hoisted_4$5)]), $options.isRecording ? (openBlock(), createElementBlock("div", _hoisted_5$5, toDisplayString$1(_ctx.$i18n.locale === "fr" ? "Enregistrement en cours..." : "Recording..."), 1)) : createCommentVNode("", true)])]);
+	}, [$options.isRecording ? (openBlock(), createElementBlock("span", _hoisted_4$5)) : createCommentVNode("", true), createTextVNode(" " + toDisplayString$1($options.isRecording ? _ctx.$t("controls.stopRecord") : _ctx.$t("controls.record")), 1)], 10, _hoisted_3$6)])]);
 }
 var AudioControls_default = /* @__PURE__ */ _plugin_vue_export_helper_default(_sfc_main$17, [["render", _sfc_render$17]]);
 //#endregion
@@ -14511,26 +14510,25 @@ var _sfc_main$15 = {
 		useAudioEngineStore().setVolume(parseFloat(e.target.value));
 	} }
 };
-var _hoisted_1$15 = { class: "section-head" };
-var _hoisted_2$11 = { class: "section-body" };
-var _hoisted_3$5 = { class: "control-label" };
-var _hoisted_4$4 = { class: "output-controls__row" };
-var _hoisted_5$4 = ["value"];
-var _hoisted_6$3 = { class: "output-controls__value" };
+var _hoisted_1$15 = { class: "output-controls" };
+var _hoisted_2$11 = { class: "output-controls__header" };
+var _hoisted_3$5 = { class: "output-controls__row" };
+var _hoisted_4$4 = ["value"];
+var _hoisted_5$4 = { class: "output-controls__value" };
 function _sfc_render$15(_ctx, _cache, $props, $setup, $data, $options) {
 	const _component_VuMeter = resolveComponent("VuMeter");
-	return openBlock(), createElementBlock("div", null, [createBaseVNode("div", _hoisted_1$15, toDisplayString$1(_ctx.$t("controls.audioOutput")), 1), createBaseVNode("div", _hoisted_2$11, [
-		createBaseVNode("label", _hoisted_3$5, toDisplayString$1(_ctx.$t("controls.volume")), 1),
-		createBaseVNode("div", _hoisted_4$4, [createBaseVNode("input", {
+	return openBlock(), createElementBlock("div", _hoisted_1$15, [
+		createBaseVNode("div", _hoisted_2$11, toDisplayString$1(_ctx.$t("controls.volume")), 1),
+		createBaseVNode("div", _hoisted_3$5, [createBaseVNode("input", {
 			type: "range",
 			min: -60,
 			max: 18,
 			step: .5,
 			value: $options.volumeDb,
 			onInput: _cache[0] || (_cache[0] = (...args) => $options.onVolumeChange && $options.onVolumeChange(...args))
-		}, null, 40, _hoisted_5$4), createBaseVNode("span", _hoisted_6$3, toDisplayString$1($options.volumeDb.toFixed(1)) + " dB", 1)]),
+		}, null, 40, _hoisted_4$4), createBaseVNode("span", _hoisted_5$4, toDisplayString$1($options.volumeDb.toFixed(1)) + " dB", 1)]),
 		createVNode(_component_VuMeter, { channels: 2 })
-	])]);
+	]);
 }
 //#endregion
 //#region src/components/layout/LeftPanel.vue

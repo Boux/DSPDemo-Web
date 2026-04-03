@@ -1,7 +1,7 @@
 <template>
   <div class="module-wrapper">
-    <div class="section-head">{{ moduleName }}</div>
-    <div class="section-body module-body">
+    <div class="module-title">{{ moduleName }}</div>
+    <div class="module-body">
       <component :is="moduleComponent" v-if="moduleComponent" :key="moduleId" />
       <div v-else class="module-placeholder">
         {{ $t('menu.modules') }}: {{ $route.params.moduleId }}
@@ -120,6 +120,15 @@ export default {
   display: flex
   flex-direction: column
   min-height: 0
+
+.module-title
+  padding: var(--sp-2) var(--sp-3)
+  font-size: var(--font-size-sm)
+  font-weight: 600
+  color: var(--color-text)
+  border-bottom: 1px solid var(--color-border)
+  border-top: 1px solid var(--color-border)
+  background: var(--color-surface)
 
 .module-body
   flex: 1

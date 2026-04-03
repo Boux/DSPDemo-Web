@@ -73,19 +73,27 @@ export default {
 .source-panel
   &__tabs
     display: flex
-    flex-wrap: wrap
-    gap: var(--sp-1)
+    gap: 1px
     margin-bottom: var(--sp-2)
+    background: var(--color-border)
+    border-radius: var(--control-radius)
+    overflow: hidden
 
     .toggle-btn
       flex: 1
       min-width: 0
       font-size: var(--font-size-xs)
-      padding: var(--sp-1)
+      padding: 5px 2px
       white-space: nowrap
       overflow: hidden
       text-overflow: ellipsis
+      border: none
+      border-radius: 0
+      background: var(--color-surface)
+
+      &.active
+        background: var(--color-accent)
 
   &__content
-    min-height: 60px
+    min-height: 40px
 </style>

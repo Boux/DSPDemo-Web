@@ -1,16 +1,18 @@
+// Toggle buttons — pill-style, subtle
 .toggle-btn
-  padding: var(--sp-1) var(--sp-3)
+  padding: 5px var(--sp-3)
   border: 1px solid var(--color-border)
   border-radius: var(--control-radius)
-  background: var(--color-surface-raised)
-  color: var(--color-text)
+  background: transparent
+  color: var(--color-text-muted)
   cursor: pointer
-  font-size: var(--font-size-sm)
+  font-size: var(--font-size-xs)
   font-family: var(--font-family)
-  transition: background 0.12s, border-color 0.12s
+  transition: all 0.12s ease
 
   &:hover
-    background: var(--color-border)
+    color: var(--color-text)
+    border-color: var(--color-text-dim)
 
   &.active
     background: var(--color-accent)
@@ -18,7 +20,7 @@
     color: #fff
 
   &:disabled
-    opacity: 0.4
+    opacity: 0.3
     cursor: not-allowed
 
 .control-row
@@ -27,8 +29,8 @@
   gap: var(--sp-2)
 
 .control-label
-  font-size: var(--font-size-sm)
-  color: var(--color-text-muted)
+  font-size: var(--font-size-xs)
+  color: var(--color-text-dim)
   white-space: nowrap
 
 .control-group
@@ -39,11 +41,11 @@
 
 select
   font-family: var(--font-family)
-  font-size: var(--font-size-sm)
-  padding: var(--sp-1)
+  font-size: var(--font-size-xs)
+  padding: 4px var(--sp-2)
   border: 1px solid var(--color-border)
   border-radius: var(--control-radius)
-  background: var(--color-surface-raised)
+  background: var(--color-surface)
   color: var(--color-text)
   outline: none
 
@@ -56,3 +58,9 @@ input[type="range"]
 
 input[type="checkbox"]
   accent-color: var(--color-accent)
+
+// Divider between sidebar sections
+.sidebar-divider
+  height: 1px
+  background: var(--color-border)
+  margin: var(--sp-1) var(--sp-3)
